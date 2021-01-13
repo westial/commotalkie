@@ -23,22 +23,25 @@ TEST_GROUP(Packing) {
 };
 
 TEST(Packing, PackString) {
-  Message message = MessageFormatter_Pack("01234567890A");
+  Message message;
+  MessageFormatter_Pack("01234567890A", &message);
   MEMCMP_EQUAL("234567890A", message.body, 10);
   MEMCMP_EQUAL("01", message.meta, 2);
 }
 
 TEST(Packing, PackStruct) {
   const void* input = &sampleValue;
-  Message message = MessageFormatter_Pack(input);
+  Message message;
+  MessageFormatter_Pack(input, &message);
   MEMCMP_EQUAL(input, &message, 12);
 }
 
 TEST(Packing, UnpackStruct) {
   const void* input = &sampleValue;
-  Message message = MessageFormatter_Pack(input);
+  Message message;
+  MessageFormatter_Pack(input, &message);
   struct StubMsg output = {};
-  MessageFormatter_Unpack(message, &output);
+  MessageFormatter_Unpack(&message, &output);
   CHECK_EQUAL(sampleValue.a2, output.a2);
   CHECK_EQUAL(sampleValue.b4, output.b4);
   MEMCMP_EQUAL(sampleValue.c3, output.c3, 3);

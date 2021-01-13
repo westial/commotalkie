@@ -7,8 +7,8 @@
 
 #include "Message.h"
 
-Message MessageFormatter_Pack(const void* input);
+void MessageFormatter_Pack(const void* input, Message* message);
 
-void MessageFormatter_Unpack(Message, void* output);
+void MessageFormatter_Unpack(const Message* message, void* output);
 
 #endif //COMMOTALKIE_SRC_MESSAGE_MESSAGEFORMATTER_H_

@@ -19,6 +19,8 @@
 #pragma pack(push)
 #pragma pack(2)
 
+#define MESSAGE_LENGTH 12
+
 typedef struct Message {
   unsigned char meta[2];
   unsigned char body[10];

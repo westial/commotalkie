@@ -18,13 +18,15 @@ set_property(TARGET imp_cpputest PROPERTY
 # build test library for Packing
 add_library(PackingTest ./PackingTest.cpp)
 add_library(ValidatingTest ./ValidatingTest.cpp)
+add_library(EncryptingTest ./EncryptingTest.cpp)
 
 add_executable(RunAllTests RunAllTests.cpp)
-target_link_libraries(
-        RunAllTests
+target_link_libraries(RunAllTests
         imp_cpputest
         PackingTest
         ValidatingTest
+        EncryptingTest
         PlainMessageFormatter
         SumMessageValidator
+        XorMessageCrypter
 )

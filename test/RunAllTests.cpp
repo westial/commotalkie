@@ -2,6 +2,7 @@
 
 IMPORT_TEST_GROUP(Packing);
 IMPORT_TEST_GROUP(Validating);
+IMPORT_TEST_GROUP(Encrypting);
 
 int main(int argc, char** argv)
 {

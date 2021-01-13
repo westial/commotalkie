@@ -3,10 +3,10 @@
 //
 #include "MessageValidator.h"
 
-static unsigned char sum(const unsigned char* bytes, unsigned int length) {
+static unsigned char sum(const unsigned char* raw, unsigned int length) {
   unsigned char total = '\0';
   while (length--) {
-    total += *(bytes + length - 1);
+    total += *(raw + length - 1);
   }
   return total;
 }

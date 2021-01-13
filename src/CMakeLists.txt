@@ -7,6 +7,7 @@ include_directories(${PROJECT_SOURCE_DIR}/../include/message)
 # And link them in the runnable CMakeLists file
 add_library(PlainMessageFormatter message/PlainMessageFormatter.c)
 add_library(SumMessageValidator message/SumMessageValidator.c)
+add_library(XorMessageCrypter message/XorMessageCrypter.c)
 
 #add_executable(Tutorial ./Tutorial/tutorial.cxx)
 #add_library(LedDriver ./LedDriver/LedDriver.c)
