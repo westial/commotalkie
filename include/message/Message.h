@@ -19,11 +19,13 @@
 #pragma pack(push)
 #pragma pack(2)
 
-#define MESSAGE_LENGTH 12
+#define MESSAGE_LENGTH          12
+#define MESSAGE_META_LENGTH     2
+#define MESSAGE_BODY_LENGTH     (MESSAGE_LENGTH - MESSAGE_META_LENGTH)
 
 typedef struct Message {
-  unsigned char meta[2];
-  unsigned char body[10];
+  unsigned char meta[MESSAGE_META_LENGTH];
+  unsigned char body[MESSAGE_BODY_LENGTH];
 } Message;
 
 #pragma pack(pop)

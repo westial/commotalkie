@@ -17,7 +17,7 @@ TEST(Encrypting, EncryptNoSalt) {
   MessageCrypter_Encrypt(&expected, "", encrypted);
   Message result;
   MessageFormatter_Pack(encrypted, &result);
-  MEMCMP_EQUAL(expected.body, result.body, 10);
+  MEMCMP_EQUAL(expected.body, result.body, MESSAGE_BODY_LENGTH);
 }
 
 TEST(Encrypting, EncryptShortSalt) {
@@ -27,8 +27,8 @@ TEST(Encrypting, EncryptShortSalt) {
   MessageCrypter_Encrypt(&expected, "01234567890", encrypted);
   Message result;
   MessageFormatter_Pack(encrypted, &result);
-  CHECK_EQUAL(expected.body[9], result.body[9]);
-  CHECK_FALSE(expected.body[8] == result.body[8]);
+  CHECK_EQUAL(expected.body[MESSAGE_BODY_LENGTH -1], result.body[MESSAGE_BODY_LENGTH -1]);
+  CHECK_FALSE(expected.body[MESSAGE_BODY_LENGTH -2] == result.body[MESSAGE_BODY_LENGTH -2]);
 }
 
 TEST(Encrypting, EncryptSameLenghtSalt) {
@@ -66,8 +66,8 @@ TEST(Encrypting, DecryptMatch) {
   MessageCrypter_Encrypt(&expected, "abcdefghijkl", encrypted);
   Message decrypted;
   MessageCrypter_Decrypt(encrypted, "abcdefghijkl", &decrypted);
-  MEMCMP_EQUAL((const char*)expected.meta, (const char*)decrypted.meta, 2);
-  MEMCMP_EQUAL((const char*)expected.body, (const char*)decrypted.body, 10);
+  MEMCMP_EQUAL((const char*)expected.meta, (const char*)decrypted.meta, MESSAGE_META_LENGTH);
+  MEMCMP_EQUAL((const char*)expected.body, (const char*)decrypted.body, MESSAGE_BODY_LENGTH);
   int equalsCount = 0;
   for (unsigned int i = 0; i < MESSAGE_LENGTH; i++) {
     if (((unsigned char*)&expected)[i] == ((unsigned char*)&decrypted)[i]) {
