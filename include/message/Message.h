@@ -8,9 +8,6 @@
  *
  * First 2 bytes of the input are reserved for metadata and the remaining 10
  * bytes contain the information body.
- *
- * It is limited to exactly 12 bytes because of this limitation in a possible
- * implementation for Sigfox.
  */
 
 #ifndef COMMOTALKIE_SRC_MESSAGE_MESSAGE_H_

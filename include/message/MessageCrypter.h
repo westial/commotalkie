@@ -7,14 +7,12 @@
 
 #include "Message.h"
 
-void MessageCrypter_Encrypt(
-    const Message* message,
-    const char* salt,
-    char* encrypted);
+void MessageCrypter_Create(const char* originalSalt);
 
-void MessageCrypter_Decrypt(
-    const char* raw,
-    const char* salt,
-    Message* decrypted);
+void MessageCrypter_Destroy(void);
+
+void MessageCrypter_Encrypt(const Message* message, char* encrypted);
+
+void MessageCrypter_Decrypt(const char* raw, Message* decrypted);
 
 #endif //COMMOTALKIE_INCLUDE_MESSAGE_MESSAGECRYPTER_H_
