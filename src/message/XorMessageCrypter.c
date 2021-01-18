@@ -3,12 +3,13 @@
 //
 
 #include <stdlib.h>
+#include <string.h>
 #include "MessageCrypter.h"
 
-static unsigned char salt[MESSAGE_LENGTH];
+unsigned char salt[MESSAGE_LENGTH];
 
-static void xor(const unsigned char* first, const unsigned char* second, char* result) {
-  for(unsigned int i = 0; i < MESSAGE_LENGTH; ++ i)
+static void xor(const unsigned char* first, const unsigned char* second, char* result, unsigned long size) {
+  for(unsigned int i = 0; i < size; ++ i)
     result[i] = (char)(first[i] ^ second[i]);
 }
 
@@ -29,9 +30,11 @@ void MessageCrypter_Destroy(void) {
 }
 
 void MessageCrypter_Encrypt(const Message* message, char* encrypted) {
-  xor((const unsigned char*)message, salt, encrypted);
+  xor((const unsigned char*)message, salt, encrypted, MESSAGE_LENGTH);
+  memcpy(encrypted, message->meta, MESSAGE_META_LENGTH);
 }
 
 void MessageCrypter_Decrypt(const char* raw, Message* decrypted) {
-  xor((const unsigned char*)raw, salt, (char*)decrypted);
+  xor((const unsigned char*)raw, salt, (char*)decrypted, MESSAGE_LENGTH);
+  memcpy(decrypted, (const unsigned char*)raw, MESSAGE_META_LENGTH);
 }
