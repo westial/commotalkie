@@ -20,7 +20,7 @@ set_property(TARGET imp_cpputest PROPERTY
 add_library(PackingTest ./PackingTest.cpp)
 add_library(ValidatingTest ./ValidatingTest.cpp)
 add_library(EncryptingTest ./EncryptingTest.cpp)
-add_library(SendingTest ./SendingTest.cpp)
+add_library(PublishingTest ./PublishingTest.cpp)
 
 add_executable(RunAllTests RunAllTests.cpp)
 target_link_libraries(RunAllTests
@@ -28,10 +28,10 @@ target_link_libraries(RunAllTests
         PackingTest
         ValidatingTest
         EncryptingTest
-        SendingTest
+        PublishingTest
         PlainMessageFormatter
         SumMessageValidator
         XorMessageCrypter
         StubSender
-        MockMessageSender
+        MockMessagePublisher
 )

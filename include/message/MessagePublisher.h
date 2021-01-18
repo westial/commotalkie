@@ -8,10 +8,10 @@
 #include "Message.h"
 #include "Sender.h"
 
-void MessageSender_Create(const void *send_function, const char* address);
+void MessagePublisher_Create(const void *send_function, const char* address);
 
-int MessageSender_Send(Message *message);
+int MessagePublisher_Send(Message *message);
 
-void MessageSender_Destroy();
+void MessagePublisher_Destroy();
 
 #endif //COMMOTALKIE_INCLUDE_MESSAGE_MESSAGESENDER_H_

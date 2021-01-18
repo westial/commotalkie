@@ -3,7 +3,7 @@
 IMPORT_TEST_GROUP(Packing);
 IMPORT_TEST_GROUP(Validating);
 IMPORT_TEST_GROUP(Encrypting);
-IMPORT_TEST_GROUP(Sending);
+IMPORT_TEST_GROUP(Publishing);
 
 int main(int argc, char** argv)
 {
