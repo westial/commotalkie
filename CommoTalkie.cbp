@@ -5,7 +5,7 @@
 		<Option title="CommoTalkie"/>
 		<Option makefile_is_custom="1"/>
 		<Option compiler="gcc"/>
-		<Option virtualFolders="CMake Files\;CMake Files\src\;CMake Files\test\;"/>
+		<Option virtualFolders="CMake Files\;CMake Files\src\;CMake Files\test\;CMake Files\mock\;"/>
 		<Build>
 			<Target title="all">
 				<Option working_dir="/home/jaume/workspace/agrosensitive/commo/commotalkie"/>
@@ -139,82 +139,6 @@
 					<DistClean command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/src/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
-			<Target title="PackingTest">
-				<Option output="/home/jaume/workspace/agrosensitive/commo/commotalkie/lib/libPackingTest.a" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/home/jaume/workspace/agrosensitive/commo/commotalkie/test"/>
-				<Option object_output="./"/>
-				<Option type="2"/>
-				<Option compiler="gcc"/>
-				<Compiler>
-					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../include"/>
-					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../include/message"/>
-					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../test/mock"/>
-					<Add directory="/usr/local/include/CppUTest"/>
-				</Compiler>
-				<MakeCommands>
-					<Build command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/test/Makefile&quot;  VERBOSE=1 PackingTest"/>
-					<CompileFile command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/test/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/test/Makefile&quot;  VERBOSE=1 clean"/>
-				</MakeCommands>
-			</Target>
-			<Target title="PackingTest/fast">
-				<Option output="/home/jaume/workspace/agrosensitive/commo/commotalkie/lib/libPackingTest.a" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/home/jaume/workspace/agrosensitive/commo/commotalkie/test"/>
-				<Option object_output="./"/>
-				<Option type="2"/>
-				<Option compiler="gcc"/>
-				<Compiler>
-					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../include"/>
-					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../include/message"/>
-					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../test/mock"/>
-					<Add directory="/usr/local/include/CppUTest"/>
-				</Compiler>
-				<MakeCommands>
-					<Build command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/test/Makefile&quot;  VERBOSE=1 PackingTest/fast"/>
-					<CompileFile command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/test/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/test/Makefile&quot;  VERBOSE=1 clean"/>
-				</MakeCommands>
-			</Target>
-			<Target title="ValidatingTest">
-				<Option output="/home/jaume/workspace/agrosensitive/commo/commotalkie/lib/libValidatingTest.a" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/home/jaume/workspace/agrosensitive/commo/commotalkie/test"/>
-				<Option object_output="./"/>
-				<Option type="2"/>
-				<Option compiler="gcc"/>
-				<Compiler>
-					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../include"/>
-					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../include/message"/>
-					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../test/mock"/>
-					<Add directory="/usr/local/include/CppUTest"/>
-				</Compiler>
-				<MakeCommands>
-					<Build command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/test/Makefile&quot;  VERBOSE=1 ValidatingTest"/>
-					<CompileFile command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/test/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/test/Makefile&quot;  VERBOSE=1 clean"/>
-				</MakeCommands>
-			</Target>
-			<Target title="ValidatingTest/fast">
-				<Option output="/home/jaume/workspace/agrosensitive/commo/commotalkie/lib/libValidatingTest.a" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/home/jaume/workspace/agrosensitive/commo/commotalkie/test"/>
-				<Option object_output="./"/>
-				<Option type="2"/>
-				<Option compiler="gcc"/>
-				<Compiler>
-					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../include"/>
-					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../include/message"/>
-					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../test/mock"/>
-					<Add directory="/usr/local/include/CppUTest"/>
-				</Compiler>
-				<MakeCommands>
-					<Build command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/test/Makefile&quot;  VERBOSE=1 ValidatingTest/fast"/>
-					<CompileFile command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/test/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/test/Makefile&quot;  VERBOSE=1 clean"/>
-				</MakeCommands>
-			</Target>
 			<Target title="RunAllTests">
 				<Option output="/home/jaume/workspace/agrosensitive/commo/commotalkie/bin/RunAllTests" prefix_auto="0" extension_auto="0"/>
 				<Option working_dir="/home/jaume/workspace/agrosensitive/commo/commotalkie/bin"/>
@@ -224,7 +148,8 @@
 				<Compiler>
 					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../include"/>
 					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../include/message"/>
-					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../test/mock"/>
+					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../include/device"/>
+					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../mock"/>
 					<Add directory="/usr/local/include/CppUTest"/>
 				</Compiler>
 				<MakeCommands>
@@ -243,11 +168,92 @@
 				<Compiler>
 					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../include"/>
 					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../include/message"/>
-					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../test/mock"/>
+					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../include/device"/>
+					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../mock"/>
 					<Add directory="/usr/local/include/CppUTest"/>
 				</Compiler>
 				<MakeCommands>
 					<Build command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/test/Makefile&quot;  VERBOSE=1 RunAllTests/fast"/>
+					<CompileFile command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="PackingTest">
+				<Option output="/home/jaume/workspace/agrosensitive/commo/commotalkie/lib/libPackingTest.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/jaume/workspace/agrosensitive/commo/commotalkie/test"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../include"/>
+					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../include/message"/>
+					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../include/device"/>
+					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../mock"/>
+					<Add directory="/usr/local/include/CppUTest"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/test/Makefile&quot;  VERBOSE=1 PackingTest"/>
+					<CompileFile command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="PackingTest/fast">
+				<Option output="/home/jaume/workspace/agrosensitive/commo/commotalkie/lib/libPackingTest.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/jaume/workspace/agrosensitive/commo/commotalkie/test"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../include"/>
+					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../include/message"/>
+					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../include/device"/>
+					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../mock"/>
+					<Add directory="/usr/local/include/CppUTest"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/test/Makefile&quot;  VERBOSE=1 PackingTest/fast"/>
+					<CompileFile command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="ValidatingTest">
+				<Option output="/home/jaume/workspace/agrosensitive/commo/commotalkie/lib/libValidatingTest.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/jaume/workspace/agrosensitive/commo/commotalkie/test"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../include"/>
+					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../include/message"/>
+					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../include/device"/>
+					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../mock"/>
+					<Add directory="/usr/local/include/CppUTest"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/test/Makefile&quot;  VERBOSE=1 ValidatingTest"/>
+					<CompileFile command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="ValidatingTest/fast">
+				<Option output="/home/jaume/workspace/agrosensitive/commo/commotalkie/lib/libValidatingTest.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/jaume/workspace/agrosensitive/commo/commotalkie/test"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../include"/>
+					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../include/message"/>
+					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../include/device"/>
+					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../mock"/>
+					<Add directory="/usr/local/include/CppUTest"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/test/Makefile&quot;  VERBOSE=1 ValidatingTest/fast"/>
 					<CompileFile command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
 					<Clean command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/test/Makefile&quot;  VERBOSE=1 clean"/>
 					<DistClean command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/test/Makefile&quot;  VERBOSE=1 clean"/>
@@ -262,7 +268,8 @@
 				<Compiler>
 					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../include"/>
 					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../include/message"/>
-					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../test/mock"/>
+					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../include/device"/>
+					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../mock"/>
 					<Add directory="/usr/local/include/CppUTest"/>
 				</Compiler>
 				<MakeCommands>
@@ -281,7 +288,8 @@
 				<Compiler>
 					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../include"/>
 					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../include/message"/>
-					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../test/mock"/>
+					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../include/device"/>
+					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../mock"/>
 					<Add directory="/usr/local/include/CppUTest"/>
 				</Compiler>
 				<MakeCommands>
@@ -291,7 +299,125 @@
 					<DistClean command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/test/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
+			<Target title="SendingTest">
+				<Option output="/home/jaume/workspace/agrosensitive/commo/commotalkie/lib/libSendingTest.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/jaume/workspace/agrosensitive/commo/commotalkie/test"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../include"/>
+					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../include/message"/>
+					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../include/device"/>
+					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../mock"/>
+					<Add directory="/usr/local/include/CppUTest"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/test/Makefile&quot;  VERBOSE=1 SendingTest"/>
+					<CompileFile command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="SendingTest/fast">
+				<Option output="/home/jaume/workspace/agrosensitive/commo/commotalkie/lib/libSendingTest.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/jaume/workspace/agrosensitive/commo/commotalkie/test"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../include"/>
+					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../include/message"/>
+					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../include/device"/>
+					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/../mock"/>
+					<Add directory="/usr/local/include/CppUTest"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/test/Makefile&quot;  VERBOSE=1 SendingTest/fast"/>
+					<CompileFile command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/test/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/test/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/test/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="MockMessageSender">
+				<Option output="/home/jaume/workspace/agrosensitive/commo/commotalkie/lib/libMockMessageSender.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/jaume/workspace/agrosensitive/commo/commotalkie/mock"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/mock/../include"/>
+					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/mock/../include/device"/>
+					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/mock/../include/message"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/mock/Makefile&quot;  VERBOSE=1 MockMessageSender"/>
+					<CompileFile command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/mock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/mock/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/mock/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="MockMessageSender/fast">
+				<Option output="/home/jaume/workspace/agrosensitive/commo/commotalkie/lib/libMockMessageSender.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/jaume/workspace/agrosensitive/commo/commotalkie/mock"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/mock/../include"/>
+					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/mock/../include/device"/>
+					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/mock/../include/message"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/mock/Makefile&quot;  VERBOSE=1 MockMessageSender/fast"/>
+					<CompileFile command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/mock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/mock/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/mock/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="StubSender">
+				<Option output="/home/jaume/workspace/agrosensitive/commo/commotalkie/lib/libStubSender.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/jaume/workspace/agrosensitive/commo/commotalkie/mock"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/mock/../include"/>
+					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/mock/../include/device"/>
+					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/mock/../include/message"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/mock/Makefile&quot;  VERBOSE=1 StubSender"/>
+					<CompileFile command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/mock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/mock/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/mock/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="StubSender/fast">
+				<Option output="/home/jaume/workspace/agrosensitive/commo/commotalkie/lib/libStubSender.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/jaume/workspace/agrosensitive/commo/commotalkie/mock"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/mock/../include"/>
+					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/mock/../include/device"/>
+					<Add directory="/home/jaume/workspace/agrosensitive/commo/commotalkie/mock/../include/message"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/mock/Makefile&quot;  VERBOSE=1 StubSender/fast"/>
+					<CompileFile command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/mock/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/mock/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/gmake -f &quot;/home/jaume/workspace/agrosensitive/commo/commotalkie/mock/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
 		</Build>
+		<Unit filename="/home/jaume/workspace/agrosensitive/commo/commotalkie/mock/MockMessageSender.c">
+			<Option target="MockMessageSender"/>
+		</Unit>
+		<Unit filename="/home/jaume/workspace/agrosensitive/commo/commotalkie/mock/StubSender.c">
+			<Option target="StubSender"/>
+		</Unit>
 		<Unit filename="/home/jaume/workspace/agrosensitive/commo/commotalkie/src/message/PlainMessageFormatter.c">
 			<Option target="PlainMessageFormatter"/>
 		</Unit>
@@ -310,6 +436,9 @@
 		<Unit filename="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/RunAllTests.cpp">
 			<Option target="RunAllTests"/>
 		</Unit>
+		<Unit filename="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/SendingTest.cpp">
+			<Option target="SendingTest"/>
+		</Unit>
 		<Unit filename="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/ValidatingTest.cpp">
 			<Option target="ValidatingTest"/>
 		</Unit>
@@ -321,6 +450,9 @@
 		</Unit>
 		<Unit filename="/home/jaume/workspace/agrosensitive/commo/commotalkie/test/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\test\"/>
+		</Unit>
+		<Unit filename="/home/jaume/workspace/agrosensitive/commo/commotalkie/mock/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\mock\"/>
 		</Unit>
 	</Project>
 </CodeBlocks_project_file>

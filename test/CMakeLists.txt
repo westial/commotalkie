@@ -3,9 +3,10 @@ project (CommoTalkie)
 # include project source
 include_directories(${PROJECT_SOURCE_DIR}/../include)
 include_directories(${PROJECT_SOURCE_DIR}/../include/message)
+include_directories(${PROJECT_SOURCE_DIR}/../include/device)
 
 # include mocks only for test code
-include_directories(${PROJECT_SOURCE_DIR}/../test/mock)
+include_directories(${PROJECT_SOURCE_DIR}/../mock)
 
 # include CppUTest headers
 include_directories(SYSTEM $ENV{CPPUTEST_HOME})
@@ -19,6 +20,7 @@ set_property(TARGET imp_cpputest PROPERTY
 add_library(PackingTest ./PackingTest.cpp)
 add_library(ValidatingTest ./ValidatingTest.cpp)
 add_library(EncryptingTest ./EncryptingTest.cpp)
+add_library(SendingTest ./SendingTest.cpp)
 
 add_executable(RunAllTests RunAllTests.cpp)
 target_link_libraries(RunAllTests
@@ -26,7 +28,10 @@ target_link_libraries(RunAllTests
         PackingTest
         ValidatingTest
         EncryptingTest
+        SendingTest
         PlainMessageFormatter
         SumMessageValidator
         XorMessageCrypter
+        StubSender
+        MockMessageSender
 )

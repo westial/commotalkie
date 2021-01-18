@@ -3,6 +3,7 @@ set(HEADER_FILES
         MessageFormatter.h
         MessageValidator.h
         MessageCrypter.h
+        MessageSender.h
         )
 
 add_library(message STATIC ${HEADER_FILES})
