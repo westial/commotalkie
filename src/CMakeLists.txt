@@ -1,6 +1,7 @@
 project (CommoTalkie)
 
 include_directories(${PROJECT_SOURCE_DIR}/../include)
+include_directories(${PROJECT_SOURCE_DIR}/../include/device)
 include_directories(${PROJECT_SOURCE_DIR}/../include/message)
 
 # Add here all libraries in src
@@ -8,6 +9,4 @@ include_directories(${PROJECT_SOURCE_DIR}/../include/message)
 add_library(PlainMessageFormatter message/PlainMessageFormatter.c)
 add_library(SumMessageValidator message/SumMessageValidator.c)
 add_library(XorMessageCrypter message/XorMessageCrypter.c)
-
-#add_executable(Tutorial ./Tutorial/tutorial.cxx)
-#add_library(LedDriver ./LedDriver/LedDriver.c)
+add_library(SenderBasedMessagePublisher message/SenderBasedMessagePublisher.c)

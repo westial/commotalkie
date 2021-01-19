@@ -32,6 +32,6 @@ target_link_libraries(RunAllTests
         PlainMessageFormatter
         SumMessageValidator
         XorMessageCrypter
+        SenderBasedMessagePublisher
         StubSender
-        MockMessagePublisher
 )

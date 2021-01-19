@@ -6,12 +6,12 @@
 
 static const char* address;
 
-void MessagePublisher_Create(const void *send_function, const char* address_) {
-  Sender_Create(send_function);
-  address = address_;
+void MessagePublisher_Create(const void *push_function, const char* topic) {
+  Sender_Create(push_function);
+  address = topic;
 }
 
-int MessagePublisher_Send(Message *message) {
+int MessagePublisher_Push(Message *message) {
   if (MESSAGE_LENGTH == Sender_Send(address, (const char*) message, MESSAGE_LENGTH))
     return 1;
   return 0;
