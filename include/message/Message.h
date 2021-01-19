@@ -17,7 +17,7 @@
 #pragma pack(2)
 
 #define MESSAGE_LENGTH          12
-#define MESSAGE_META_LENGTH     2
+#define MESSAGE_META_LENGTH     3
 #define MESSAGE_BODY_LENGTH     (MESSAGE_LENGTH - MESSAGE_META_LENGTH)
 
 typedef struct Message {

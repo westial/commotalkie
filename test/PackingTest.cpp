@@ -24,16 +24,17 @@ TEST_GROUP(Packing) {
 
 TEST(Packing, PackString) {
   Message message;
-  MessageFormatter_Pack("01234567890A", &message);
-  MEMCMP_EQUAL("234567890A", message.body, 10);
-  MEMCMP_EQUAL("01", message.meta, 2);
+  const char sample[] = "01234567890A";
+  MessageFormatter_Pack(sample, &message);
+  MEMCMP_EQUAL(sample, message.meta, MESSAGE_META_LENGTH);
+  MEMCMP_EQUAL(sample + MESSAGE_META_LENGTH, message.body, MESSAGE_BODY_LENGTH);
 }
 
 TEST(Packing, PackStruct) {
   const void* input = &sampleValue;
   Message message;
   MessageFormatter_Pack(input, &message);
-  MEMCMP_EQUAL(input, &message, 12);
+  MEMCMP_EQUAL(input, &message, MESSAGE_LENGTH);
 }
 
 TEST(Packing, UnpackStruct) {
