@@ -21,6 +21,7 @@ add_library(PackingTest ./PackingTest.cpp)
 add_library(ValidatingTest ./ValidatingTest.cpp)
 add_library(EncryptingTest ./EncryptingTest.cpp)
 add_library(PublishingTest ./PublishingTest.cpp)
+add_library(SubscriptionTest ./SubscriptionTest.cpp)
 
 add_executable(RunAllTests RunAllTests.cpp)
 target_link_libraries(RunAllTests
@@ -29,9 +30,12 @@ target_link_libraries(RunAllTests
         ValidatingTest
         EncryptingTest
         PublishingTest
+        SubscriptionTest
         PlainMessageFormatter
         SumMessageValidator
         XorMessageCrypter
         SenderBasedMessagePublisher
+        ReceiverBasedMessageSubscriber
         StubSender
+        StubReceiver
 )

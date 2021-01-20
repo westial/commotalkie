@@ -12,7 +12,7 @@ TEST_GROUP(Encrypting) {
 
 TEST(Encrypting, EncryptNoSalt) {
   Message expected;
-  MessageFormatter_Pack("01234567890A", &expected);
+  MessageFormatter_Pack("0123456789AB", &expected);
   char encrypted[MESSAGE_LENGTH];
   MessageCrypter_Create("");
   MessageCrypter_Encrypt(&expected, encrypted);
@@ -38,9 +38,9 @@ TEST(Encrypting, EncryptShortSalt) {
 
 TEST(Encrypting, EncryptSameLenghtSalt) {
   Message expected;
-  MessageFormatter_Pack("01234567890A", &expected);
+  MessageFormatter_Pack("0123456789AB", &expected);
   char encrypted[MESSAGE_LENGTH];
-  MessageCrypter_Create("01234567890A");
+  MessageCrypter_Create("0123456789AB");
   MessageCrypter_Encrypt(&expected, encrypted);
   MessageCrypter_Destroy();
   int equalsCount = 0;
@@ -55,9 +55,9 @@ TEST(Encrypting, EncryptSameLenghtSalt) {
 TEST(Encrypting, EncryptLongerSalt) {
   unsigned int leastEncrypted = 4;
   Message expected;
-  MessageFormatter_Pack("01234567890A", &expected);
+  MessageFormatter_Pack("0123456789AB", &expected);
   char encrypted[MESSAGE_LENGTH];
-  MessageCrypter_Create("01234567890AZSWD");
+  MessageCrypter_Create("0123456789ABZSWD");
   MessageCrypter_Encrypt(&expected, encrypted);
   MessageCrypter_Destroy();
   int equalsCount = 0;
@@ -71,9 +71,9 @@ TEST(Encrypting, EncryptLongerSalt) {
 
 TEST(Encrypting, MetaIsNotEncrypted) {
   Message expected;
-  MessageFormatter_Pack("01234567890A", &expected);
+  MessageFormatter_Pack("0123456789AB", &expected);
   char encrypted[MESSAGE_LENGTH];
-  MessageCrypter_Create("01234567890AZSWD");
+  MessageCrypter_Create("0123456789ABZSWD");
   MessageCrypter_Encrypt(&expected, encrypted);
   MessageCrypter_Destroy();
   MEMCMP_EQUAL((const char*)expected.meta, (const char*)encrypted, MESSAGE_META_LENGTH);
@@ -81,7 +81,7 @@ TEST(Encrypting, MetaIsNotEncrypted) {
 
 TEST(Encrypting, DecryptMatch) {
   Message expected;
-  MessageFormatter_Pack("01234567890A", &expected);
+  MessageFormatter_Pack("0123456789AB", &expected);
   char encrypted[MESSAGE_LENGTH];
   MessageCrypter_Create("abcdefghijkl");
   MessageCrypter_Encrypt(&expected, encrypted);
@@ -102,7 +102,7 @@ TEST(Encrypting, DecryptMatch) {
 TEST(Encrypting, DecryptUnmatch) {
   unsigned int leastEncrypted = 4;
   Message expected;
-  MessageFormatter_Pack("01234567890A", &expected);
+  MessageFormatter_Pack("0123456789AB", &expected);
   char encrypted[MESSAGE_LENGTH];
   MessageCrypter_Create("abcdefghijkl");
   MessageCrypter_Encrypt(&expected, encrypted);

@@ -24,7 +24,7 @@ TEST_GROUP(Packing) {
 
 TEST(Packing, PackString) {
   Message message;
-  const char sample[] = "01234567890A";
+  const char sample[] = "0123456789AB";
   MessageFormatter_Pack(sample, &message);
   MEMCMP_EQUAL(sample, message.meta, MESSAGE_META_LENGTH);
   MEMCMP_EQUAL(sample + MESSAGE_META_LENGTH, message.body, MESSAGE_BODY_LENGTH);

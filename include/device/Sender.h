@@ -7,7 +7,7 @@
 
 void Sender_Create(const void *send_function);
 
-unsigned long Sender_Send(const char* address, const char* content, unsigned long size);
+unsigned long Sender_Send(const char* address, const char* content, const unsigned long size);
 
 void Sender_Destroy(void);
 

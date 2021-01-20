@@ -7,9 +7,20 @@
 
 #include "Message.h"
 
+typedef enum {
+  TimeoutError,
+  IOError,
+  Success
+} Result;
+
 void MessageSubscriber_Create(const void *pull_function, const char *topic);
 
-int MessageSubscriber_Pull();
+/**
+ * Get the
+ * @param buffer
+ * @return
+ */
+Result MessageSubscriber_Pull(const Message *message);
 
 void MessageSubscriber_Destroy();
 
