@@ -2,7 +2,6 @@
 // Created by jaume on 1/15/21.
 //
 
-#include <stdlib.h>
 #include "Sender.h"
 
 static unsigned long (*send)(const char* address, const char* content, const unsigned long size) = 0;

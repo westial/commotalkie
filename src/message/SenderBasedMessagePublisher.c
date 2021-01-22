@@ -17,4 +17,6 @@ int MessagePublisher_Push(Message *message) {
   return 0;
 }
 
-void MessagePublisher_Destroy() {}
+void MessagePublisher_Destroy() {
+  Sender_Destroy();
+}

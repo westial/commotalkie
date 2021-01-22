@@ -36,6 +36,6 @@ target_link_libraries(RunAllTests
         XorMessageCrypter
         SenderBasedMessagePublisher
         ReceiverBasedMessageSubscriber
-        StubSender
-        StubReceiver
+        SimpleSender
+        SimpleReceiver
 )

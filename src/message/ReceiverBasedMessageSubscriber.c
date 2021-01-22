@@ -22,4 +22,6 @@ Result MessageSubscriber_Pull(const Message *message) {
   return Success;
 }
 
-void MessageSubscriber_Destroy() {}
+void MessageSubscriber_Destroy() {
+  Receiver_Destroy();
+}
