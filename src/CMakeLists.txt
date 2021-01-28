@@ -3,6 +3,7 @@ project (CommoTalkie)
 include_directories(${PROJECT_SOURCE_DIR}/../include)
 include_directories(${PROJECT_SOURCE_DIR}/../include/device)
 include_directories(${PROJECT_SOURCE_DIR}/../include/message)
+include_directories(${PROJECT_SOURCE_DIR}/../include/application)
 
 # Add here all libraries in src
 # And link them in the runnable CMakeLists file
@@ -13,3 +14,5 @@ add_library(SenderBasedMessagePublisher message/SenderBasedMessagePublisher.c)
 add_library(ReceiverBasedMessageSubscriber message/ReceiverBasedMessageSubscriber.c)
 add_library(SimpleSender device/SimpleSender.c)
 add_library(SimpleReceiver device/SimpleReceiver.c)
+add_library(PublishEncryptedMessage application/PublishEncryptedMessage.c)
+

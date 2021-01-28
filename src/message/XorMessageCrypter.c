@@ -23,18 +23,28 @@ static void createSalt(const char* original, unsigned char* cleaned, const unsig
 }
 
 void MessageCrypter_Create(const char* originalSalt) {
-  createSalt(originalSalt, salt, MESSAGE_LENGTH);
+  createSalt(originalSalt, salt, MESSAGE_BODY_LENGTH);
 };
 
 void MessageCrypter_Destroy(void) {
 }
 
 void MessageCrypter_Encrypt(const Message* message, char* encrypted) {
-  xor((const unsigned char*)message, salt, encrypted, MESSAGE_LENGTH);
+  xor(
+      (const unsigned char*)message + MESSAGE_META_LENGTH,
+      salt,
+      encrypted + MESSAGE_META_LENGTH,
+      MESSAGE_BODY_LENGTH
+      );
   memcpy(encrypted, message->meta, MESSAGE_META_LENGTH);
 }
 
 void MessageCrypter_Decrypt(const char* raw, Message* decrypted) {
-  xor((const unsigned char*)raw, salt, (char*)decrypted, MESSAGE_LENGTH);
+  xor(
+      (const unsigned char*)raw + MESSAGE_META_LENGTH,
+      salt,
+      (char*)decrypted + MESSAGE_META_LENGTH,
+      MESSAGE_BODY_LENGTH
+      );
   memcpy(decrypted, (const unsigned char*)raw, MESSAGE_META_LENGTH);
 }

@@ -27,7 +27,7 @@ TEST(Encrypting, EncryptShortSalt) {
   Message expected;
   MessageFormatter_Pack("01834567890A", &expected);
   char encrypted[MESSAGE_LENGTH];
-  MessageCrypter_Create("12345678912");
+  MessageCrypter_Create("12345678");
   MessageCrypter_Encrypt(&expected, encrypted);
   MessageCrypter_Destroy();
   Message result;
@@ -40,7 +40,7 @@ TEST(Encrypting, EncryptSameLenghtSalt) {
   Message expected;
   MessageFormatter_Pack("0123456789AB", &expected);
   char encrypted[MESSAGE_LENGTH];
-  MessageCrypter_Create("0123456789AB");
+  MessageCrypter_Create("0123456789");
   MessageCrypter_Encrypt(&expected, encrypted);
   MessageCrypter_Destroy();
   int equalsCount = 0;
