@@ -15,4 +15,5 @@ add_library(ReceiverBasedMessageSubscriber message/ReceiverBasedMessageSubscribe
 add_library(SimpleSender device/SimpleSender.c)
 add_library(SimpleReceiver device/SimpleReceiver.c)
 add_library(PublishEncryptedMessage application/PublishEncryptedMessage.c)
+add_library(ReadEncryptedMessage application/ReadEncryptedMessage.c)
 

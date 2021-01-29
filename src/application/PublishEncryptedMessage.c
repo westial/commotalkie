@@ -5,25 +5,32 @@
 #include "MessagePublisher.h"
 #include "MessageFormatter.h"
 #include "MessageValidator.h"
+#include "ApplicationConfig.h"
 #include <string.h>
 
-void PublishEncryptedMessage_Create(const char* topic, const char* salt, const void* push_fn) {
+void PublishEncryptedMessage_Create(
+    const char *salt,
+    const char *topic,
+    const void *push_fn) {
   MessageCrypter_Create(salt);
   MessagePublisher_Create((const void *) push_fn, topic);
 }
 
-void PublishEncryptedMessage_Invoke(unsigned char port, unsigned char id, unsigned char* body) {
+void PublishEncryptedMessage_Invoke(
+    const unsigned char port,
+    const unsigned char id,
+    const unsigned char *body) {
   unsigned char content[MESSAGE_LENGTH];
   Message message;
   char encrypted[MESSAGE_LENGTH];
 
-  content[1] = port;
-  content[2] = id;
-  memcpy(content + 3, body, MESSAGE_BODY_LENGTH);
+  content[PORT_INDEX] = port;
+  content[ID_INDEX] = id;
+  memcpy(content + MESSAGE_META_LENGTH, body, MESSAGE_BODY_LENGTH);
 
   MessageFormatter_Pack(content, &message);
-  MessageValidator_Sign(&message);
   MessageCrypter_Encrypt(&message, encrypted);
+  MessageValidator_Sign((Message *) encrypted);
   MessagePublisher_Push((Message *) encrypted);
 }
 

@@ -6,12 +6,7 @@
 #define COMMOTALKIE_INCLUDE_MESSAGE_MESSAGESUBSCRIBER_H_
 
 #include "Message.h"
-
-typedef enum {
-  TimeoutError,
-  IOError,
-  Success
-} Result;
+#include "Result.h"
 
 void MessageSubscriber_Create(const void *pull_function, const char *topic);
 

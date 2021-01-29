@@ -1,4 +1,5 @@
 set(HEADER_FILES
+        Result.h
         Message.h
         MessageFormatter.h
         MessageValidator.h

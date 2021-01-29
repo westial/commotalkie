@@ -23,9 +23,15 @@ add_library(EncryptingTest ./EncryptingTest.cpp)
 add_library(PublishingTest ./PublishingTest.cpp)
 add_library(SubscriptionTest ./SubscriptionTest.cpp)
 add_library(PublishEncryptedMessageTest ./PublishEncryptedMessageTest.cpp)
+add_library(ReadEncryptedMessageTest ./ReadEncryptedMessageTest.cpp)
+
+# add mocking library
+add_library(Spy STATIC Spy.h)
+set_target_properties(Spy PROPERTIES LINKER_LANGUAGE CXX)
 
 add_executable(RunAllTests RunAllTests.cpp)
 target_link_libraries(RunAllTests
+        Spy
         imp_cpputest
         PackingTest
         ValidatingTest
@@ -33,6 +39,7 @@ target_link_libraries(RunAllTests
         PublishingTest
         SubscriptionTest
         PublishEncryptedMessageTest
+        ReadEncryptedMessageTest
         PlainMessageFormatter
         SumMessageValidator
         XorMessageCrypter
@@ -41,4 +48,5 @@ target_link_libraries(RunAllTests
         SimpleSender
         SimpleReceiver
         PublishEncryptedMessage
+        ReadEncryptedMessage
 )
