@@ -23,6 +23,18 @@ TEST(Encrypting, EncryptNoSalt) {
   MEMCMP_EQUAL(expected.body, result.body, MESSAGE_BODY_LENGTH);
 }
 
+TEST(Encrypting, EncryptFirstBodyByte) {
+  Message expected;
+  MessageFormatter_Pack("01834567890A", &expected);
+  char encrypted[MESSAGE_LENGTH];
+  MessageCrypter_Create("X");
+  MessageCrypter_Encrypt(&expected, encrypted);
+  MessageCrypter_Destroy();
+  Message result;
+  MessageFormatter_Pack(encrypted, &result);
+  CHECK_FALSE(expected.body[0] == result.body[0]);
+}
+
 TEST(Encrypting, EncryptShortSalt) {
   Message expected;
   MessageFormatter_Pack("01834567890A", &expected);

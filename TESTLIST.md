@@ -10,4 +10,5 @@ Test list
 + Publish an encrypted message.
 + Pull and read an encrypted message.
 
-+ Throw a listening Timeout error.
++ Encrypt first byte of the body.
+- Throw a listening Timeout error.

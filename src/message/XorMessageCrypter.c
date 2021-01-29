@@ -17,8 +17,9 @@ static void createSalt(const char* original, unsigned char* cleaned, const unsig
   unsigned int index = length;
   while (index--) cleaned[index] = '\0';
   index = 0;
-  while ('\0' != original[index] && length > ++index) {
+  while ('\0' != original[index] && length >= index) {
       cleaned[index] = original[index];
+      ++ index;
   }
 }
 
