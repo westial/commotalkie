@@ -11,9 +11,12 @@
 void ReadEncryptedMessage_Create(
     const char *salt,
     const char *topic,
-    const void *pull_function) {
+    const void *pull_function,
+    const void *epoch_function,
+    unsigned long timeout_millis
+    ) {
   MessageCrypter_Create(salt);
-  MessageSubscriber_Create(pull_function, topic);
+  MessageSubscriber_Create(pull_function, epoch_function, timeout_millis, topic);
 }
 
 Result ReadEncryptedMessage_Invoke(

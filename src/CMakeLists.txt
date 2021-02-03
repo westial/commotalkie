@@ -14,6 +14,7 @@ add_library(SenderBasedMessagePublisher message/SenderBasedMessagePublisher.c)
 add_library(ReceiverBasedMessageSubscriber message/ReceiverBasedMessageSubscriber.c)
 add_library(SimpleSender device/SimpleSender.c)
 add_library(SimpleReceiver device/SimpleReceiver.c)
+add_library(SimpleTimer device/SimpleTimer.c)
 add_library(PublishEncryptedMessage application/PublishEncryptedMessage.c)
 add_library(ReadEncryptedMessage application/ReadEncryptedMessage.c)
 

@@ -10,7 +10,10 @@
 void ReadEncryptedMessage_Create(
     const char *salt,
     const char *topic,
-    const void *pull_function);
+    const void *pull_function,
+    const void *epoch_function,
+    unsigned long timeout_millis
+    );
 
 Result ReadEncryptedMessage_Invoke(
     unsigned char *port,

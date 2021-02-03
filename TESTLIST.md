@@ -11,4 +11,4 @@ Test list
 + Pull and read an encrypted message.
 
 + Encrypt first byte of the body.
-- Throw a listening Timeout error.
++ Throw a listening Timeout error.

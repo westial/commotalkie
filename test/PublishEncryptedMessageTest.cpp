@@ -26,6 +26,10 @@ static int mock_pull_fn(const char* address, const char* content, const int size
   return size;
 }
 
+static unsigned long fake_epoch_ms_fn() {
+  return 100;
+}
+
 TEST_GROUP(PublishEncryptedMessage) {
   void setup() {
     push_fn_spy.calledCount = 0;
@@ -62,7 +66,12 @@ TEST(PublishEncryptedMessage, PublishAndRead) {
   PublishEncryptedMessage_Invoke(expected_port, expected_id, expected_body);
   PublishEncryptedMessage_Destroy();
 
-  ReadEncryptedMessage_Create("salt", "topic", (void *)mock_pull_fn);
+  ReadEncryptedMessage_Create(
+      "salt",
+      "topic",
+      (void *)mock_pull_fn,
+      (void *)fake_epoch_ms_fn,
+      999);
   result = ReadEncryptedMessage_Invoke(&result_port, &result_id, result_body);
   ReadEncryptedMessage_Destroy();
   CHECK_EQUAL(Success, result);

@@ -6,7 +6,7 @@
 #define COMMOTALKIE_INCLUDE_MESSAGE_RESULT_H_
 
 typedef enum {
-  TimeoutError,
+  Timeout,
   IOError,
   Success,
   NotValid

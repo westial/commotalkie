@@ -35,6 +35,10 @@ static int stub_io_error_fn(const char* address, const char* content, const int 
   return -1;
 }
 
+static unsigned long fake_epoch_ms_fn() {
+  return 100;
+}
+
 TEST_GROUP(ReadEncryptedMessage) {
   void setup() {
     pull_fn_spy.calledCount = 0;
@@ -46,7 +50,13 @@ TEST_GROUP(ReadEncryptedMessage) {
 
 TEST(ReadEncryptedMessage, ReadingSuccess) {
   Result result;
-  ReadEncryptedMessage_Create("", "address", (void *)stub_message_fn);
+  ReadEncryptedMessage_Create(
+      "",
+      "address",
+      (void *)stub_message_fn,
+      (void *)fake_epoch_ms_fn,
+      999
+      );
   result = ReadEncryptedMessage_Invoke(&port, &id, body);
   ReadEncryptedMessage_Destroy();
   CHECK_EQUAL(pull_fn_spy.calledCount, 1);
@@ -58,7 +68,13 @@ TEST(ReadEncryptedMessage, ReadingSuccess) {
 
 TEST(ReadEncryptedMessage, NotValidFailure) {
   Result result;
-  ReadEncryptedMessage_Create("", "address", (void *)stub_not_valid_fn);
+  ReadEncryptedMessage_Create(
+      "",
+      "address",
+      (void *)stub_not_valid_fn,
+      (void *)fake_epoch_ms_fn,
+      999
+      );
   result = ReadEncryptedMessage_Invoke(&port, &id, body);
   ReadEncryptedMessage_Destroy();
   CHECK_EQUAL(pull_fn_spy.calledCount, 1);
@@ -70,7 +86,13 @@ TEST(ReadEncryptedMessage, NotValidFailure) {
 
 TEST(ReadEncryptedMessage, IOErrorFailure) {
   Result result;
-  ReadEncryptedMessage_Create("", "address", (void *)stub_io_error_fn);
+  ReadEncryptedMessage_Create(
+      "",
+      "address",
+      (void *)stub_io_error_fn,
+      (void *)fake_epoch_ms_fn,
+      999
+      );
   result = ReadEncryptedMessage_Invoke(&port, &id, body);
   ReadEncryptedMessage_Destroy();
   CHECK_EQUAL(pull_fn_spy.calledCount, 1);

@@ -47,6 +47,7 @@ target_link_libraries(RunAllTests
         ReceiverBasedMessageSubscriber
         SimpleSender
         SimpleReceiver
+        SimpleTimer
         PublishEncryptedMessage
         ReadEncryptedMessage
 )

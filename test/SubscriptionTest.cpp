@@ -29,13 +29,61 @@ static int stub_pull_fn(const char* address, const char* content, const int size
   return size;
 }
 
+static int stub_force_error_pull_fn(const char* address, const char* content, const int size) {
+  return -1;
+}
+
+static unsigned long fake_epoch_ms_fn() {
+  return 100;
+}
+
+static unsigned long progressive_ms = 1;
+
+static unsigned long stub_progressive_epoch_ms_fn() {
+  // It returns 1 for the Timer_Start and 1001 for the Timer_GetMillis
+  return progressive_ms += 1000;
+}
+
 TEST_GROUP(Subscription) {
+};
+
+TEST(Subscription, Timeout) {
+  Result result;
+  Message message;
+  MessageSubscriber_Create(
+      (void *) stub_message_fn,
+      (void *) stub_progressive_epoch_ms_fn,
+      999,
+      "address"
+      );
+  result = MessageSubscriber_Pull(&message);
+  MessageSubscriber_Destroy();
+  CHECK_EQUAL(Timeout, result);
+};
+
+TEST(Subscription, IOError) {
+  Result result;
+  Message message;
+  MessageSubscriber_Create(
+      (void *) stub_force_error_pull_fn,
+      (void *) fake_epoch_ms_fn,
+      999,
+      "address"
+      );
+  result = MessageSubscriber_Pull(&message);
+  MessageSubscriber_Destroy();
+  CHECK_EQUAL(IOError, result);
 };
 
 TEST(Subscription, SuccessedPull) {
   Result result;
   Message message;
-  MessageSubscriber_Create((void *) stub_message_fn, "address");
+  MessageSubscriber_Create(
+      (void *) stub_message_fn,
+      (void *) fake_epoch_ms_fn,
+      999,
+      "address"
+      );
   result = MessageSubscriber_Pull(&message);
   MessageSubscriber_Destroy();
   CHECK_EQUAL(Success, result);
@@ -45,7 +93,12 @@ TEST(Subscription, SuccessedPull) {
 
 TEST(Subscription, PullFromCorrectTopic) {
   Message message;
-  MessageSubscriber_Create((void *) mock_address_fn, "address");
+  MessageSubscriber_Create(
+      (void *) mock_address_fn,
+      (void *) fake_epoch_ms_fn,
+      999,
+      "address"
+      );
   MessageSubscriber_Pull(&message);
   MessageSubscriber_Destroy();
 };
@@ -57,7 +110,12 @@ TEST(Subscription, PushAndPull) {
   MessagePublisher_Push(&sent_message);
   MessagePublisher_Destroy();
   Message received_message;
-  MessageSubscriber_Create((void *) stub_pull_fn, "address");
+  MessageSubscriber_Create(
+      (void *) stub_pull_fn,
+      (void *) fake_epoch_ms_fn,
+      999,
+      "address"
+      );
   MessageSubscriber_Pull(&received_message);
   MessageSubscriber_Destroy();
   MEMCMP_EQUAL(sent_message.meta, received_message.meta, MESSAGE_META_LENGTH);
