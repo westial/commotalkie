@@ -1,0 +1,10 @@
+name=CommoTalkie
+version=1.0.0
+author=Jaume Mila <jaume@westial.com>
+maintainer=Jaume Mila <jaume@westial.com>
+sentence=Library for lightweight messaging.
+paragraph=Main features: publishing and receiving encrypted messages with a limited length.
+category=Communication
+url=https://github.com/westial/commotalkie
+architectures=*
+includes=*
