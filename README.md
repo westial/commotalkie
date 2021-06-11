@@ -65,3 +65,11 @@ to your OS Arduino Library and do not forget to move the configuration file
 project you want to use this library. This configuration file can either be left
 into the CommoTalkie Arduino Library directory as well, and then, the same
 configuration is taken for every project using this library.
+
+## License ##
+
+GNU General Public License (GPLv3). Read the attached [license file](LICENSE.txt).
+
+## Author ##
+
+Jaume Mila Bea <jaume@westial.com>
