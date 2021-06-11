@@ -1,9 +1,9 @@
 CommoTalkie
 ===========
 
-This project is the abstraction of use cases for sending and receiving 
-lightweight encrypted messages. The main purpose of these features is a safe
-communication link between low power resource devices.
+Library for sending and receiving lightweight encrypted messages. 
+The main purpose of these features is a safe communication link between low 
+power resource devices.
 
 "Keep it tiny" is one of the most important requirements of this project.
 
@@ -31,6 +31,10 @@ The second most significant byte is for feature segregation in the receiver.
 ### Id ###
 
 The third most significant byte purpose is an Id.
+
+### Content ###
+
+The information of the message.
 
 ## Use cases ##
 
