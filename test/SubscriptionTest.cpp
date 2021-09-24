@@ -67,6 +67,7 @@ TEST(Subscription, Timeout) {
       999,
       "address"
       );
+  MessageSubscriber_CountDown();
   result = MessageSubscriber_Pull(&message);
   MessageSubscriber_Destroy();
   CHECK_EQUAL(Timeout, result);
@@ -81,6 +82,7 @@ TEST(Subscription, NoTimeout) {
       0,
       "address"
       );
+  MessageSubscriber_CountDown();
   result = MessageSubscriber_Pull(&message);
   MessageSubscriber_Destroy();
   CHECK_EQUAL(Success, result);
@@ -96,6 +98,7 @@ TEST(Subscription, IOError) {
       999,
       "address"
       );
+  MessageSubscriber_CountDown();
   result = MessageSubscriber_Pull(&message);
   MessageSubscriber_Destroy();
   CHECK_EQUAL(IOError, result);
@@ -110,6 +113,7 @@ TEST(Subscription, SucceededPull) {
       999,
       "address"
       );
+  MessageSubscriber_CountDown();
   result = MessageSubscriber_Pull(&message);
   MessageSubscriber_Destroy();
   CHECK_EQUAL(Success, result);
@@ -125,6 +129,7 @@ TEST(Subscription, PullFromCorrectTopic) {
       999,
       "address"
       );
+  MessageSubscriber_CountDown();
   MessageSubscriber_Pull(&message);
   MessageSubscriber_Destroy();
 };
@@ -142,6 +147,7 @@ TEST(Subscription, PushAndPull) {
       999,
       "address"
       );
+  MessageSubscriber_CountDown();
   MessageSubscriber_Pull(&received_message);
   MessageSubscriber_Destroy();
   MEMCMP_EQUAL(sent_message.meta, received_message.meta, MESSAGE_META_LENGTH);
