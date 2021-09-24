@@ -6,6 +6,9 @@ extern "C" {
 }
 
 // -----------------------------------------------------------------------------
+static unsigned long push_fn(const char*, const char*, unsigned long);
+static unsigned long mock_address_fn(const char*, const char*, unsigned long);
+static unsigned long push_fail_fn(const char*, const char*, unsigned long);
 
 static unsigned long push_fn(const char* address, const char* content, unsigned long size) {
   return size;

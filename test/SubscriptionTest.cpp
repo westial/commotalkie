@@ -1,12 +1,20 @@
 #include "CppUTest/TestHarness.h"
 extern "C" {
-#include <string.h>
+#include <cstring>
 #include "MessageSubscriber.h"
 #include "MessageFormatter.h"
 #include "MessagePublisher.h"
 }
 
 // -----------------------------------------------------------------------------
+static int stub_message_fn(const char*, const char*, int);
+static int mock_address_fn(const char*, const char*, int);
+static unsigned long stub_push_fn(const char*, const char*, unsigned long);
+static int stub_pull_fn(const char*, const char*, int);
+static int stub_force_error_pull_fn(const char*, const char*, int);
+static int stub_pull_nothing_yet_fn(const char*, const char*, int);
+static unsigned long fake_epoch_ms_fn();
+static unsigned long stub_progressive_epoch_ms_fn();
 
 static int stub_message_fn(const char* address, const char* content, const int size) {
   memcpy((void *)content, "0123456789AB", MESSAGE_LENGTH);
@@ -52,7 +60,7 @@ static unsigned long stub_progressive_epoch_ms_fn() {
 }
 
 TEST_GROUP(Subscription) {
-  void setup() {
+  void setup() override {
     progressive_ms = 1;
     nothing_until_zero = 10000;
   }

@@ -2,7 +2,7 @@
 #include "Spy.h"
 
 extern "C" {
-#include <string.h>
+#include <cstring>
 #include "Message.h"
 #include "Publish.h"
 #include "Result.h"
@@ -10,6 +10,10 @@ extern "C" {
 }
 
 // -----------------------------------------------------------------------------
+
+static unsigned long mock_push_fn(const char*, const char*, unsigned long);
+static int mock_pull_fn(const char*, const char*, int);
+static unsigned long fake_epoch_ms_fn();
 
 static struct Spy push_fn_spy;
 static char spy_expected[MESSAGE_LENGTH];
@@ -31,7 +35,7 @@ static unsigned long fake_epoch_ms_fn() {
 }
 
 TEST_GROUP(PublishApp) {
-  void setup() {
+  void setup() override {
     push_fn_spy.calledCount = 0;
     memset(spy_expected, '\0', MESSAGE_LENGTH);
     memset(spy_pushed_content, '\0', MESSAGE_LENGTH);
