@@ -10,12 +10,12 @@ Communication interface for low power consumption devices.
 Two sides of a communication, publisher and subscriber. 
 
 See [./include/application](./include/application) for the concrete interface
-and the [./test] scenarios for implementation details.
+and the [./test](./test) scenarios for implementation details.
 
 ### Publish ###
 
-The client to send the message towards a "topic". A topic is an address, an
-event name or whichever name a message destination can be.
+This client sends a message towards a "topic". A topic is an address, event name, 
+just a message destination.
 
 ```c
 // My Device Id
@@ -38,13 +38,13 @@ Publish_Invoke(0xAD, my_id, (const unsigned char*)"other message");
 Publish_Destroy();
 ```
 
-In the above example, the `push_fn` function is a function with an 
-implementation of the message submission using the kind of communication as your 
-choice: LoRa, Wi-Fi, Bluetooth,...
+The `push_fn` function is a function with an implementation of the message 
+submission using the kind of communication as your choice: LoRa, Wi-Fi, 
+Bluetooth,...
 
-The signature of the submission function is as follows. The maximum allowed size
-of the content is always the value of the constant `MESSAGE_LENGTH`. Address is 
-just the place for the mentioned message destination (topic).
+Following that's the signature of the submission function. The maximum allowed 
+size of the content is always the value of the constant `MESSAGE_LENGTH`. 
+Address is just the place for the mentioned message destination (topic).
 
 ```c
 push_fn(const char* address, const char* content, unsigned long size);
@@ -52,7 +52,7 @@ push_fn(const char* address, const char* content, unsigned long size);
 
 ### Pull ###
 
-The client to listen for a message in its "topic" only, until a valid message is
+This client listens for a message in its "topic" only, until a valid message is
 received or timeout expires.
 
 ```c
