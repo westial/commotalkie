@@ -7,7 +7,7 @@
 #include "MessageSubscriber.h"
 
 static const char *address;
-unsigned long timeout_at = 0;
+unsigned long timeout_at;
 
 void MessageSubscriber_Create(
     const void *pull_function,
@@ -16,6 +16,7 @@ void MessageSubscriber_Create(
   Receiver_Create(pull_function, MESSAGE_LENGTH);
   Timer_Create(epoch_function);
   address = topic;
+  timeout_at = 0;
 }
 
 void MessageSubscriber_CountDown(const unsigned long timeout_millis) {
