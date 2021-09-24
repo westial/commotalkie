@@ -21,7 +21,7 @@ void MessageSubscriber_Create(
   timeout_at = timeout_millis;
 }
 
-void MessageSubscriber_CountDown(void) {
+void MessageSubscriber_CountDown(const unsigned long timeout_millis) {
 
 }
 

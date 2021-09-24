@@ -7,6 +7,8 @@
 #include "MessageSubscriber.h"
 #include "MessageCrypter.h"
 
+unsigned long count_down_millis;
+
 void Pull_Create(
     const char *salt,
     const char *topic,
@@ -16,6 +18,7 @@ void Pull_Create(
     ) {
   MessageCrypter_Create(salt);
   MessageSubscriber_Create(pull_function, epoch_function, timeout_millis, topic);
+  count_down_millis = timeout_millis;
 }
 
 Result Pull_Invoke(
@@ -25,7 +28,7 @@ Result Pull_Invoke(
   Result result;
   Message message;
   Message decrypted;
-  MessageSubscriber_CountDown();
+  MessageSubscriber_CountDown(count_down_millis);
   result = MessageSubscriber_Pull(&message);
   if (Success != result) return result;
   if (!MessageValidator_Check(&message)) return NotValid;

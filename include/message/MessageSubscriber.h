@@ -16,11 +16,12 @@ void MessageSubscriber_Create(
 
 /**
  * Start timeout countdown
+ * @param timeout_millis
  */
-void MessageSubscriber_CountDown(void);
+void MessageSubscriber_CountDown(unsigned long timeout_millis);
 
 /**
- * Get the
+ * Listen for a message
  * @param buffer
  * @return
  */
