@@ -15,6 +15,11 @@ void MessageSubscriber_Create(
     const char *topic);
 
 /**
+ * Start timeout countdown
+ */
+void MessageSubscriber_CountDown(void);
+
+/**
  * Get the
  * @param buffer
  * @return

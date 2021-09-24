@@ -30,6 +30,14 @@ static int stub_not_valid_fn(const char* address, const char* content, const int
   return size;
 }
 
+static int stub_message_after_failure_fn(const char* address, const char* content, const int size) {
+  if (0 == pull_fn_spy.calledCount) {
+    stub_not_valid_fn(address, content, size);
+    return size;
+  }
+  return stub_message_fn(address, content, size);
+}
+
 static int stub_io_error_fn(const char* address, const char* content, const int size) {
   pull_fn_spy.calledCount ++;
   return -1;
@@ -73,6 +81,25 @@ TEST(PullApp, PullingSuccess) {
   CHECK_EQUAL('2', id);
   MEMCMP_EQUAL("3456789AB", body, MESSAGE_BODY_LENGTH);
 }
+
+// TODO
+//TEST(PullApp, PullingSuccessAfterFailure) {
+//  Result result;
+//  Pull_Create(
+//      "salt",
+//      "address",
+//      (void *) stub_message_after_failure_fn,
+//      (void *) fake_epoch_ms_fn,
+//      999
+//  );
+//  result = Pull_Invoke(&port, &id, body);
+//  Pull_Destroy();
+//  CHECK_EQUAL(pull_fn_spy.calledCount, 1);
+//  CHECK_EQUAL(Success, result);
+//  CHECK_EQUAL('1', port);
+//  CHECK_EQUAL('2', id);
+//  MEMCMP_EQUAL("3456789AB", body, MESSAGE_BODY_LENGTH);
+//}
 
 TEST(PullApp, NoTimeoutPulling) {
   Result result;

@@ -21,6 +21,10 @@ void MessageSubscriber_Create(
   timeout_at = timeout_millis;
 }
 
+void MessageSubscriber_CountDown(void) {
+
+}
+
 Result MessageSubscriber_Pull(const Message *message) {
   int available = 0;
   Timer_Start();
