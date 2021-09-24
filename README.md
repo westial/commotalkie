@@ -53,7 +53,7 @@ push_fn(const char* address, const char* content, unsigned long size);
 ### Pull ###
 
 The client to listen for a message in its "topic" only, until a valid message is
-received or count_down_millis expires.
+received or timeout expires.
 
 ```c
 // Initialize the content destination variables

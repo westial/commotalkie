@@ -18,11 +18,10 @@ void MessageSubscriber_Create(
   Receiver_Create(pull_function, MESSAGE_LENGTH);
   Timer_Create(epoch_function);
   address = topic;
-  timeout_at = timeout_millis;
 }
 
 void MessageSubscriber_CountDown(const unsigned long timeout_millis) {
-
+  timeout_at = timeout_millis;
 }
 
 Result MessageSubscriber_Pull(const Message *message) {
