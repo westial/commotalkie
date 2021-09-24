@@ -26,7 +26,7 @@ Result MessageSubscriber_Pull(const Message *message) {
   Timer_Start();
   while(0 == available) {
     available = Receiver_listen(address);
-    if (Timer_GetMillis() > timeout_at) return Timeout;
+    if (0 != timeout_at && Timer_GetMillis() > timeout_at) return Timeout;
   }
   if (0 > available) return IOError;
   Receiver_read((const char *)message);

@@ -33,11 +33,18 @@ static int stub_force_error_pull_fn(const char* address, const char* content, co
   return -1;
 }
 
+static unsigned long nothing_until_zero;
+
+static int stub_pull_nothing_yet_fn(const char* address, const char* content, const int size) {
+  if (--nothing_until_zero) return 0;
+  else return MESSAGE_LENGTH;
+}
+
 static unsigned long fake_epoch_ms_fn() {
   return 100;
 }
 
-static unsigned long progressive_ms = 1;
+static unsigned long progressive_ms;
 
 static unsigned long stub_progressive_epoch_ms_fn() {
   // It returns 1 for the Timer_Start and 1001 for the Timer_GetMillis
@@ -45,6 +52,10 @@ static unsigned long stub_progressive_epoch_ms_fn() {
 }
 
 TEST_GROUP(Subscription) {
+  void setup() {
+    progressive_ms = 1;
+    nothing_until_zero = 10000;
+  }
 };
 
 TEST(Subscription, Timeout) {
@@ -61,6 +72,21 @@ TEST(Subscription, Timeout) {
   CHECK_EQUAL(Timeout, result);
 };
 
+TEST(Subscription, NoTimeout) {
+  Result result;
+  Message message;
+  MessageSubscriber_Create(
+      (void *) stub_pull_nothing_yet_fn,
+      (void *) stub_progressive_epoch_ms_fn,
+      0,
+      "address"
+      );
+  result = MessageSubscriber_Pull(&message);
+  MessageSubscriber_Destroy();
+  CHECK_EQUAL(Success, result);
+  CHECK_EQUAL(0, nothing_until_zero);
+};
+
 TEST(Subscription, IOError) {
   Result result;
   Message message;
@@ -75,7 +101,7 @@ TEST(Subscription, IOError) {
   CHECK_EQUAL(IOError, result);
 };
 
-TEST(Subscription, SuccessedPull) {
+TEST(Subscription, SucceededPull) {
   Result result;
   Message message;
   MessageSubscriber_Create(

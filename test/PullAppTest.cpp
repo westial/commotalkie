@@ -48,7 +48,7 @@ TEST_GROUP(PullApp) {
   }
 };
 
-TEST(PullApp, ReadingSuccess) {
+TEST(PullApp, PullingSuccess) {
   Result result;
   Pull_Create(
       "",
