@@ -29,10 +29,10 @@ Result Pull_Invoke(
   Message message;
   Message decrypted;
   if (0 != countdown_millis) MessageSubscriber_CountDown(countdown_millis);
-  result = MessageSubscriber_Pull(&message);
-  if (Success != result) return result;
-  if (!MessageValidator_Check(&message)) return NotValid;
-
+  do {
+    result = MessageSubscriber_Pull(&message);
+    if (Success != result) return result;
+  } while (!MessageValidator_Check(&message));
   MessageCrypter_Decrypt((const char*) &message, &decrypted);
   *port = decrypted.meta[PORT_INDEX];
   *id = decrypted.meta[ID_INDEX];

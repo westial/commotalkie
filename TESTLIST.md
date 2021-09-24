@@ -14,4 +14,4 @@ Test list
 + Throw a listening Timeout error.
 
 + Permanently listen for pulling as an option.
-- Ignore an invalid message.
++ Ignore an invalid message.

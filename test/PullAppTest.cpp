@@ -26,11 +26,11 @@ static int stub_message_fn(const char* address, const char* content, const int s
 
 static int stub_not_valid_fn(const char* address, const char* content, const int size) {
   pull_fn_spy.calledCount ++;
-  memcpy((void *)content, "0123456789AB", MESSAGE_LENGTH);
+  memcpy((void *)content, "XXXXXXXXXXXX", MESSAGE_LENGTH);
   return size;
 }
 
-static int stub_message_after_failure_fn(const char* address, const char* content, const int size) {
+static int stub_message_after_not_valid_failure_fn(const char* address, const char* content, const int size) {
   if (0 == pull_fn_spy.calledCount) {
     stub_not_valid_fn(address, content, size);
     return size;
@@ -39,12 +39,18 @@ static int stub_message_after_failure_fn(const char* address, const char* conten
 }
 
 static int stub_io_error_fn(const char* address, const char* content, const int size) {
-  pull_fn_spy.calledCount ++;
+  pull_fn_spy.calledCount++;
   return -1;
 }
 
 static unsigned long fake_epoch_ms_fn() {
   return 100;
+}
+
+static unsigned long countdown_timeout;
+
+static unsigned long stub_epoch_countdown_ms_fn() {
+  return countdown_timeout--;
 }
 
 static unsigned long nothing_until_zero;
@@ -61,6 +67,7 @@ TEST_GROUP(PullApp) {
     memset(body, '\0', MESSAGE_BODY_LENGTH);
     port = '\0';
     id = '\0';
+    countdown_timeout = 1000;
   }
 };
 
@@ -82,24 +89,23 @@ TEST(PullApp, PullingSuccess) {
   MEMCMP_EQUAL("3456789AB", body, MESSAGE_BODY_LENGTH);
 }
 
-// TODO
-//TEST(PullApp, PullingSuccessAfterFailure) {
-//  Result result;
-//  Pull_Create(
-//      "salt",
-//      "address",
-//      (void *) stub_message_after_failure_fn,
-//      (void *) fake_epoch_ms_fn,
-//      999
-//  );
-//  result = Pull_Invoke(&port, &id, body);
-//  Pull_Destroy();
-//  CHECK_EQUAL(pull_fn_spy.calledCount, 1);
-//  CHECK_EQUAL(Success, result);
-//  CHECK_EQUAL('1', port);
-//  CHECK_EQUAL('2', id);
-//  MEMCMP_EQUAL("3456789AB", body, MESSAGE_BODY_LENGTH);
-//}
+TEST(PullApp, PullingSuccessAfterFailure) {
+  Result result;
+  Pull_Create(
+      "",
+      "address",
+      (void *) stub_message_after_not_valid_failure_fn,
+      (void *) fake_epoch_ms_fn,
+      999
+  );
+  result = Pull_Invoke(&port, &id, body);
+  Pull_Destroy();
+  CHECK_EQUAL(pull_fn_spy.calledCount, 2);
+  CHECK_EQUAL(Success, result);
+  CHECK_EQUAL('1', port);
+  CHECK_EQUAL('2', id);
+  MEMCMP_EQUAL("3456789AB", body, MESSAGE_BODY_LENGTH);
+}
 
 TEST(PullApp, NoTimeoutPulling) {
   Result result;
@@ -120,19 +126,19 @@ TEST(PullApp, NoTimeoutPulling) {
   CHECK_EQUAL(0, nothing_until_zero);
 }
 
-TEST(PullApp, NotValidFailure) {
+TEST(PullApp, NotValidEndsByTimeout) {
   Result result;
   Pull_Create(
       "",
       "address",
       (void *) stub_not_valid_fn,
-      (void *) fake_epoch_ms_fn,
+      (void *) stub_epoch_countdown_ms_fn,
       999
   );
   result = Pull_Invoke(&port, &id, body);
   Pull_Destroy();
   CHECK_EQUAL(pull_fn_spy.calledCount, 1);
-  CHECK_EQUAL(NotValid, result);
+  CHECK_EQUAL(Timeout, result);
   CHECK_EQUAL('\0', port);
   CHECK_EQUAL('\0', id);
   CHECK_EQUAL('\0', body[0]);
