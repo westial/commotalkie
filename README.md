@@ -1,16 +1,112 @@
 CommoTalkie
 ===========
 
-Library for sending and receiving lightweight encrypted messages. 
-The main purpose of these features is a safe communication link between low 
-power resource devices.
+Communication interface for low power consumption devices.
 
 "Keep it tiny" is one of the most important requirements of this project.
 
+## SDK ##
+
+Two sides of a communication, publisher and subscriber. 
+
+See [./include/application](./include/application) for the concrete interface
+and the [./test] scenarios for implementation details.
+
+### Publish ###
+
+The client to send the message towards a "topic". A topic is an address, an
+event name or whichever name a message destination can be.
+
+```c
+// My Device Id
+const unsigned char my_id = 0x06;
+unsigned char body[MESSAGE_BODY_LENGTH];
+
+// Initialize publisher for one topic only
+Publish_Create("salt", "destination::address", (const void *) push_fn);
+
+// A port for the commotalkie context backend is as an endpoint for an HTTP API
+const unsigned char port_for_temperature = 0x05;
+
+// Send a message
+Publish_Invoke(port_for_temperature, my_id, (const unsigned char*)"a message");
+
+// Send other message to different port
+Publish_Invoke(0xAD, my_id, (const unsigned char*)"other message");
+
+// Destroy
+Publish_Destroy();
+```
+
+In the above example, the `push_fn` function is a function with an 
+implementation of the message submission using the kind of communication as your 
+choice: LoRa, Wi-Fi, Bluetooth,...
+
+The signature of the submission function is as follows. The maximum allowed size
+of the content is always the value of the constant `MESSAGE_LENGTH`. Address is 
+just the place for the mentioned message destination (topic).
+
+```c
+push_fn(const char* address, const char* content, unsigned long size);
+```
+
+### Pull ###
+
+The client to listen for a message in its "topic" only, until a valid message is
+received or timeout expires.
+
+```c
+// Initialize the content destination variables
+const unsigned long timeout_milliseconds = 10 * 1000;
+
+// Initialize the pulling service
+Pull_Create(
+    "salt",
+    "destination::address",
+    (void *) listen_fn,
+    (void *) now_fn,
+    timeout_milliseconds
+);
+
+// Start listening for a message
+unsigned char body[MESSAGE_BODY_LENGTH];
+unsigned char port, id;
+result = Pull_Invoke(&port, &id, body);
+
+// Do some stuff with the message contents
+something(body);
+
+// Destroy after first message
+Pull_Destroy();
+```
+
+The dependencies for the pulling service are two functions, the function to
+listen for a message and the time service.
+
+The listening function listens for a message input from whatever communication 
+device is provided in the integration and fills up the input content and 
+returns one of the following integer values:
+
+* The size of the received content on success.
+* 0 when it did receive nothing.
+* -1 on error.
+
+The listening function has the following signature:
+
+```c
+int stub_message_fn(const char* address, const char* content, const int size);
+```
+
+The time service function signature is pretty simple, it's just a call to a 
+clock to get an increasing number of milliseconds:
+
+```c
+unsigned long now_fn();
+```
+
 ## Message ##
 
-The message structure is the most important point of this project. This structure
-allows the use cases to validate, encrypt and transport information.
+The message pipelines validate, encrypt and transport the information as well.
 
 The structure of the message is as follows:
 
@@ -35,11 +131,6 @@ The third most significant byte purpose is an Id.
 ### Content ###
 
 The information of the message.
-
-## Use cases ##
-
-The use cases of this project are located at [./include/application](./include/application)
-They are the ones that have to be created and invoked to get work this library.
 
 ## Testing ##
 

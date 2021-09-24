@@ -12,7 +12,7 @@ unsigned long timeout_at = 0;
 void MessageSubscriber_Create(
     const void *pull_function,
     const void *epoch_function,
-    unsigned long timeout_millis,
+    const unsigned long timeout_millis,
     const char *topic
     ) {
   Receiver_Create(pull_function, MESSAGE_LENGTH);

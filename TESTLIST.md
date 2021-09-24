@@ -12,3 +12,6 @@ Test list
 
 + Encrypt first byte of the body.
 + Throw a listening Timeout error.
+
+- Ignore an invalid message.
+- Permanently listen for pulling as an option.

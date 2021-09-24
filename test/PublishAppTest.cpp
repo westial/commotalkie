@@ -4,9 +4,9 @@
 extern "C" {
 #include <string.h>
 #include "Message.h"
-#include "PublishEncryptedMessage.h"
+#include "Publish.h"
 #include "Result.h"
-#include "ReadEncryptedMessage.h"
+#include "Pull.h"
 }
 
 // -----------------------------------------------------------------------------
@@ -30,7 +30,7 @@ static unsigned long fake_epoch_ms_fn() {
   return 100;
 }
 
-TEST_GROUP(PublishEncryptedMessage) {
+TEST_GROUP(PublishApp) {
   void setup() {
     push_fn_spy.calledCount = 0;
     memset(spy_expected, '\0', MESSAGE_LENGTH);
@@ -38,21 +38,21 @@ TEST_GROUP(PublishEncryptedMessage) {
   }
 };
 
-TEST(PublishEncryptedMessage, Publish) {
+TEST(PublishApp, Publish) {
   unsigned char body[MESSAGE_BODY_LENGTH];
   spy_expected[1] = 0x05;
   spy_expected[2] = 0x06;
-  PublishEncryptedMessage_Create("salt", "topic", (const void *) mock_push_fn);
+  Publish_Create("salt", "topic", (const void *) mock_push_fn);
   memcpy(body, "23456789A", MESSAGE_BODY_LENGTH);
-  PublishEncryptedMessage_Invoke(0x05, 0x06, body);
-  PublishEncryptedMessage_Destroy();
+  Publish_Invoke(0x05, 0x06, body);
+  Publish_Destroy();
   CHECK_EQUAL(1, push_fn_spy.calledCount);
   CHECK_EQUAL(spy_expected[1], spy_pushed_content[1]);
   CHECK_EQUAL(spy_expected[2], spy_pushed_content[2]);
   CHECK_FALSE(spy_expected[3] == spy_pushed_content[3]);
 }
 
-TEST(PublishEncryptedMessage, PublishAndRead) {
+TEST(PublishApp, PublishAndRead) {
   unsigned char expected_body[MESSAGE_BODY_LENGTH];
   Result result;
   unsigned char result_port;
@@ -61,19 +61,19 @@ TEST(PublishEncryptedMessage, PublishAndRead) {
   unsigned char expected_port = 0x07;
   unsigned char expected_id = 0x08;
 
-  PublishEncryptedMessage_Create("salt", "topic", (const void *) mock_push_fn);
+  Publish_Create("salt", "topic", (const void *) mock_push_fn);
   memcpy(expected_body, "23456789A", MESSAGE_BODY_LENGTH);
-  PublishEncryptedMessage_Invoke(expected_port, expected_id, expected_body);
-  PublishEncryptedMessage_Destroy();
+  Publish_Invoke(expected_port, expected_id, expected_body);
+  Publish_Destroy();
 
-  ReadEncryptedMessage_Create(
+  Pull_Create(
       "salt",
       "topic",
-      (void *)mock_pull_fn,
-      (void *)fake_epoch_ms_fn,
+      (void *) mock_pull_fn,
+      (void *) fake_epoch_ms_fn,
       999);
-  result = ReadEncryptedMessage_Invoke(&result_port, &result_id, result_body);
-  ReadEncryptedMessage_Destroy();
+  result = Pull_Invoke(&result_port, &result_id, result_body);
+  Pull_Destroy();
   CHECK_EQUAL(Success, result);
   CHECK_EQUAL(expected_port, result_port);
   CHECK_EQUAL(expected_id, result_id);

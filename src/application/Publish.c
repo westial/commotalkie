@@ -5,10 +5,9 @@
 #include "MessagePublisher.h"
 #include "MessageFormatter.h"
 #include "MessageValidator.h"
-#include "ApplicationConfig.h"
 #include <string.h>
 
-void PublishEncryptedMessage_Create(
+void Publish_Create(
     const char *salt,
     const char *topic,
     const void *push_fn) {
@@ -16,7 +15,7 @@ void PublishEncryptedMessage_Create(
   MessagePublisher_Create((const void *) push_fn, topic);
 }
 
-void PublishEncryptedMessage_Invoke(
+void Publish_Invoke(
     const unsigned char port,
     const unsigned char id,
     const unsigned char *body) {
@@ -34,7 +33,7 @@ void PublishEncryptedMessage_Invoke(
   MessagePublisher_Push((Message *) encrypted);
 }
 
-void PublishEncryptedMessage_Destroy() {
+void Publish_Destroy() {
   MessageCrypter_Destroy();
   MessagePublisher_Destroy();
 }

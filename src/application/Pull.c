@@ -6,20 +6,19 @@
 #include "MessageValidator.h"
 #include "MessageSubscriber.h"
 #include "MessageCrypter.h"
-#include "ApplicationConfig.h"
 
-void ReadEncryptedMessage_Create(
+void Pull_Create(
     const char *salt,
     const char *topic,
     const void *pull_function,
     const void *epoch_function,
-    unsigned long timeout_millis
+    const unsigned long timeout_millis
     ) {
   MessageCrypter_Create(salt);
   MessageSubscriber_Create(pull_function, epoch_function, timeout_millis, topic);
 }
 
-Result ReadEncryptedMessage_Invoke(
+Result Pull_Invoke(
     unsigned char *port,
     unsigned char *id,
     unsigned char *body) {
@@ -38,7 +37,7 @@ Result ReadEncryptedMessage_Invoke(
   return result;
 }
 
-void ReadEncryptedMessage_Destroy() {
+void Pull_Destroy() {
   MessageCrypter_Destroy();
   MessageSubscriber_Destroy();
 }

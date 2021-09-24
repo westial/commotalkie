@@ -22,8 +22,8 @@ add_library(ValidatingTest ./ValidatingTest.cpp)
 add_library(EncryptingTest ./EncryptingTest.cpp)
 add_library(PublishingTest ./PublishingTest.cpp)
 add_library(SubscriptionTest ./SubscriptionTest.cpp)
-add_library(PublishEncryptedMessageTest ./PublishEncryptedMessageTest.cpp)
-add_library(ReadEncryptedMessageTest ./ReadEncryptedMessageTest.cpp)
+add_library(PublishEncryptedMessageTest PublishAppTest.cpp)
+add_library(ReadEncryptedMessageTest PullAppTest.cpp)
 
 # add mocking library
 add_library(Spy STATIC Spy.h)

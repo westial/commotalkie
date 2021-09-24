@@ -5,8 +5,8 @@ IMPORT_TEST_GROUP(Validating);
 IMPORT_TEST_GROUP(Encrypting);
 IMPORT_TEST_GROUP(Publishing);
 IMPORT_TEST_GROUP(Subscription);
-IMPORT_TEST_GROUP(ReadEncryptedMessage);
-IMPORT_TEST_GROUP(PublishEncryptedMessage);
+IMPORT_TEST_GROUP(PullApp);
+IMPORT_TEST_GROUP(PublishApp);
 
 int main(int argc, char** argv)
 {

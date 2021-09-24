@@ -6,7 +6,7 @@ extern "C" {
 #include "Message.h"
 #include "MessageFormatter.h"
 #include "MessageValidator.h"
-#include "ReadEncryptedMessage.h"
+#include "Pull.h"
 }
 
 // -----------------------------------------------------------------------------
@@ -39,7 +39,7 @@ static unsigned long fake_epoch_ms_fn() {
   return 100;
 }
 
-TEST_GROUP(ReadEncryptedMessage) {
+TEST_GROUP(PullApp) {
   void setup() {
     pull_fn_spy.calledCount = 0;
     memset(body, '\0', MESSAGE_BODY_LENGTH);
@@ -48,17 +48,17 @@ TEST_GROUP(ReadEncryptedMessage) {
   }
 };
 
-TEST(ReadEncryptedMessage, ReadingSuccess) {
+TEST(PullApp, ReadingSuccess) {
   Result result;
-  ReadEncryptedMessage_Create(
+  Pull_Create(
       "",
       "address",
-      (void *)stub_message_fn,
-      (void *)fake_epoch_ms_fn,
+      (void *) stub_message_fn,
+      (void *) fake_epoch_ms_fn,
       999
-      );
-  result = ReadEncryptedMessage_Invoke(&port, &id, body);
-  ReadEncryptedMessage_Destroy();
+  );
+  result = Pull_Invoke(&port, &id, body);
+  Pull_Destroy();
   CHECK_EQUAL(pull_fn_spy.calledCount, 1);
   CHECK_EQUAL(Success, result);
   CHECK_EQUAL('1', port);
@@ -66,17 +66,17 @@ TEST(ReadEncryptedMessage, ReadingSuccess) {
   MEMCMP_EQUAL("3456789AB", body, MESSAGE_BODY_LENGTH);
 }
 
-TEST(ReadEncryptedMessage, NotValidFailure) {
+TEST(PullApp, NotValidFailure) {
   Result result;
-  ReadEncryptedMessage_Create(
+  Pull_Create(
       "",
       "address",
-      (void *)stub_not_valid_fn,
-      (void *)fake_epoch_ms_fn,
+      (void *) stub_not_valid_fn,
+      (void *) fake_epoch_ms_fn,
       999
-      );
-  result = ReadEncryptedMessage_Invoke(&port, &id, body);
-  ReadEncryptedMessage_Destroy();
+  );
+  result = Pull_Invoke(&port, &id, body);
+  Pull_Destroy();
   CHECK_EQUAL(pull_fn_spy.calledCount, 1);
   CHECK_EQUAL(NotValid, result);
   CHECK_EQUAL('\0', port);
@@ -84,17 +84,17 @@ TEST(ReadEncryptedMessage, NotValidFailure) {
   CHECK_EQUAL('\0', body[0]);
 }
 
-TEST(ReadEncryptedMessage, IOErrorFailure) {
+TEST(PullApp, IOErrorFailure) {
   Result result;
-  ReadEncryptedMessage_Create(
+  Pull_Create(
       "",
       "address",
-      (void *)stub_io_error_fn,
-      (void *)fake_epoch_ms_fn,
+      (void *) stub_io_error_fn,
+      (void *) fake_epoch_ms_fn,
       999
-      );
-  result = ReadEncryptedMessage_Invoke(&port, &id, body);
-  ReadEncryptedMessage_Destroy();
+  );
+  result = Pull_Invoke(&port, &id, body);
+  Pull_Destroy();
   CHECK_EQUAL(pull_fn_spy.calledCount, 1);
   CHECK_EQUAL(IOError, result);
   CHECK_EQUAL('\0', port);

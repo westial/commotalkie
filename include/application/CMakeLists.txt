@@ -1,7 +1,7 @@
 set(HEADER_FILES
-        ReadEncryptedMessage.h
-        PublishEncryptedMessage.h
-        ApplicationConfig.h
+        Pull.h
+        Publish.h
+        Config.h
         )
 
 add_library(application STATIC ${HEADER_FILES})
