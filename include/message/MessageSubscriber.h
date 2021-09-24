@@ -8,11 +8,9 @@
 #include "Message.h"
 #include "Result.h"
 
-void MessageSubscriber_Create(
-    const void *pull_function,
-    const void *epoch_function,
-    unsigned long timeout_millis,
-    const char *topic);
+void MessageSubscriber_Create(const void *pull_function,
+                              const void *epoch_function,
+                              const char *topic);
 
 /**
  * Start timeout countdown

@@ -64,9 +64,8 @@ TEST(Subscription, Timeout) {
   MessageSubscriber_Create(
       (void *) stub_message_fn,
       (void *) stub_progressive_epoch_ms_fn,
-      999,
       "address"
-      );
+  );
   MessageSubscriber_CountDown(999);
   result = MessageSubscriber_Pull(&message);
   MessageSubscriber_Destroy();
@@ -79,9 +78,8 @@ TEST(Subscription, NoTimeout) {
   MessageSubscriber_Create(
       (void *) stub_pull_nothing_yet_fn,
       (void *) stub_progressive_epoch_ms_fn,
-      0,
       "address"
-      );
+  );
   result = MessageSubscriber_Pull(&message);
   MessageSubscriber_Destroy();
   CHECK_EQUAL(Success, result);
@@ -94,9 +92,8 @@ TEST(Subscription, IOError) {
   MessageSubscriber_Create(
       (void *) stub_force_error_pull_fn,
       (void *) fake_epoch_ms_fn,
-      999,
       "address"
-      );
+  );
   MessageSubscriber_CountDown(999);
   result = MessageSubscriber_Pull(&message);
   MessageSubscriber_Destroy();
@@ -109,9 +106,8 @@ TEST(Subscription, SucceededPull) {
   MessageSubscriber_Create(
       (void *) stub_message_fn,
       (void *) fake_epoch_ms_fn,
-      999,
       "address"
-      );
+  );
   MessageSubscriber_CountDown(999);
   result = MessageSubscriber_Pull(&message);
   MessageSubscriber_Destroy();
@@ -125,9 +121,8 @@ TEST(Subscription, PullFromCorrectTopic) {
   MessageSubscriber_Create(
       (void *) mock_address_fn,
       (void *) fake_epoch_ms_fn,
-      999,
       "address"
-      );
+  );
   MessageSubscriber_CountDown(999);
   MessageSubscriber_Pull(&message);
   MessageSubscriber_Destroy();
@@ -143,9 +138,8 @@ TEST(Subscription, PushAndPull) {
   MessageSubscriber_Create(
       (void *) stub_pull_fn,
       (void *) fake_epoch_ms_fn,
-      999,
       "address"
-      );
+  );
   MessageSubscriber_CountDown(999);
   MessageSubscriber_Pull(&received_message);
   MessageSubscriber_Destroy();

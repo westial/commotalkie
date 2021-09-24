@@ -17,7 +17,7 @@ void Pull_Create(
     const unsigned long timeout_millis
     ) {
   MessageCrypter_Create(salt);
-  MessageSubscriber_Create(pull_function, epoch_function, timeout_millis, topic);
+  MessageSubscriber_Create(pull_function, epoch_function, topic);
   countdown_millis = timeout_millis;
 }
 
