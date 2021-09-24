@@ -28,7 +28,7 @@ Result Pull_Invoke(
   Result result;
   Message message;
   Message decrypted;
-  MessageSubscriber_CountDown(countdown_millis);
+  if (0 != countdown_millis) MessageSubscriber_CountDown(countdown_millis);
   result = MessageSubscriber_Pull(&message);
   if (Success != result) return result;
   if (!MessageValidator_Check(&message)) return NotValid;

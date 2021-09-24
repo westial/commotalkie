@@ -22,14 +22,14 @@ void MessageSubscriber_Create(
 
 void MessageSubscriber_CountDown(const unsigned long timeout_millis) {
   timeout_at = timeout_millis;
+  Timer_Start();
 }
 
 Result MessageSubscriber_Pull(const Message *message) {
   int available = 0;
-  Timer_Start();
   while(0 == available) {
     available = Receiver_listen(address);
-    if (0 != timeout_at && Timer_GetMillis() > timeout_at) return Timeout;
+    if (Timer_IsRunning() && Timer_GetMillis() > timeout_at) return Timeout;
   }
   if (0 > available) return IOError;
   Receiver_read((const char *)message);

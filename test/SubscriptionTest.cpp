@@ -82,7 +82,6 @@ TEST(Subscription, NoTimeout) {
       0,
       "address"
       );
-  MessageSubscriber_CountDown(0);
   result = MessageSubscriber_Pull(&message);
   MessageSubscriber_Destroy();
   CHECK_EQUAL(Success, result);
