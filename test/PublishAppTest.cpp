@@ -19,20 +19,24 @@ static struct Spy push_fn_spy;
 static char spy_expected[MESSAGE_LENGTH];
 static char spy_pushed_content[MESSAGE_LENGTH];
 
-static unsigned long mock_push_fn(const char* address, const char* content, unsigned long size) {
+// -----------------------------------------------------------------------------
+
+unsigned long mock_push_fn(const char* address, const char* content, unsigned long size) {
   push_fn_spy.calledCount ++;
   memcpy(spy_pushed_content, content, MESSAGE_LENGTH);
   return size;
 }
 
-static int mock_pull_fn(const char* address, const char* content, const int size) {
+int mock_pull_fn(const char* address, const char* content, const int size) {
   memcpy((void *)content, spy_pushed_content, MESSAGE_LENGTH);
   return size;
 }
 
-static unsigned long fake_epoch_ms_fn() {
+unsigned long fake_epoch_ms_fn() {
   return 100;
 }
+
+// -----------------------------------------------------------------------------
 
 TEST_GROUP(PublishApp) {
   void setup() override {

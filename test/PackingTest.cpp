@@ -4,6 +4,8 @@ extern "C" {
 #include "MessageFormatter.h"
 }
 
+// -----------------------------------------------------------------------------
+
 #pragma pack(push)
 #pragma pack(2)
 struct StubMsg {

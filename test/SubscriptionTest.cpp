@@ -7,6 +7,7 @@ extern "C" {
 }
 
 // -----------------------------------------------------------------------------
+
 static int stub_message_fn(const char*, const char*, int);
 static int mock_address_fn(const char*, const char*, int);
 static unsigned long stub_push_fn(const char*, const char*, unsigned long);
@@ -16,48 +17,50 @@ static int stub_pull_nothing_yet_fn(const char*, const char*, int);
 static unsigned long fake_epoch_ms_fn();
 static unsigned long stub_progressive_epoch_ms_fn();
 
-static int stub_message_fn(const char* address, const char* content, const int size) {
+static char stub_message_content[MESSAGE_LENGTH];
+static unsigned long nothing_until_zero;
+static unsigned long progressive_ms;
+
+// -----------------------------------------------------------------------------
+
+int stub_message_fn(const char* address, const char* content, const int size) {
   memcpy((void *)content, "0123456789AB", MESSAGE_LENGTH);
   return MESSAGE_LENGTH;
 }
-static int mock_address_fn(const char* address, const char* content, const int size) {
+int mock_address_fn(const char* address, const char* content, const int size) {
   MEMCMP_EQUAL(address, "address", 7);
   return 7;
 }
 
-static char stub_message_content[MESSAGE_LENGTH];
-
-static unsigned long stub_push_fn(const char* address, const char* content, unsigned long size) {
+unsigned long stub_push_fn(const char* address, const char* content, unsigned long size) {
   memcpy(stub_message_content, content, size);
   return size;
 }
 
-static int stub_pull_fn(const char* address, const char* content, const int size) {
+int stub_pull_fn(const char* address, const char* content, const int size) {
   memcpy((void *)content, stub_message_content, size);
   return size;
 }
 
-static int stub_force_error_pull_fn(const char* address, const char* content, const int size) {
+int stub_force_error_pull_fn(const char* address, const char* content, const int size) {
   return -1;
 }
 
-static unsigned long nothing_until_zero;
-
-static int stub_pull_nothing_yet_fn(const char* address, const char* content, const int size) {
+int stub_pull_nothing_yet_fn(const char* address, const char* content, const int size) {
   if (--nothing_until_zero) return 0;
   else return MESSAGE_LENGTH;
 }
 
-static unsigned long fake_epoch_ms_fn() {
+unsigned long fake_epoch_ms_fn() {
   return 100;
 }
 
-static unsigned long progressive_ms;
-
-static unsigned long stub_progressive_epoch_ms_fn() {
+unsigned long stub_progressive_epoch_ms_fn() {
   // It returns 1 for the Timer_Start and 1001 for the Timer_GetMillis
   return progressive_ms += 1000;
 }
+
+// -----------------------------------------------------------------------------
 
 TEST_GROUP(Subscription) {
   void setup() override {

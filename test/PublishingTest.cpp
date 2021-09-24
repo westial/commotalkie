@@ -6,20 +6,25 @@ extern "C" {
 }
 
 // -----------------------------------------------------------------------------
+
 static unsigned long push_fn(const char*, const char*, unsigned long);
 static unsigned long mock_address_fn(const char*, const char*, unsigned long);
 static unsigned long push_fail_fn(const char*, const char*, unsigned long);
 
-static unsigned long push_fn(const char* address, const char* content, unsigned long size) {
+// -----------------------------------------------------------------------------
+
+unsigned long push_fn(const char* address, const char* content, unsigned long size) {
   return size;
 }
-static unsigned long mock_address_fn(const char* address, const char* content, unsigned long size) {
+unsigned long mock_address_fn(const char* address, const char* content, unsigned long size) {
   MEMCMP_EQUAL(address, content, size);
   return size;
 }
-static unsigned long push_fail_fn(const char* address, const char* content, unsigned long size) {
+unsigned long push_fail_fn(const char* address, const char* content, unsigned long size) {
   return size - 1;
 }
+
+// -----------------------------------------------------------------------------
 
 TEST_GROUP(Publishing) {
 };

@@ -10,6 +10,7 @@ extern "C" {
 }
 
 // -----------------------------------------------------------------------------
+
 static int stub_message_fn(const char* address, const char*, int);
 static int stub_not_valid_fn(const char* address, const char*, int);
 static int stub_message_after_not_valid_failure_fn(const char*, const char*, int);
@@ -18,11 +19,15 @@ static unsigned long fake_epoch_ms_fn();
 static unsigned long stub_epoch_countdown_ms_fn();
 static int stub_pull_nothing_yet_fn(const char*, const char*, int);
 
-unsigned char body[MESSAGE_BODY_LENGTH];
-unsigned char port, id;
+static unsigned char body[MESSAGE_BODY_LENGTH];
+static unsigned char port, id;
 static struct Spy pull_fn_spy;
+static unsigned long countdown_timeout;
+static unsigned long nothing_until_zero;
 
-static int stub_message_fn(const char* address, const char* content, const int size) {
+// -----------------------------------------------------------------------------
+
+int stub_message_fn(const char* address, const char* content, const int size) {
   pull_fn_spy.calledCount ++;
   Message message;
   MessageFormatter_Pack("0123456789AB", &message);
@@ -31,13 +36,13 @@ static int stub_message_fn(const char* address, const char* content, const int s
   return size;
 }
 
-static int stub_not_valid_fn(const char* address, const char* content, const int size) {
+int stub_not_valid_fn(const char* address, const char* content, const int size) {
   pull_fn_spy.calledCount ++;
   memcpy((void *)content, "XXXXXXXXXXXX", MESSAGE_LENGTH);
   return size;
 }
 
-static int stub_message_after_not_valid_failure_fn(const char* address, const char* content, const int size) {
+int stub_message_after_not_valid_failure_fn(const char* address, const char* content, const int size) {
   if (0 == pull_fn_spy.calledCount) {
     stub_not_valid_fn(address, content, size);
     return size;
@@ -45,27 +50,25 @@ static int stub_message_after_not_valid_failure_fn(const char* address, const ch
   return stub_message_fn(address, content, size);
 }
 
-static int stub_io_error_fn(const char* address, const char* content, const int size) {
+int stub_io_error_fn(const char* address, const char* content, const int size) {
   pull_fn_spy.calledCount++;
   return -1;
 }
 
-static unsigned long fake_epoch_ms_fn() {
+unsigned long fake_epoch_ms_fn() {
   return 100;
 }
 
-static unsigned long countdown_timeout;
-
-static unsigned long stub_epoch_countdown_ms_fn() {
+unsigned long stub_epoch_countdown_ms_fn() {
   return countdown_timeout--;
 }
 
-static unsigned long nothing_until_zero;
-
-static int stub_pull_nothing_yet_fn(const char* address, const char* content, const int size) {
+int stub_pull_nothing_yet_fn(const char* address, const char* content, const int size) {
   if (--nothing_until_zero) return 0;
   else return stub_message_fn(address, content, size);
 }
+
+// -----------------------------------------------------------------------------
 
 TEST_GROUP(PullApp) {
   void setup() {
