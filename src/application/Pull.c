@@ -8,6 +8,10 @@
 #include "MessageCrypter.h"
 
 unsigned long countdown_millis;
+unsigned char strict_id;
+
+void handle_countdown();
+void pull(Message*, Result*);
 
 void Pull_Create(
     const char *salt,
@@ -19,6 +23,18 @@ void Pull_Create(
   MessageCrypter_Create(salt);
   MessageSubscriber_Create(pull_function, epoch_function, topic);
   countdown_millis = timeout_millis;
+  strict_id = 0;
+}
+
+void handle_countdown() {
+  if (0 != countdown_millis) MessageSubscriber_CountDown(countdown_millis);
+}
+
+void pull(Message* message, Result* result) {
+  do {
+    *result = MessageSubscriber_Pull(message);
+    if (Success != *result) break;
+  } while (!MessageValidator_Check(message));
 }
 
 Result Pull_Invoke(
@@ -28,11 +44,9 @@ Result Pull_Invoke(
   Result result;
   Message message;
   Message decrypted;
-  if (0 != countdown_millis) MessageSubscriber_CountDown(countdown_millis);
-  do {
-    result = MessageSubscriber_Pull(&message);
-    if (Success != result) return result;
-  } while (!MessageValidator_Check(&message));
+  handle_countdown();
+  pull(&message, &result);
+  if (Success != result) return result;
   MessageCrypter_Decrypt((const char*) &message, &decrypted);
   *port = decrypted.meta[PORT_INDEX];
   *id = decrypted.meta[ID_INDEX];
