@@ -11,23 +11,11 @@ unsigned long countdown_millis;
 unsigned char strict_id;
 
 void handle_countdown();
-void pull(Message*, Result*);
+void pull(Message*, Result*, Message*);
 void decrypt(Message*, Message*);
 void parse(Message*, unsigned char*, unsigned char*, unsigned char*);
-
-void decrypt(Message* input, Message* output) {
-  MessageCrypter_Decrypt((const char*) input, output);
-}
-
-void parse(
-    Message* output,
-    unsigned char *port,
-    unsigned char *id,
-    unsigned char *body) {
-  *port = output->meta[PORT_INDEX];
-  *id = output->meta[ID_INDEX];
-  memcpy(body, output->body, MESSAGE_BODY_LENGTH);
-}
+void parse_id(const Message*, unsigned char*);
+int validate(const Message*, const unsigned char*);
 
 void Pull_Create(
     const char *salt,
@@ -35,22 +23,11 @@ void Pull_Create(
     const void *pull_function,
     const void *epoch_function,
     const unsigned long timeout_millis
-    ) {
+) {
   MessageCrypter_Create(salt);
   MessageSubscriber_Create(pull_function, epoch_function, topic);
   countdown_millis = timeout_millis;
   strict_id = 0;
-}
-
-void handle_countdown() {
-  if (0 != countdown_millis) MessageSubscriber_CountDown(countdown_millis);
-}
-
-void pull(Message* message, Result* result) {
-  do {
-    *result = MessageSubscriber_Pull(message);
-    if (Success != *result) break;
-  } while (!MessageValidator_Check(message));
 }
 
 Result Pull_Invoke(
@@ -61,9 +38,8 @@ Result Pull_Invoke(
   Message message;
   Message decrypted;
   handle_countdown();
-  pull(&message, &result);
+  pull(&message, &result, &decrypted);
   if (Success == result) {
-    decrypt(&message, &decrypted);
     parse(&decrypted, port, id, body);
     return result;
   }
@@ -73,4 +49,44 @@ Result Pull_Invoke(
 void Pull_Destroy() {
   MessageCrypter_Destroy();
   MessageSubscriber_Destroy();
+}
+
+int check_id_constraint(const unsigned char* id) {
+  return (0 != strict_id && strict_id == *id) || 0 == strict_id;
+}
+
+int validate(const Message* message, const unsigned char* id) {
+  return MessageValidator_Check(message) && check_id_constraint(id);
+}
+
+void decrypt(Message* input, Message* output) {
+  MessageCrypter_Decrypt((const char*) input, output);
+}
+
+void parse_id(const Message* message, unsigned char* id) {
+  *id = message->meta[ID_INDEX];
+}
+
+void parse(
+    Message* output,
+    unsigned char *port,
+    unsigned char *id,
+    unsigned char *body) {
+  *port = output->meta[PORT_INDEX];
+  parse_id(output, id);
+  memcpy(body, output->body, MESSAGE_BODY_LENGTH);
+}
+
+void handle_countdown() {
+  if (0 != countdown_millis) MessageSubscriber_CountDown(countdown_millis);
+}
+
+void pull(Message* message, Result* result, Message* decrypted) {
+  unsigned char id;
+  do {
+    *result = MessageSubscriber_Pull(message);
+    if (Success != *result) break;
+    decrypt(message, decrypted);
+    parse_id(decrypted, &id);
+  } while (!validate(message, &id));
 }
