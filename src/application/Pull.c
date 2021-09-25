@@ -12,6 +12,22 @@ unsigned char strict_id;
 
 void handle_countdown();
 void pull(Message*, Result*);
+void decrypt(Message*, Message*);
+void parse(Message*, unsigned char*, unsigned char*, unsigned char*);
+
+void decrypt(Message* input, Message* output) {
+  MessageCrypter_Decrypt((const char*) input, output);
+}
+
+void parse(
+    Message* output,
+    unsigned char *port,
+    unsigned char *id,
+    unsigned char *body) {
+  *port = output->meta[PORT_INDEX];
+  *id = output->meta[ID_INDEX];
+  memcpy(body, output->body, MESSAGE_BODY_LENGTH);
+}
 
 void Pull_Create(
     const char *salt,
@@ -46,11 +62,11 @@ Result Pull_Invoke(
   Message decrypted;
   handle_countdown();
   pull(&message, &result);
-  if (Success != result) return result;
-  MessageCrypter_Decrypt((const char*) &message, &decrypted);
-  *port = decrypted.meta[PORT_INDEX];
-  *id = decrypted.meta[ID_INDEX];
-  memcpy(body, decrypted.body, MESSAGE_BODY_LENGTH);
+  if (Success == result) {
+    decrypt(&message, &decrypted);
+    parse(&decrypted, port, id, body);
+    return result;
+  }
   return result;
 }
 
