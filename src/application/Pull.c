@@ -8,26 +8,26 @@
 #include "MessageCrypter.h"
 
 unsigned long countdown_millis;
-unsigned char strict_id;
+const unsigned char* exclusive_id;
 
 void handle_countdown();
-void pull(Message*, Result*, Message*);
-void decrypt(Message*, Message*);
-void parse(Message*, unsigned char*, unsigned char*, unsigned char*);
-void parse_id(const Message*, unsigned char*);
-int validate(const Message*, const unsigned char*);
+void selective_pull(Message *message, Result *result, Message *decrypted);
+void decrypt(Message *, Message *);
+void parse(Message *, unsigned char *, unsigned char *, unsigned char *);
+void parse_id(const Message *, unsigned char *);
+int validate(const Message *, const unsigned char *);
 
 void Pull_Create(
     const char *salt,
     const char *topic,
     const void *pull_function,
     const void *epoch_function,
-    const unsigned long timeout_millis
-) {
+    const unsigned long timeout_millis,
+    const unsigned char* from_id) {
   MessageCrypter_Create(salt);
   MessageSubscriber_Create(pull_function, epoch_function, topic);
   countdown_millis = timeout_millis;
-  strict_id = 0;
+  exclusive_id = from_id;
 }
 
 Result Pull_Invoke(
@@ -38,7 +38,7 @@ Result Pull_Invoke(
   Message message;
   Message decrypted;
   handle_countdown();
-  pull(&message, &result, &decrypted);
+  selective_pull(&message, &result, &decrypted);
   if (Success == result) {
     parse(&decrypted, port, id, body);
     return result;
@@ -51,24 +51,24 @@ void Pull_Destroy() {
   MessageSubscriber_Destroy();
 }
 
-int check_id_constraint(const unsigned char* id) {
-  return (0 != strict_id && strict_id == *id) || 0 == strict_id;
+int check_id_constraint(const unsigned char *id) {
+  return 0 == exclusive_id || (0 != exclusive_id && *exclusive_id == *id);
 }
 
-int validate(const Message* message, const unsigned char* id) {
+int validate(const Message *message, const unsigned char *id) {
   return MessageValidator_Check(message) && check_id_constraint(id);
 }
 
-void decrypt(Message* input, Message* output) {
-  MessageCrypter_Decrypt((const char*) input, output);
+void decrypt(Message *input, Message *output) {
+  MessageCrypter_Decrypt((const char *) input, output);
 }
 
-void parse_id(const Message* message, unsigned char* id) {
+void parse_id(const Message *message, unsigned char *id) {
   *id = message->meta[ID_INDEX];
 }
 
 void parse(
-    Message* output,
+    Message *output,
     unsigned char *port,
     unsigned char *id,
     unsigned char *body) {
@@ -81,7 +81,7 @@ void handle_countdown() {
   if (0 != countdown_millis) MessageSubscriber_CountDown(countdown_millis);
 }
 
-void pull(Message* message, Result* result, Message* decrypted) {
+void selective_pull(Message *message, Result *result, Message *decrypted) {
   unsigned char id;
   do {
     *result = MessageSubscriber_Pull(message);

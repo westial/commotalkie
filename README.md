@@ -58,14 +58,16 @@ received or timeout expires. Timeout parameter as 0 disables the expiration.
 ```c
 // Initialize the content destination variables
 const unsigned long timeout_milliseconds = 10 * 1000;
+const unsigned char from_id = 0xAA;
 
-// Initialize the pulling service
+// Initialize pulling messages from ID 0xAA only
 Pull_Create(
     "salt",
     "destination::address",
     (void *) listen_fn,
     (void *) now_fn,
-    timeout_milliseconds
+    timeout_milliseconds,
+    &from_id
 );
 
 // Start listening for a message
@@ -78,6 +80,21 @@ something(body);
 
 // Destroy after first message
 Pull_Destroy();
+```
+
+The option `from_id` validates the messages from a given ID only. If this
+parameter value is 0x00, the pulling does validate a message from any ID.
+Initialization example for wildcard ID:
+
+```c
+Pull_Create(
+    "salt",
+    "destination::address",
+    (void *) listen_fn,
+    (void *) now_fn,
+    timeout_milliseconds,
+    0x00
+);
 ```
 
 The dependencies for the pulling service are two functions, the function to

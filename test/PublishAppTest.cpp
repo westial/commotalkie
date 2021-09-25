@@ -79,7 +79,7 @@ TEST(PublishApp, PublishAndRead) {
       "topic",
       (void *) mock_pull_fn,
       (void *) fake_epoch_ms_fn,
-      999);
+      999, 0);
   result = Pull_Invoke(&result_port, &result_id, result_body);
   Pull_Destroy();
   CHECK_EQUAL(Success, result);
