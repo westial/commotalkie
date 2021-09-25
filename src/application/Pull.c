@@ -23,11 +23,11 @@ void Pull_Create(
     const void *pull_function,
     const void *epoch_function,
     const unsigned long timeout_millis,
-    const unsigned char* from_id) {
+    const unsigned char* to_id) {
   MessageCrypter_Create(salt);
   MessageSubscriber_Create(pull_function, epoch_function, topic);
   countdown_millis = timeout_millis;
-  exclusive_id = from_id;
+  exclusive_id = to_id;
 }
 
 Result Pull_Invoke(
