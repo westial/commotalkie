@@ -33,4 +33,5 @@ int Receiver_listen(const char* address) {
 void Receiver_Destroy(void) {
   if (0 != buffer)
     free(buffer);
+  listen = 0;
 }

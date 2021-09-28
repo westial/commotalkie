@@ -7,7 +7,7 @@
 #include "MessageSubscriber.h"
 
 static const char *address;
-unsigned long timeout_at;
+static unsigned long timeout_at;
 
 void MessageSubscriber_Create(
     const void *pull_function,
@@ -37,4 +37,5 @@ Result MessageSubscriber_Pull(const Message *message) {
 
 void MessageSubscriber_Destroy() {
   Receiver_Destroy();
+  Timer_Destroy();
 }

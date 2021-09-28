@@ -7,8 +7,8 @@
 #include "MessageSubscriber.h"
 #include "MessageCrypter.h"
 
-unsigned long countdown_millis;
-const unsigned char* exclusive_id;
+static unsigned long countdown_millis;
+static const unsigned char* exclusive_id;
 
 void handle_countdown();
 void selective_pull(Message *message, Result *result, Message *decrypted);

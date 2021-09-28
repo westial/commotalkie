@@ -3,7 +3,7 @@
 //
 
 static unsigned long (*epoch_millis)(void) = 0;
-unsigned long started_at;
+static unsigned long started_at;
 
 void Timer_Create(const void *epoch_millis_fn) {
   epoch_millis = (unsigned long (*)(void)) epoch_millis_fn;
@@ -25,4 +25,5 @@ unsigned long Timer_GetMillis(void) {
 
 void Timer_Destroy(void) {
   started_at = 0;
+  epoch_millis = 0;
 }

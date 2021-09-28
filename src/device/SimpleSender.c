@@ -15,5 +15,6 @@ unsigned long Sender_Send(const char* address, const char* content, unsigned lon
 }
 
 void Sender_Destroy(void) {
+  send = 0;
 }
 
