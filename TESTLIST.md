@@ -22,7 +22,7 @@ and pending when it begins with a minus sign (-).
 + Ignore an invalid message.
 + Ignore a message for a different ID as an option.
 
-+Create a publisher.
++ Create a publisher.
 + Publish to two topics.
 - Create a subscriber.
 
