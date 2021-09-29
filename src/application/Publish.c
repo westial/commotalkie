@@ -7,18 +7,15 @@
 #include "MessageValidator.h"
 #include <string.h>
 
-static const char* publisher_topic = 0;
-
 void Publish_Create(
     const char *salt,
-    const char *topic,
     const void *push_fn) {
   MessageCrypter_Create(salt);
   MessagePublisher_Create((const void *) push_fn);
-  publisher_topic = topic;
 }
 
 void Publish_Invoke(
+    const char *topic,
     const unsigned char port,
     const unsigned char id,
     const unsigned char *body) {
@@ -33,11 +30,10 @@ void Publish_Invoke(
   MessageFormatter_Pack(content, &message);
   MessageCrypter_Encrypt(&message, encrypted);
   MessageValidator_Sign((Message *) encrypted);
-  MessagePublisher_Push(publisher_topic, (Message *) encrypted);
+  MessagePublisher_Push(topic, (Message *) encrypted);
 }
 
 void Publish_Destroy() {
   MessageCrypter_Destroy();
   MessagePublisher_Destroy();
-  publisher_topic = 0;
 }

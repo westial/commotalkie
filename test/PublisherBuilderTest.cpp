@@ -31,32 +31,19 @@ TEST_GROUP(PublisherBuilder) {
 
 TEST(PublisherBuilder, BuildAPublisher) {
   const char salt[] = "salt";
-  const char topic[] = "topic";
   unsigned char body[MESSAGE_BODY_LENGTH];
   PublisherBuilder_Create();
   PublisherBuilder_SetSalt(salt);
-  PublisherBuilder_SetTopic(topic);
   PublisherBuilder_SetSendCallback(fake_push_fn);
   CHECK_EQUAL(1, PublisherBuilder_Build());
   PublisherBuilder_Destroy();
-  Publish_Invoke(0x05, 0x06, body);
+  Publish_Invoke("topic", 0x05, 0x06, body);
   Publish_Destroy();
   CHECK_EQUAL(1, push_fn_spy.calledCount);
 }
 
 TEST(PublisherBuilder, SaltMissed) {
-  const char topic[] = "topic";
   PublisherBuilder_Create();
-  PublisherBuilder_SetTopic(topic);
-  PublisherBuilder_SetSendCallback(fake_push_fn);
-  CHECK_EQUAL(-1, PublisherBuilder_Build());
-  PublisherBuilder_Destroy();
-}
-
-TEST(PublisherBuilder, TopicMissed) {
-  const char salt[] = "salt";
-  PublisherBuilder_Create();
-  PublisherBuilder_SetSalt(salt);
   PublisherBuilder_SetSendCallback(fake_push_fn);
   CHECK_EQUAL(-1, PublisherBuilder_Build());
   PublisherBuilder_Destroy();
@@ -64,10 +51,8 @@ TEST(PublisherBuilder, TopicMissed) {
 
 TEST(PublisherBuilder, SendingCallbackMissed) {
   const char salt[] = "salt";
-  const char topic[] = "topic";
   PublisherBuilder_Create();
   PublisherBuilder_SetSalt(salt);
-  PublisherBuilder_SetTopic(topic);
   CHECK_EQUAL(-1, PublisherBuilder_Build());
   PublisherBuilder_Destroy();
 }

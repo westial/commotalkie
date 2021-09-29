@@ -50,9 +50,9 @@ TEST(PublishApp, Publish) {
   unsigned char body[MESSAGE_BODY_LENGTH];
   spy_expected[1] = 0x05;
   spy_expected[2] = 0x06;
-  Publish_Create("salt", "topic", (const void *) mock_push_fn);
+  Publish_Create("salt", (const void *) mock_push_fn);
   memcpy(body, "23456789A", MESSAGE_BODY_LENGTH);
-  Publish_Invoke(0x05, 0x06, body);
+  Publish_Invoke("topic", 0x05, 0x06, body);
   Publish_Destroy();
   CHECK_EQUAL(1, push_fn_spy.calledCount);
   CHECK_EQUAL(spy_expected[1], spy_pushed_content[1]);
@@ -69,9 +69,9 @@ TEST(PublishApp, PublishAndRead) {
   unsigned char expected_port = 0x07;
   unsigned char expected_id = 0x08;
 
-  Publish_Create("salt", "topic", (const void *) mock_push_fn);
+  Publish_Create("salt", (const void *) mock_push_fn);
   memcpy(expected_body, "23456789A", MESSAGE_BODY_LENGTH);
-  Publish_Invoke(expected_port, expected_id, expected_body);
+  Publish_Invoke("topic", expected_port, expected_id, expected_body);
   Publish_Destroy();
 
   Pull_Create(
