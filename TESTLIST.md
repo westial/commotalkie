@@ -23,8 +23,6 @@ and pending when it begins with a minus sign (-).
 + Ignore a message for a different ID as an option.
 
 - Create a publisher.
+- Create two publishers.
 - Create a subscriber.
 
-## Supported multiple threads ##
-
-- Pull messages from multiple addresses concurrently.
