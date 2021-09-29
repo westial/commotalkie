@@ -22,17 +22,20 @@ just a message destination.
 const unsigned char my_id = 0x06;
 unsigned char body[MESSAGE_BODY_LENGTH];
 
-// Initialize publisher for one topic only
-Publish_Create("salt", "destination::address", (const void *) push_fn);
+// Initialize publisher
+Publish_Create("salt", (const void *) push_fn);
 
 // A port for the commotalkie context backend is as an endpoint for an HTTP API
 const unsigned char port_for_temperature = 0x05;
 
 // Send a message
-Publish_Invoke(port_for_temperature, my_id, (const unsigned char*)"a message");
+Publish_Invoke("destination::address", port_for_temperature, my_id, (const unsigned char*)"a message");
 
-// Send other message to different port
-Publish_Invoke(0xAD, my_id, (const unsigned char*)"other message");
+// Send other message to a different port
+Publish_Invoke("destination::address", 0xAD, my_id, (const unsigned char*)"another message");
+
+// Send other message to another destination
+Publish_Invoke("another::destination", 0xAD, my_id, (const unsigned char*)"and another message");
 
 // Destroy
 Publish_Destroy();
