@@ -7,6 +7,7 @@ IMPORT_TEST_GROUP(Publishing);
 IMPORT_TEST_GROUP(Subscription);
 IMPORT_TEST_GROUP(PullApp);
 IMPORT_TEST_GROUP(PublishApp);
+IMPORT_TEST_GROUP(PublisherBuilder);
 
 int main(int argc, char** argv)
 {

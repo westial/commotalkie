@@ -6,7 +6,7 @@
 #include <string.h>
 #include "MessageCrypter.h"
 
-unsigned char salt[MESSAGE_LENGTH];
+static unsigned char salt[MESSAGE_LENGTH];
 
 static void xor(const unsigned char* first, const unsigned char* second, char* result, unsigned long size) {
   for(unsigned int i = 0; i < size; ++ i)

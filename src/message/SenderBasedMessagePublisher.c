@@ -4,7 +4,7 @@
 #include "Message.h"
 #include "Sender.h"
 
-static const char* address;
+static const char* address = 0;
 
 void MessagePublisher_Create(const void *push_function, const char* topic) {
   Sender_Create(push_function);
@@ -19,4 +19,5 @@ int MessagePublisher_Push(Message *message) {
 
 void MessagePublisher_Destroy() {
   Sender_Destroy();
+  address = 0;
 }
