@@ -4,20 +4,16 @@
 #include "Message.h"
 #include "Sender.h"
 
-static const char* address = 0;
-
-void MessagePublisher_Create(const void *push_function, const char* topic) {
+void MessagePublisher_Create2(const void *push_function) {
   Sender_Create(push_function);
-  address = topic;
 }
 
-int MessagePublisher_Push(Message *message) {
-  if (MESSAGE_LENGTH == Sender_Send(address, (const char*) message, MESSAGE_LENGTH))
+int MessagePublisher_Push(const char* topic, Message *message) {
+  if (MESSAGE_LENGTH == Sender_Send(topic, (const char*) message, MESSAGE_LENGTH))
     return 1;
   return 0;
 }
 
 void MessagePublisher_Destroy() {
   Sender_Destroy();
-  address = 0;
 }
