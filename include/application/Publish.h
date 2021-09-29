@@ -7,10 +7,10 @@
 
 void Publish_Create(
     const char *salt,
-    const char *topic,
     const void *push_fn);
 
 void Publish_Invoke(
+    const char *topic,
     const unsigned char port,
     const unsigned char id,
     const unsigned char *body);
