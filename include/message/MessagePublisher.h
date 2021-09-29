@@ -8,7 +8,7 @@
 #include "Message.h"
 #include "Sender.h"
 
-void MessagePublisher_Create2(const void *push_function);
+void MessagePublisher_Create(const void *push_function);
 
 int MessagePublisher_Push(const char* topic, Message *message);
 

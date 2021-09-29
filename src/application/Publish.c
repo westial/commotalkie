@@ -14,7 +14,7 @@ void Publish_Create(
     const char *topic,
     const void *push_fn) {
   MessageCrypter_Create(salt);
-  MessagePublisher_Create2((const void *) push_fn);
+  MessagePublisher_Create((const void *) push_fn);
   publisher_topic = topic;
 }
 
