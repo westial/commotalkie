@@ -8,10 +8,13 @@
 #include "MessageCrypter.h"
 
 static unsigned long countdown_millis;
-static const unsigned char* exclusive_id;
+static const unsigned char *exclusive_id = 0;
 
 void handle_countdown();
-void selective_pull(Message *message, Result *result, Message *decrypted);
+void selective_pull(const char *topic,
+                    Message *message,
+                    Result *result,
+                    Message *decrypted);
 void decrypt(Message *, Message *);
 void parse(Message *, unsigned char *, unsigned char *, unsigned char *);
 void parse_id(const Message *, unsigned char *);
@@ -19,18 +22,18 @@ int validate(const Message *, const unsigned char *);
 
 void Pull_Create(
     const char *salt,
-    const char *topic,
     const void *pull_function,
     const void *epoch_function,
     const unsigned long timeout_millis,
-    const unsigned char* to_id) {
+    const unsigned char *to_id) {
   MessageCrypter_Create(salt);
-  MessageSubscriber_Create(pull_function, epoch_function, topic);
+  MessageSubscriber_Create(pull_function, epoch_function);
   countdown_millis = timeout_millis;
   exclusive_id = to_id;
 }
 
 Result Pull_Invoke(
+    const char *topic,
     unsigned char *port,
     unsigned char *id,
     unsigned char *body) {
@@ -38,7 +41,7 @@ Result Pull_Invoke(
   Message message;
   Message decrypted;
   handle_countdown();
-  selective_pull(&message, &result, &decrypted);
+  selective_pull(topic, &message, &result, &decrypted);
   if (Success == result) {
     parse(&decrypted, port, id, body);
     return result;
@@ -49,10 +52,11 @@ Result Pull_Invoke(
 void Pull_Destroy() {
   MessageCrypter_Destroy();
   MessageSubscriber_Destroy();
+  exclusive_id = 0;
 }
 
 int check_id_constraint(const unsigned char *id) {
-  return 0 == exclusive_id || (0 != exclusive_id && *exclusive_id == *id);
+  return 0 == exclusive_id || *exclusive_id == *id;
 }
 
 int validate(const Message *message, const unsigned char *id) {
@@ -81,10 +85,14 @@ void handle_countdown() {
   if (0 != countdown_millis) MessageSubscriber_CountDown(countdown_millis);
 }
 
-void selective_pull(Message *message, Result *result, Message *decrypted) {
+void selective_pull(
+    const char *topic,
+    Message *message,
+    Result *result,
+    Message *decrypted) {
   unsigned char id;
   do {
-    *result = MessageSubscriber_Pull(message);
+    *result = MessageSubscriber_Pull(topic, message);
     if (Success != *result) break;
     decrypt(message, decrypted);
     parse_id(decrypted, &id);

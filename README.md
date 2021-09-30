@@ -66,17 +66,16 @@ const unsigned char to_id = 0xAA;
 // Initialize pulling messages to ID 0xAA only
 Pull_Create(
     "salt",
-    "destination::address",
     (void *) listen_fn,
     (void *) now_fn,
     timeout_milliseconds,
     &to_id
 );
 
-// Start listening for a message
+// Start listening for a message from a "destination::address" only
 unsigned char body[MESSAGE_BODY_LENGTH];
 unsigned char port, id;
-result = Pull_Invoke(&port, &id, body);
+result = Pull_Invoke("destination::address", &port, &id, body);
 
 // Do some stuff with the message contents
 something(body);
@@ -92,7 +91,6 @@ Initialization example for wildcard ID:
 ```c
 Pull_Create(
     "salt",
-    "destination::address",
     (void *) listen_fn,
     (void *) now_fn,
     timeout_milliseconds,
@@ -114,7 +112,7 @@ returns one of the following integer values:
 The listening function has the following signature:
 
 ```c
-int stub_message_fn(const char* address, const char* content, const int size);
+int listen_fn(const char* address, const char* buffer, const int size);
 ```
 
 The time service function signature is pretty simple, it's just a call to a 

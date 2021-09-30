@@ -74,11 +74,9 @@ TEST(Subscription, Timeout) {
   Message message;
   MessageSubscriber_Create(
       (void *) stub_message_fn,
-      (void *) stub_progressive_epoch_ms_fn,
-      "address"
-  );
+      (void *) stub_progressive_epoch_ms_fn);
   MessageSubscriber_CountDown(999);
-  result = MessageSubscriber_Pull(&message);
+  result = MessageSubscriber_Pull("address", &message);
   MessageSubscriber_Destroy();
   CHECK_EQUAL(Timeout, result);
 };
@@ -88,10 +86,8 @@ TEST(Subscription, NoTimeout) {
   Message message;
   MessageSubscriber_Create(
       (void *) stub_pull_nothing_yet_fn,
-      (void *) stub_progressive_epoch_ms_fn,
-      "address"
-  );
-  result = MessageSubscriber_Pull(&message);
+      (void *) stub_progressive_epoch_ms_fn);
+  result = MessageSubscriber_Pull("address", &message);
   MessageSubscriber_Destroy();
   CHECK_EQUAL(Success, result);
   CHECK_EQUAL(0, nothing_until_zero);
@@ -102,11 +98,9 @@ TEST(Subscription, IOError) {
   Message message;
   MessageSubscriber_Create(
       (void *) stub_force_error_pull_fn,
-      (void *) fake_epoch_ms_fn,
-      "address"
-  );
+      (void *) fake_epoch_ms_fn);
   MessageSubscriber_CountDown(999);
-  result = MessageSubscriber_Pull(&message);
+  result = MessageSubscriber_Pull("address", &message);
   MessageSubscriber_Destroy();
   CHECK_EQUAL(IOError, result);
 };
@@ -116,11 +110,9 @@ TEST(Subscription, SucceededPull) {
   Message message;
   MessageSubscriber_Create(
       (void *) stub_message_fn,
-      (void *) fake_epoch_ms_fn,
-      "address"
-  );
+      (void *) fake_epoch_ms_fn);
   MessageSubscriber_CountDown(999);
-  result = MessageSubscriber_Pull(&message);
+  result = MessageSubscriber_Pull("address", &message);
   MessageSubscriber_Destroy();
   CHECK_EQUAL(Success, result);
   MEMCMP_EQUAL(message.meta, "012", MESSAGE_META_LENGTH);
@@ -131,11 +123,9 @@ TEST(Subscription, PullFromCorrectTopic) {
   Message message;
   MessageSubscriber_Create(
       (void *) mock_address_fn,
-      (void *) fake_epoch_ms_fn,
-      "address"
-  );
+      (void *) fake_epoch_ms_fn);
   MessageSubscriber_CountDown(999);
-  MessageSubscriber_Pull(&message);
+  MessageSubscriber_Pull("address", &message);
   MessageSubscriber_Destroy();
 };
 
@@ -148,11 +138,9 @@ TEST(Subscription, PushAndPull) {
   Message received_message;
   MessageSubscriber_Create(
       (void *) stub_pull_fn,
-      (void *) fake_epoch_ms_fn,
-      "address"
-  );
+      (void *) fake_epoch_ms_fn);
   MessageSubscriber_CountDown(999);
-  MessageSubscriber_Pull(&received_message);
+  MessageSubscriber_Pull("address", &received_message);
   MessageSubscriber_Destroy();
   MEMCMP_EQUAL(sent_message.meta, received_message.meta, MESSAGE_META_LENGTH);
   MEMCMP_EQUAL(sent_message.body, received_message.body, MESSAGE_BODY_LENGTH);

@@ -8,13 +8,13 @@
 #include "Result.h"
 
 void Pull_Create(const char *salt,
-                 const char *topic,
                  const void *pull_function,
                  const void *epoch_function,
                  const unsigned long timeout_millis,
                  const unsigned char *to_id);
 
 Result Pull_Invoke(
+    const char *topic,
     unsigned char *port,
     unsigned char *id,
     unsigned char *body);

@@ -85,11 +85,10 @@ TEST(PullApp, PullingSuccess) {
   Result result;
   Pull_Create(
       "",
-      "address",
       (void *) stub_message_fn,
       (void *) fake_epoch_ms_fn,
       999, nullptr);
-  result = Pull_Invoke(&port, &id, body);
+  result = Pull_Invoke("address", &port, &id, body);
   Pull_Destroy();
   CHECK_EQUAL(pull_fn_spy.calledCount, 1);
   CHECK_EQUAL(Success, result);
@@ -102,11 +101,10 @@ TEST(PullApp, PullingSuccessAfterFailure) {
   Result result;
   Pull_Create(
       "",
-      "address",
       (void *) stub_message_after_not_valid_failure_fn,
       (void *) fake_epoch_ms_fn,
       999, nullptr);
-  result = Pull_Invoke(&port, &id, body);
+  result = Pull_Invoke("address", &port, &id, body);
   Pull_Destroy();
   CHECK_EQUAL(pull_fn_spy.calledCount, 2);
   CHECK_EQUAL(Success, result);
@@ -119,11 +117,10 @@ TEST(PullApp, NoTimeoutPulling) {
   Result result;
   Pull_Create(
       "",
-      "address",
       (void *) stub_pull_nothing_yet_fn,
       (void *) fake_epoch_ms_fn,
       0, nullptr);
-  result = Pull_Invoke(&port, &id, body);
+  result = Pull_Invoke("address", &port, &id, body);
   Pull_Destroy();
   CHECK_EQUAL(pull_fn_spy.calledCount, 1);
   CHECK_EQUAL(Success, result);
@@ -137,11 +134,10 @@ TEST(PullApp, NotValidEndsByTimeout) {
   Result result;
   Pull_Create(
       "",
-      "address",
       (void *) stub_not_valid_fn,
       (void *) stub_progressive_epoch_ms_fn,
       10000, nullptr);
-  result = Pull_Invoke(&port, &id, body);
+  result = Pull_Invoke("address", &port, &id, body);
   Pull_Destroy();
   CHECK_FALSE(1 == pull_fn_spy.calledCount);
   CHECK_EQUAL(Timeout, result);
@@ -155,11 +151,10 @@ TEST(PullApp, UnexpectedIdEndsWithTimeout) {
   const unsigned char strict_id = 0xA1;
   Pull_Create(
       "",
-      "address",
       (void *) stub_message_fn,
       (void *) stub_progressive_epoch_ms_fn,
       10000, &strict_id);
-  result = Pull_Invoke(&port, &id, body);
+  result = Pull_Invoke("address", &port, &id, body);
   Pull_Destroy();
   CHECK_FALSE(1 == pull_fn_spy.calledCount);
   CHECK_EQUAL(Timeout, result);
@@ -173,11 +168,10 @@ TEST(PullApp, PullFromId) {
   const unsigned char strict_id = '2';
   Pull_Create(
       "",
-      "address",
       (void *) stub_message_fn,
       (void *) stub_progressive_epoch_ms_fn,
       10000, &strict_id);
-  result = Pull_Invoke(&port, &id, body);
+  result = Pull_Invoke("address", &port, &id, body);
   Pull_Destroy();
   CHECK_EQUAL(Success, result);
   CHECK_EQUAL(pull_fn_spy.calledCount, 1);
@@ -190,11 +184,10 @@ TEST(PullApp, IOErrorFailure) {
   Result result;
   Pull_Create(
       "",
-      "address",
       (void *) stub_io_error_fn,
       (void *) fake_epoch_ms_fn,
       999, nullptr);
-  result = Pull_Invoke(&port, &id, body);
+  result = Pull_Invoke("address", &port, &id, body);
   Pull_Destroy();
   CHECK_EQUAL(pull_fn_spy.calledCount, 1);
   CHECK_EQUAL(IOError, result);
