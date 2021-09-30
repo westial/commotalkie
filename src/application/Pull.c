@@ -11,17 +11,17 @@ static unsigned long countdown_millis;
 static const unsigned char *exclusive_id = 0;
 
 void handle_countdown();
-void selective_pull(const char *topic, Message *message, Result *result, Message *decrypted);
+void selective_pull(const char *topic,
+                    Message *message,
+                    Result *result,
+                    Message *decrypted);
 void decrypt(Message *, Message *);
 void parse(Message *, unsigned char *, unsigned char *, unsigned char *);
 void parse_id(const Message *, unsigned char *);
 int validate(const Message *, const unsigned char *);
 
-static const char *tmp_topic = 0;
-
 void Pull_Create(
     const char *salt,
-    const char *topic,
     const void *pull_function,
     const void *epoch_function,
     const unsigned long timeout_millis,
@@ -30,7 +30,6 @@ void Pull_Create(
   MessageSubscriber_Create(pull_function, epoch_function);
   countdown_millis = timeout_millis;
   exclusive_id = to_id;
-  tmp_topic = topic;
 }
 
 Result Pull_Invoke(

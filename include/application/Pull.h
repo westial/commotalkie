@@ -8,7 +8,6 @@
 #include "Result.h"
 
 void Pull_Create(const char *salt,
-                 const char *topic,
                  const void *pull_function,
                  const void *epoch_function,
                  const unsigned long timeout_millis,

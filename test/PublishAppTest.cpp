@@ -133,7 +133,6 @@ TEST(PublishApp, PublishAndRead) {
 
   Pull_Create(
       "salt",
-      "topic",
       (void *) mock_pull_fn,
       (void *) fake_epoch_ms_fn,
       999, 0);
