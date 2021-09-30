@@ -137,7 +137,7 @@ TEST(PublishApp, PublishAndRead) {
       (void *) mock_pull_fn,
       (void *) fake_epoch_ms_fn,
       999, 0);
-  result = Pull_Invoke(&result_port, &result_id, result_body);
+  result = Pull_Invoke("topic", &result_port, &result_id, result_body);
   Pull_Destroy();
   CHECK_EQUAL(Success, result);
   CHECK_EQUAL(expected_port, result_port);

@@ -15,6 +15,7 @@ void Pull_Create(const char *salt,
                  const unsigned char *to_id);
 
 Result Pull_Invoke(
+    const char *topic,
     unsigned char *port,
     unsigned char *id,
     unsigned char *body);

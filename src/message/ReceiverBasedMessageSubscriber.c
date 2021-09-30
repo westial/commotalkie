@@ -6,17 +6,18 @@
 #include "Receiver.h"
 #include "MessageSubscriber.h"
 
-static const char *address;
+#define TIMEOUT_OFF 0
+
+#define NO_BUFFER 0
+
 static unsigned long timeout_at;
 
 void MessageSubscriber_Create(
     const void *pull_function,
-    const void *epoch_function,
-    const char *topic) {
+    const void *epoch_function) {
   Receiver_Create(pull_function, MESSAGE_LENGTH);
   Timer_Create(epoch_function);
-  address = topic;
-  timeout_at = 0;
+  timeout_at = TIMEOUT_OFF;
 }
 
 void MessageSubscriber_CountDown(const unsigned long timeout_millis) {
@@ -24,13 +25,13 @@ void MessageSubscriber_CountDown(const unsigned long timeout_millis) {
   Timer_Start();
 }
 
-Result MessageSubscriber_Pull(const Message *message) {
-  int available = 0;
-  while (0 == available) {
-    available = Receiver_listen(address);
+Result MessageSubscriber_Pull(const char* topic, const Message *message) {
+  int available = NO_BUFFER;
+  while (NO_BUFFER == available) {
+    available = Receiver_listen(topic);
     if (Timer_IsRunning() && Timer_GetMillis() > timeout_at) return Timeout;
   }
-  if (0 > available) return IOError;
+  if (NO_BUFFER > available) return IOError;
   Receiver_read((const char *) message);
   return Success;
 }

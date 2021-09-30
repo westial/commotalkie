@@ -8,9 +8,9 @@
 #include "Message.h"
 #include "Result.h"
 
-void MessageSubscriber_Create(const void *pull_function,
-                              const void *epoch_function,
-                              const char *topic);
+void MessageSubscriber_Create(
+    const void *pull_function,
+    const void *epoch_function);
 
 /**
  * Start timeout countdown
@@ -19,11 +19,12 @@ void MessageSubscriber_Create(const void *pull_function,
 void MessageSubscriber_CountDown(unsigned long timeout_millis);
 
 /**
- * Listen for a message
- * @param buffer
+ * Listen from a topic
+ * @param char*
+ * @param Message*
  * @return
  */
-Result MessageSubscriber_Pull(const Message *message);
+Result MessageSubscriber_Pull(const char* topic, const Message *message);
 
 void MessageSubscriber_Destroy();
 
