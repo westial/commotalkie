@@ -25,6 +25,7 @@ add_library(SubscriptionTest ./SubscriptionTest.cpp)
 add_library(PublishEncryptedMessageTest PublishAppTest.cpp)
 add_library(ReadEncryptedMessageTest PullAppTest.cpp)
 add_library(PublisherBuilderTest PublisherBuilderTest.cpp)
+add_library(SubscriberBuilderTest SubscriberBuilderTest.cpp)
 
 # add mocking library
 add_library(Spy STATIC Spy.h)
@@ -42,6 +43,7 @@ target_link_libraries(RunAllTests
         PublishEncryptedMessageTest
         ReadEncryptedMessageTest
         PublisherBuilderTest
+        SubscriberBuilderTest
         PlainMessageFormatter
         SumMessageValidator
         XorMessageCrypter
@@ -53,4 +55,5 @@ target_link_libraries(RunAllTests
         PublishEncryptedMessage
         ReadEncryptedMessage
         PublisherBuilder
+        SubscriberBuilder
 )

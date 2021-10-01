@@ -3,6 +3,7 @@ set(HEADER_FILES
         Publish.h
         Config.h
         PublisherBuilder.h
+        SubscriberBuilder.h
         )
 
 add_library(application STATIC ${HEADER_FILES})
