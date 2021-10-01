@@ -7,8 +7,9 @@
 
 void PublisherBuilder_Create();
 
-void PublisherBuilder_SetSalt(const char *salt);
-void PublisherBuilder_SetSendCallback(unsigned long (*send)(const char*, const char*, const unsigned long));
+void PublisherBuilder_SetSalt(const char *);
+void PublisherBuilder_SetSendCallback(
+    unsigned long (*)(const char*, const char*, const unsigned long));
 int PublisherBuilder_Build();
 
 void PublisherBuilder_Destroy();

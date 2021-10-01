@@ -7,15 +7,15 @@ Communication interface for low power consumption devices.
 
 ## SDK ##
 
-Two sides of a communication, publisher and subscriber. 
+Communication endpoints clients, for publisher and for subscriber as well.
 
 See [./include/application](./include/application) for the concrete interface
 and the [./test](./test) scenarios for implementation details.
 
 ### Publish ###
 
-This client sends a message towards a "topic". A topic is an address, event name, 
-just a message destination.
+This publisher sends a message towards a "topic". A topic is an address, event 
+name, just a message destination.
 
 ```c
 // My Device Id
@@ -55,8 +55,8 @@ push_fn(const char* address, const char* content, unsigned long size);
 
 ### Pull ###
 
-This client listens for a message in its "topic" only, until a valid message is
-received or timeout expires. Timeout parameter as 0 disables the expiration.
+This subscriber listens for a message in its "topic" only, until a valid message 
+is received or timeout expires. Timeout parameter as 0 disables the expiration.
 
 ```c
 // Initialize the content destination variables
@@ -120,6 +120,59 @@ clock to get an increasing number of milliseconds:
 
 ```c
 unsigned long now_fn();
+```
+
+### Builders make it easier ###
+
+A builder for Pull and Publish instances makes their implementation easier and
+safer. Using the following examples to create the instances is highly 
+recommended.
+
+More examples here:
+* Tests for Publisher Builder [./test/PublisherBuilderTest.cpp](./test/PublisherBuilderTest.cpp)
+* Tests for Pull Builder [./test/SubscriberBuilderTest.cpp](./test/SubscriberBuilderTest.cpp)
+
+#### Publish Builder ####
+
+The result of `PublisherBuilder_Build()` is 1 or 0 for success or error
+respectively. Salt and sending callback are required.
+
+Create an instance of Publish and use it as follows:
+```c
+PublisherBuilder_Create();
+PublisherBuilder_SetSalt(salt);
+PublisherBuilder_SetSendCallback(fake_push_fn);
+if (!PublisherBuilder_Build()) exit(-1);
+PublisherBuilder_Destroy();
+
+Publish_Invoke("destination::address:1", 0x05, 0x06, body);
+Publish_Invoke("destination::address:2", 0x06, 0x06, body);
+Publish_Invoke("destination::address:3", 0x07, 0x06, body);
+
+// Destroy if you need it no more.
+Publish_Destroy();
+```
+
+#### Pull Builder ####
+
+The result of `SubscriberBuilder_Build()` is 1 or 0 for success or error 
+respectively. Salt and listening callback are required.
+
+Create an instance of Pull and use it as follows:
+```c
+SubscriberBuilder_Create();
+SubscriberBuilder_SetSalt("salt");
+SubscriberBuilder_SetListenCallback(listen_fn);
+SubscriberBuilder_SetId(&id);
+if (!SubscriberBuilder_Build()) exit(-1);
+SubscriberBuilder_Destroy();
+
+Pull_Invoke("destination::address", &port, &id, body);
+Pull_Invoke("destination::address", &port, &id, body);
+Pull_Invoke("destination::address", &port, &id, body);
+
+// Destroy if you need it no more.
+Pull_Destroy();
 ```
 
 ## Message ##

@@ -64,7 +64,10 @@ unsigned long stub_progressive_epoch_ms_fn() {
 }
 
 int stub_pull_nothing_yet_fn(const char* address, const char* content, const int size) {
-  if (--nothing_until_zero) return 0;
+  if (--nothing_until_zero) {
+    pull_fn_spy.calledCount++;
+    return 0;
+  }
   else return stub_message_fn(address, content, size);
 }
 
@@ -74,9 +77,9 @@ TEST_GROUP(PullApp) {
   void setup() override {
     nothing_until_zero = 10000;
     pull_fn_spy.calledCount = 0;
-    memset(body, '\0', MESSAGE_BODY_LENGTH);
-    port = '\0';
-    id = '\0';
+    memset(body, 0, MESSAGE_BODY_LENGTH);
+    port = 0;
+    id = 0;
     progressive_ms = 1;
   }
 };
@@ -122,7 +125,7 @@ TEST(PullApp, NoTimeoutPulling) {
       0, nullptr);
   result = Pull_Invoke("address", &port, &id, body);
   Pull_Destroy();
-  CHECK_EQUAL(pull_fn_spy.calledCount, 1);
+  CHECK_EQUAL(10000, pull_fn_spy.calledCount);
   CHECK_EQUAL(Success, result);
   CHECK_EQUAL('1', port);
   CHECK_EQUAL('2', id);

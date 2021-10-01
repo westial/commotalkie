@@ -8,6 +8,7 @@ IMPORT_TEST_GROUP(Subscription);
 IMPORT_TEST_GROUP(PullApp);
 IMPORT_TEST_GROUP(PublishApp);
 IMPORT_TEST_GROUP(PublisherBuilder);
+IMPORT_TEST_GROUP(SubscriberBuilder);
 
 int main(int argc, char** argv)
 {

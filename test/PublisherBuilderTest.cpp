@@ -35,17 +35,26 @@ TEST(PublisherBuilder, BuildAPublisher) {
   PublisherBuilder_Create();
   PublisherBuilder_SetSalt(salt);
   PublisherBuilder_SetSendCallback(fake_push_fn);
-  CHECK_EQUAL(1, PublisherBuilder_Build());
+  CHECK_TRUE(PublisherBuilder_Build());
   PublisherBuilder_Destroy();
   Publish_Invoke("topic", 0x05, 0x06, body);
   Publish_Destroy();
   CHECK_EQUAL(1, push_fn_spy.calledCount);
 }
 
-TEST(PublisherBuilder, SaltMissed) {
+TEST(PublisherBuilder, SaltIsRequired) {
   PublisherBuilder_Create();
   PublisherBuilder_SetSendCallback(fake_push_fn);
-  CHECK_EQUAL(-1, PublisherBuilder_Build());
+  CHECK_FALSE(PublisherBuilder_Build());
+  PublisherBuilder_Destroy();
+}
+
+TEST(PublisherBuilder, EmptySaltIsNotAllowed) {
+  const char salt[] = "";
+  PublisherBuilder_Create();
+  PublisherBuilder_SetSalt(salt);
+  PublisherBuilder_SetSendCallback(fake_push_fn);
+  CHECK_FALSE(PublisherBuilder_Build());
   PublisherBuilder_Destroy();
 }
 
@@ -53,6 +62,6 @@ TEST(PublisherBuilder, SendingCallbackMissed) {
   const char salt[] = "salt";
   PublisherBuilder_Create();
   PublisherBuilder_SetSalt(salt);
-  CHECK_EQUAL(-1, PublisherBuilder_Build());
+  CHECK_FALSE(PublisherBuilder_Build());
   PublisherBuilder_Destroy();
 }

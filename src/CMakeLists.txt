@@ -18,4 +18,5 @@ add_library(SimpleTimer device/SimpleTimer.c)
 add_library(PublishEncryptedMessage application/Publish.c)
 add_library(ReadEncryptedMessage application/Pull.c)
 add_library(PublisherBuilder application/PublisherBuilder.c)
+add_library(SubscriberBuilder application/SubscriberBuilder.c)
 
