@@ -5,12 +5,39 @@ Communication interface for low power consumption devices.
 
 "Keep it tiny" is one of the most important requirements of this project.
 
+## Message ##
+
+This SDK pipelines validate, encrypt and transport the following Message
+structure.
+
+![message structure](doc/messageschema.png)
+
+MESSAGE_LENGTH value is a configuration parameter of "messageconfig.h" and is
+the total length of the message, META and BODY together.
+
+### Signature ###
+
+The most significant byte is the sign to validate the next message bytes. This 
+byte is automatically set during the publication of a message.
+
+### Port ###
+
+The second most significant byte is for feature segregation in the receiver.
+
+### Id ###
+
+The third most significant byte purpose is an Id.
+
+### Content ###
+
+The information of the message.
+
 ## SDK ##
 
-Communication endpoints clients, for publisher and for subscriber as well.
+Publisher and subscriber clients.
 
 See [./include/application](./include/application) for the concrete interface
-and the [./test](./test) scenarios for implementation details.
+and [./test](./test) for more implementation details.
 
 ### Publish ###
 
@@ -174,34 +201,6 @@ Pull_Invoke("destination::address", &port, &id, body);
 // Destroy if you need it no more.
 Pull_Destroy();
 ```
-
-## Message ##
-
-The message pipelines validate, encrypt and transport the information as well.
-
-The structure of the message is as follows:
-
-![message structure](doc/messageschema.png)
-
-MESSAGE_LENGTH value is a configuration parameter of "messageconfig.h" and is
-the total length of the message, META and BODY together.
-
-### Signature ###
-
-The most significant byte is the sign to validate the next message bytes. This 
-byte is automatically set during the publication of a message.
-
-### Port ###
-
-The second most significant byte is for feature segregation in the receiver.
-
-### Id ###
-
-The third most significant byte purpose is an Id.
-
-### Content ###
-
-The information of the message.
 
 ## Testing ##
 
