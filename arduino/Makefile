@@ -8,12 +8,12 @@ CONFIGDIRNAME=config
 
 build: library.properties.template ../include/application/Publish.h ../include/application/Pull.h ../src/application/Publish.c ../src/application/Pull.c
 	@echo "> Preparing header and source files"
-	mkdir -p "${RELEASEDIRNAME}/${COMMOTALKIEDIRNAME}"
-	find ../include/ -type f -name *.h -exec cp {} "${RELEASEDIRNAME}/${COMMOTALKIEDIRNAME}/" \;
-	find ../src/ -type f -name *.c -exec cp {} "${RELEASEDIRNAME}/${COMMOTALKIEDIRNAME}/" \;
-	mv "${RELEASEDIRNAME}/${COMMOTALKIEDIRNAME}/messageconfig.h" "${RELEASEDIRNAME}/"
-	cp ./library.properties.template "${RELEASEDIRNAME}/${COMMOTALKIEDIRNAME}/library.properties"
+	mkdir -p "$(RELEASEDIRNAME)/$(COMMOTALKIEDIRNAME)"
+	find ../include/ -type f -name *.h -exec cp {} "$(RELEASEDIRNAME)/$(COMMOTALKIEDIRNAME)/" \;
+	find ../src/ -type f -name *.c -exec cp {} "$(RELEASEDIRNAME)/$(COMMOTALKIEDIRNAME)/" \;
+	mv "$(RELEASEDIRNAME)/$(COMMOTALKIEDIRNAME)/messageconfig.h" "$(RELEASEDIRNAME)/"
+	cp ./library.properties.template "$(RELEASEDIRNAME)/$(COMMOTALKIEDIRNAME)/library.properties"
 
 clean:
 	@echo "> Cleaning header and source files"
-	rm -Rf "${RELEASEDIRNAME}"
+	rm -Rf "$(RELEASEDIRNAME)"
