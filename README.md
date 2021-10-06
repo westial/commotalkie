@@ -168,7 +168,7 @@ Create an instance of Publish and use it as follows:
 ```c
 PublisherBuilder_Create();
 PublisherBuilder_SetSalt(salt);
-PublisherBuilder_SetSendCallback(fake_push_fn);
+PublisherBuilder_SetSendCallback(push_fn);
 if (!PublisherBuilder_Build()) exit(-1);
 PublisherBuilder_Destroy();
 
