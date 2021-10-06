@@ -1,4 +1,4 @@
-# This script creates the Karatemeter Arduino based library files.
+# This script creates the CommoTalkie Arduino based library files.
 
 COMMOTALKIEDIRNAME=CommoTalkie
 RELEASEDIRNAME=prebuild
