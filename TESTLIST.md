@@ -24,5 +24,5 @@ and pending when it begins with a minus sign (-).
 
 + Create a publisher.
 + Publish to two topics.
-- Create a subscriber.
++ Create a subscriber.
 

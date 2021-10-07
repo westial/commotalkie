@@ -77,7 +77,7 @@ size of the content is always the value of the constant `MESSAGE_LENGTH`.
 Address is just the place for the mentioned message destination (topic).
 
 ```c
-push_fn(const char* address, const char* content, unsigned long size);
+unsigned long push_fn(const char* address, const char* content, unsigned long size);
 ```
 
 ### Pull ###

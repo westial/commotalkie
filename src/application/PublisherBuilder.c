@@ -1,5 +1,6 @@
 
 #include <Publish.h>
+#include "PublisherBuilder.h"
 
 static const char* publisher_salt = 0;
 static unsigned long (*publisher_send)(const char*, const char*, const unsigned long) = 0;
@@ -16,7 +17,7 @@ void PublisherBuilder_SetSendCallback(
   publisher_send = send_fn;
 }
 
-char PublisherBuilder_Build() {
+int PublisherBuilder_Build() {
   if (0 == publisher_salt || '\0' == publisher_salt[0] || 0 == publisher_send)
     return 0;
   Publish_Create(publisher_salt, (const void *) publisher_send);
