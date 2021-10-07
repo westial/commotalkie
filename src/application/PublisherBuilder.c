@@ -1,6 +1,5 @@
 
 #include <Publish.h>
-#include "PublisherBuilder.h"
 
 static const char* publisher_salt = 0;
 static unsigned long (*publisher_send)(const char*, const char*, const unsigned long) = 0;
