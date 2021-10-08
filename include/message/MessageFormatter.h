@@ -7,8 +7,16 @@
 
 #include "Message.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void MessageFormatter_Pack(const void* input, Message* message);
 
 void MessageFormatter_Unpack(const Message* message, void* output);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif //COMMOTALKIE_SRC_MESSAGE_MESSAGEFORMATTER_H_

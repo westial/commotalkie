@@ -7,6 +7,10 @@
 
 #include "Result.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void Pull_Create(const char *salt,
                  const void *pull_function,
                  const void *epoch_function,
@@ -20,5 +24,9 @@ Result Pull_Invoke(
     unsigned char *body);
 
 void Pull_Destroy();
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif //COMMOTALKIE_INCLUDE_APPLICATION_PULL_H_

@@ -8,6 +8,10 @@
 #include "Message.h"
 #include "Result.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void MessageSubscriber_Create(
     const void *pull_function,
     const void *epoch_function);
@@ -27,5 +31,9 @@ void MessageSubscriber_CountDown(unsigned long timeout_millis);
 Result MessageSubscriber_Pull(const char* topic, const Message *message);
 
 void MessageSubscriber_Destroy();
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif //COMMOTALKIE_INCLUDE_MESSAGE_MESSAGESUBSCRIBER_H_

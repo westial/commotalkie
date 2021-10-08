@@ -1,7 +1,6 @@
 set(HEADER_FILES
         Pull.h
         Publish.h
-        Config.h
         PublisherBuilder.h
         SubscriberBuilder.h
         )

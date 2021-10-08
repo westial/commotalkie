@@ -15,6 +15,10 @@
 
 #include "messageconfig.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #pragma pack(push)
 #pragma pack(2)
 
@@ -26,5 +30,9 @@ typedef struct Message {
 } Message;
 
 #pragma pack(pop)
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif //COMMOTALKIE_SRC_MESSAGE_MESSAGE_H_
