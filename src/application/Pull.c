@@ -16,7 +16,7 @@ void selective_pull(const char *topic,
                     Result *result,
                     Message *decrypted);
 void decrypt(Message *, Message *);
-void parse(Message *, unsigned char *, unsigned char *, unsigned char *);
+void parse(Message *output, unsigned char *port, unsigned char *id, char *body);
 void parse_id(const Message *, unsigned char *);
 int validate(const Message *, const unsigned char *);
 
@@ -75,7 +75,7 @@ void parse(
     Message *output,
     unsigned char *port,
     unsigned char *id,
-    unsigned char *body) {
+    char *body) {
   *port = output->meta[PORT_INDEX];
   parse_id(output, id);
   memcpy(body, output->body, MESSAGE_BODY_LENGTH);
