@@ -25,7 +25,7 @@ extern "C" {
 #define MESSAGE_BODY_LENGTH     (MESSAGE_LENGTH - MESSAGE_META_LENGTH)
 
 typedef struct Message {
-  char meta[MESSAGE_META_LENGTH];
+  unsigned char meta[MESSAGE_META_LENGTH];
   char body[MESSAGE_BODY_LENGTH];
 } Message;
 
