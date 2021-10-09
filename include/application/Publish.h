@@ -17,7 +17,7 @@ void Publish_Invoke(
     const char *topic,
     const unsigned char port,
     const unsigned char id,
-    const unsigned char *body);
+    const char *body);
 
 void Publish_Destroy();
 

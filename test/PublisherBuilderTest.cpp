@@ -31,7 +31,7 @@ TEST_GROUP(PublisherBuilder) {
 
 TEST(PublisherBuilder, BuildAPublisher) {
   const char salt[] = "salt";
-  unsigned char body[MESSAGE_BODY_LENGTH];
+  char body[MESSAGE_BODY_LENGTH];
   PublisherBuilder_Create();
   PublisherBuilder_SetSalt(salt);
   PublisherBuilder_SetSendCallback(fake_push_fn);

@@ -68,7 +68,7 @@ TEST_GROUP(PublishApp) {
 };
 
 TEST(PublishApp, Publish) {
-  unsigned char body[MESSAGE_BODY_LENGTH];
+  char body[MESSAGE_BODY_LENGTH];
   spy_expected[1] = 0x05;
   spy_expected[2] = 0x06;
   Publish_Create("salt", (const void *) mock_push_fn);
@@ -82,7 +82,7 @@ TEST(PublishApp, Publish) {
 }
 
 TEST(PublishApp, PublishMultipleMessages) {
-  unsigned char body[MESSAGE_BODY_LENGTH];
+  char body[MESSAGE_BODY_LENGTH];
   Publish_Create("", (const void *) mock_push_fn);
   memcpy(body, "23456789A", MESSAGE_BODY_LENGTH);
   Publish_Invoke("topic", 0x05, 0x06, body);
@@ -102,7 +102,7 @@ TEST(PublishApp, PublishMultipleMessages) {
 }
 
 TEST(PublishApp, PublishToTwoTopics) {
-  unsigned char body[MESSAGE_BODY_LENGTH];
+  char body[MESSAGE_BODY_LENGTH];
   Publish_Create("salt", (const void *) mock_push_fn_keep_topic);
   memcpy(body, "same body", MESSAGE_BODY_LENGTH);
   Publish_Invoke("topic1", 0x05, 0x06, body);
@@ -118,11 +118,11 @@ TEST(PublishApp, PublishToTwoTopics) {
 }
 
 TEST(PublishApp, PublishAndRead) {
-  unsigned char expected_body[MESSAGE_BODY_LENGTH];
+  char expected_body[MESSAGE_BODY_LENGTH];
   Result result;
   unsigned char result_port;
   unsigned char result_id;
-  unsigned char result_body[MESSAGE_BODY_LENGTH];
+  char result_body[MESSAGE_BODY_LENGTH];
   unsigned char expected_port = 0x07;
   unsigned char expected_id = 0x08;
 

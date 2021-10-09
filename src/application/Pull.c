@@ -36,7 +36,7 @@ Result Pull_Invoke(
     const char *topic,
     unsigned char *port,
     unsigned char *id,
-    unsigned char *body) {
+    char *body) {
   Result result;
   Message message;
   Message decrypted;

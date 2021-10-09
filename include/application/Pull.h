@@ -21,7 +21,7 @@ Result Pull_Invoke(
     const char *topic,
     unsigned char *port,
     unsigned char *id,
-    unsigned char *body);
+    char *body);
 
 void Pull_Destroy();
 

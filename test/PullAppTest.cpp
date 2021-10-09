@@ -18,7 +18,7 @@ static int stub_io_error_fn(const char*, const char*, int);
 static unsigned long fake_epoch_ms_fn();
 static int stub_pull_nothing_yet_fn(const char*, const char*, int);
 
-static unsigned char body[MESSAGE_BODY_LENGTH];
+static char body[MESSAGE_BODY_LENGTH];
 static unsigned char port, id;
 static struct Spy pull_fn_spy;
 static unsigned long nothing_until_zero;

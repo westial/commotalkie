@@ -47,7 +47,7 @@ name, just a message destination.
 ```c
 // My Device Id
 const unsigned char my_id = 0x06;
-unsigned char body[MESSAGE_BODY_LENGTH];
+char body[MESSAGE_BODY_LENGTH];
 
 // Initialize publisher
 Publish_Create("salt", (const void *) push_fn);
@@ -56,13 +56,13 @@ Publish_Create("salt", (const void *) push_fn);
 const unsigned char port_for_temperature = 0x05;
 
 // Send a message
-Publish_Invoke("destination::address", port_for_temperature, my_id, (const unsigned char*)"a message");
+Publish_Invoke("destination::address", port_for_temperature, my_id, "a message");
 
 // Send other message to a different port
-Publish_Invoke("destination::address", 0xAD, my_id, (const unsigned char*)"another message");
+Publish_Invoke("destination::address", 0xAD, my_id, "another message");
 
 // Send other message to another destination
-Publish_Invoke("another::destination", 0xAD, my_id, (const unsigned char*)"and another message");
+Publish_Invoke("another::destination", 0xAD, my_id, "and another message");
 
 // Destroy
 Publish_Destroy();
@@ -100,7 +100,7 @@ Pull_Create(
 );
 
 // Start listening for a message from a "destination::address" only
-unsigned char body[MESSAGE_BODY_LENGTH];
+char body[MESSAGE_BODY_LENGTH];
 unsigned char port, id;
 result = Pull_Invoke("destination::address", &port, &id, body);
 
