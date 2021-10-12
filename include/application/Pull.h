@@ -14,7 +14,7 @@ extern "C" {
 void Pull_Create(const char *salt,
                  const void *pull_function,
                  const void *epoch_function,
-                 const unsigned long timeout_millis,
+                 unsigned long timeout_millis,
                  const unsigned char *to_id);
 
 Result Pull_Invoke(

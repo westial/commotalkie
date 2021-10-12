@@ -9,15 +9,20 @@
 extern "C" {
 #endif
 
-void Timer_Create(const void *epoch_ms_fn);
+typedef struct Timer {
+  unsigned long started_at;
+  unsigned long (*epoch_millis)(void);
+} Timer;
 
-void Timer_Start(void);
+Timer Timer_Create(const void *epoch_ms_fn);
 
-int Timer_IsRunning(void);
+void Timer_Start(Timer *timer);
 
-unsigned long Timer_GetMillis(void);
+int Timer_IsRunning(Timer *timer);
 
-void Timer_Destroy(void);
+unsigned long Timer_GetMillis(Timer *timer);
+
+void Timer_Destroy();
 
 #ifdef __cplusplus
 }

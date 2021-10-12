@@ -11,6 +11,8 @@ static char sample_address[2];
 static Driver create_sample(const char *, char, int, int);
 
 static int stub_read_pin_return;
+static int stub_read_pin_call_count;
+static int stub_read_pin_toggle_at;
 static int stub_read_pin(int pin);
 
 static void spy_write_pin(int pin, int value);
@@ -24,7 +26,11 @@ static int spy_write_to_serial_call_count;
 
 // -----------------------------------------------------------------------------
 
-int stub_read_pin(int pin) { return stub_read_pin_return; }
+int stub_read_pin(int pin) {
+  return (stub_read_pin_toggle_at == stub_read_pin_call_count++)
+             ? !stub_read_pin_return
+             : stub_read_pin_return;
+}
 
 void spy_write_pin(int pin, int value) {
   spy_write_pin_args[spy_write_pin_args_index][0] = pin;
@@ -59,12 +65,14 @@ TEST_GROUP(IntegratingDriver) {
   void setup() override {
     stub_read_pin_return = 1; // ready by default
     spy_write_pin_args_index = 0;
+    stub_read_pin_call_count = 0;
+    stub_read_pin_toggle_at = 1000;
+    spy_write_to_serial_call_count = 0;
     memset(sample_address, '\0', 2);
     for (auto &arg : spy_write_pin_args) {
       arg[0] = -1;
       arg[1] = -1;
     }
-    spy_write_to_serial_call_count = 0;
     for (auto &content_arg : spy_write_to_serial_arg_1) {
       memset(content_arg, '\0', MAX_TEST_INDEX);
     }
@@ -178,6 +186,20 @@ TEST(IntegratingDriver, ConfiguresADriverOnCreating) {
   CHECK_EQUAL('\xA1', spy_write_to_serial_arg_1[0][ADDRESS_LOW]);
   CHECK_EQUAL('\xA2', spy_write_to_serial_arg_1[0][ADDRESS_HIGH]);
   CHECK_EQUAL('\xA3', spy_write_to_serial_arg_1[0][CHANNEL]);
+}
+
+TEST(IntegratingDriver, WaitUntilAuxGetsHigh) {
+  stub_read_pin_return = 0;
+  create_sample("\xA1\xA2\xA3", 0, 0, 0);
+  CHECK_EQUAL(1, spy_write_to_serial_call_count);
+  CHECK_EQUAL(stub_read_pin_toggle_at, stub_read_pin_call_count -1);
+}
+
+TEST(IntegratingDriver, AuxDoesNotGetHigh) {
+  stub_read_pin_return = 0;
+  create_sample("\xA1\xA2\xA3", 0, 0, 0);
+  CHECK_EQUAL(1, spy_write_to_serial_call_count);
+  CHECK_EQUAL(stub_read_pin_toggle_at, stub_read_pin_call_count -1);
 }
 
 TEST(IntegratingDriver, Sends) {

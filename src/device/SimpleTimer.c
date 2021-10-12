@@ -2,28 +2,26 @@
 // Created by jaume on 2/3/21.
 //
 
-static unsigned long (*epoch_millis)(void) = 0;
-static unsigned long started_at;
+#include <Timer.h>
 
-void Timer_Create(const void *epoch_millis_fn) {
-  epoch_millis = (unsigned long (*)(void)) epoch_millis_fn;
-  started_at = 0;
+Timer Timer_Create(const void *epoch_millis_fn) {
+  Timer mark;
+  mark.started_at = 0;
+  mark.epoch_millis = epoch_millis_fn;
+  return mark;
 }
 
-void Timer_Start(void) {
-  started_at = epoch_millis();
+void Timer_Start(Timer *timer) {
+  timer->started_at = timer->epoch_millis();
 }
 
-int Timer_IsRunning(void) {
-  return 0 != started_at;
+int Timer_IsRunning(Timer *timer) {
+  return 0 != timer->started_at;
 }
 
-unsigned long Timer_GetMillis(void) {
-  if (started_at == 0) return 0;
-  return epoch_millis() - started_at;
+unsigned long Timer_GetMillis(Timer *timer) {
+  if (0 == timer->started_at) return 0;
+  return timer->epoch_millis() - timer->started_at;
 }
 
-void Timer_Destroy(void) {
-  started_at = 0;
-  epoch_millis = 0;
-}
+void Timer_Destroy() {}
