@@ -2,7 +2,6 @@
 // Created by jaume on 1/13/21.
 //
 
-#include <stdlib.h>
 #include <string.h>
 #include "MessageCrypter.h"
 

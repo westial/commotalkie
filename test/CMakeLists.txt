@@ -4,6 +4,7 @@ project (CommoTalkie)
 include_directories(${PROJECT_SOURCE_DIR}/../include)
 include_directories(${PROJECT_SOURCE_DIR}/../include/message)
 include_directories(${PROJECT_SOURCE_DIR}/../include/device)
+include_directories(${PROJECT_SOURCE_DIR}/../include/driver)
 include_directories(${PROJECT_SOURCE_DIR}/../include/application)
 
 # include mocks only for test code
@@ -26,6 +27,7 @@ add_library(PublishEncryptedMessageTest PublishAppTest.cpp)
 add_library(ReadEncryptedMessageTest PullAppTest.cpp)
 add_library(PublisherBuilderTest PublisherBuilderTest.cpp)
 add_library(SubscriberBuilderTest SubscriberBuilderTest.cpp)
+add_library(IntegratingDriverTest DriverTest.cpp)
 
 # add mocking library
 add_library(Spy STATIC Spy.h)
@@ -44,6 +46,7 @@ target_link_libraries(RunAllTests
         ReadEncryptedMessageTest
         PublisherBuilderTest
         SubscriberBuilderTest
+        IntegratingDriverTest
         PlainMessageFormatter
         SumMessageValidator
         XorMessageCrypter
@@ -56,4 +59,5 @@ target_link_libraries(RunAllTests
         ReadEncryptedMessage
         PublisherBuilder
         SubscriberBuilder
+        EByteDriver
 )

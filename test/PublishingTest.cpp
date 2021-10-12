@@ -1,9 +1,7 @@
 #include "CppUTest/TestHarness.h"
 
-extern "C" {
 #include "MessagePublisher.h"
 #include "MessageFormatter.h"
-}
 
 // -----------------------------------------------------------------------------
 

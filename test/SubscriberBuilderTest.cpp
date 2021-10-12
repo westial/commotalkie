@@ -1,14 +1,13 @@
 #include <CppUTest/TestHarness.h>
 #include "Spy.h"
 
-extern "C" {
 #include <cstring>
 #include "Pull.h"
 #include "Message.h"
 #include "SubscriberBuilder.h"
 #include <MessageFormatter.h>
 #include <MessageValidator.h>
-}
+
 
 // -----------------------------------------------------------------------------
 

@@ -1,8 +1,7 @@
 #include "CppUTest/TestHarness.h"
 
-extern "C" {
 #include "MessageFormatter.h"
-}
+
 
 // -----------------------------------------------------------------------------
 

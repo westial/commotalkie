@@ -9,6 +9,7 @@ IMPORT_TEST_GROUP(PullApp);
 IMPORT_TEST_GROUP(PublishApp);
 IMPORT_TEST_GROUP(PublisherBuilder);
 IMPORT_TEST_GROUP(SubscriberBuilder);
+IMPORT_TEST_GROUP(IntegratingDriver);
 
 int main(int argc, char** argv)
 {

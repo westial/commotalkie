@@ -1,13 +1,12 @@
 #include <CppUTest/TestHarness.h>
 #include "Spy.h"
 
-extern "C" {
 #include <cstring>
 #include "Message.h"
 #include "Publish.h"
 #include "Result.h"
 #include "Pull.h"
-}
+
 
 // -----------------------------------------------------------------------------
 

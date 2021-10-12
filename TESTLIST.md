@@ -4,7 +4,7 @@ Test list
 The following test scenarios are done when the line begins with a plus sign (+) 
 and pending when it begins with a minus sign (-).
 
-## Single thread only ##
+## Application ##
 
 + Pack / Unpack a message.
 + Sign / Validate a message.
@@ -26,3 +26,11 @@ and pending when it begins with a minus sign (-).
 + Publish to two topics.
 + Create a subscriber.
 
+## Infrastructure ##
+
+### EByte ###
+
++ Create a Driver with the appropriate speed.
+- Create a Driver with the appropriate options.
+- Send a string.
+- Ignore setting to sleep mode when sleep mode is the current state.

@@ -1,10 +1,10 @@
 #include "CppUTest/TestHarness.h"
-extern "C" {
+
 #include <cstring>
 #include "MessageSubscriber.h"
 #include "MessageFormatter.h"
 #include "MessagePublisher.h"
-}
+
 
 // -----------------------------------------------------------------------------
 
