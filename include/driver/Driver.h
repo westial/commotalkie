@@ -13,6 +13,12 @@ extern "C" {
 #define LOW_VALUE 0
 #define HIGH_VALUE 1
 
+typedef struct IOCallback {
+  int (*read_pin)(int);
+  void (*write_pin)(int, int);
+  void (*write_to_serial)(void *, int);
+} IOCallback;
+
 typedef struct RadioParams {
   char address[2];
   char channel;
@@ -27,11 +33,7 @@ typedef struct PinMap {
   int aux;
 } PinMap;
 
-typedef enum State {
-  NORMAL,
-  SLEEP,
-  ERROR
-} State;
+typedef enum State { NORMAL, SLEEP, ERROR } State;
 
 typedef struct Driver {
   char address[2];
@@ -45,15 +47,13 @@ typedef struct Driver {
   unsigned long timeout_at;
 } Driver;
 
-Driver Driver_Create(PinMap pins, RadioParams params, int (*read_pin)(int),
-                     void (*write_pin)(int, int),
-                     void (*write_to_serial)(void *, int), Timer timer,
-                     unsigned long timeout_ms);
+Driver Driver_Create(PinMap pins, RadioParams *params, IOCallback *io,
+                        Timer timer, unsigned long timeout_ms);
 
-int Driver_Send(Driver*, const char*, unsigned long size);
+int Driver_Send(Driver *, const char *, unsigned long size);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif //COMMOTALKINO_LIB_EBYTE_EBYTEDRIVER_H_
+#endif // COMMOTALKINO_LIB_EBYTE_EBYTEDRIVER_H_

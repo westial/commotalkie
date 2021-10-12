@@ -49,23 +49,16 @@ void spy_write_to_serial(void *content, int size) {
   ++spy_write_to_serial_call_count;
 }
 
-unsigned long stub_progressive_epoch_ms_fn() {
-  return progressive_ms += 1;
-}
+unsigned long stub_progressive_epoch_ms_fn() { return progressive_ms += 1; }
 
 Driver create_sample(const char *topic, const char air_data_rate,
                      const int is_fixed, const int full_power) {
   PinMap pins = {1, 2, 3};
-  RadioParams params;
-  params.address[0] = topic[0];
-  params.address[1] = topic[1];
-  params.channel = topic[2];
-  params.air_data_rate = air_data_rate;
-  params.is_fixed_transmission = is_fixed;
-  params.full_transmission_power = full_power;
+  RadioParams params = {topic[0],      topic[1], topic[2],
+                        air_data_rate, is_fixed, full_power};
   Timer timer = Timer_Create((const void *)stub_progressive_epoch_ms_fn);
-  return Driver_Create(pins, params, stub_read_pin, spy_write_pin,
-                       spy_write_to_serial, timer, default_timeout);
+  IOCallback io = {stub_read_pin, spy_write_pin, spy_write_to_serial};
+  return Driver_Create(pins, &params, &io, timer, default_timeout);
 }
 
 // -----------------------------------------------------------------------------
@@ -100,8 +93,11 @@ TEST(IntegratingDriver, CreateADriver) {
   params.channel = '\x06';
   params.air_data_rate = 0;
   Timer timer = Timer_Create((const void *)stub_progressive_epoch_ms_fn);
-  Driver instance = Driver_Create(pins, params, stub_read_pin, spy_write_pin,
-                                  spy_write_to_serial, timer, default_timeout);
+  IOCallback io;
+  io.read_pin = stub_read_pin;
+  io.write_pin = spy_write_pin;
+  io.write_to_serial = spy_write_to_serial;
+  Driver instance = Driver_Create(pins, &params, &io, timer, default_timeout);
   CHECK_EQUAL(1, instance.pins.m0);
   CHECK_EQUAL(2, instance.pins.m1);
   CHECK_EQUAL(3, instance.pins.aux);

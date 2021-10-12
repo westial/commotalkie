@@ -1,13 +1,11 @@
 #include "ebyte/EByte.h"
 
-Driver Driver_Create(PinMap pins, RadioParams params, int (*read_pin)(int),
-                     void (*write_pin)(int, int),
-                     void (*write_to_serial)(void *, int), Timer timer,
-                     unsigned long timeout_ms) {
-  read_pin_callback = read_pin;
-  write_pin_callback = write_pin;
-  write_to_serial_callback = write_to_serial;
-  Driver self = create_driver(&pins, &params, &timer, &timeout_ms);
+Driver Driver_Create(PinMap pins, RadioParams *params, IOCallback *io,
+                        Timer timer, unsigned long timeout_ms) {
+  read_pin_callback = io->read_pin;
+  write_pin_callback = io->write_pin;
+  write_to_serial_callback = io->write_to_serial;
+  Driver self = create_driver(&pins, params, &timer, &timeout_ms);
   set_mode_sleep(&self);
   set_configuration(&self);
   return self;
