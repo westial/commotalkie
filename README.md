@@ -13,7 +13,9 @@ structure.
 ![message structure](doc/messageschema.png)
 
 MESSAGE_LENGTH value is a configuration parameter of "messageconfig.h" and is
-the total length of the message, META and BODY together.
+the total length of the message, META and BODY together. A length change must 
+consider the pragma alignment configuration of 4 set in 
+[./include/message/Message.h](./include/message/Message.h)
 
 ### Signature ###
 
