@@ -24,6 +24,10 @@ static char spy_write_to_serial_arg_1[MAX_TEST_INDEX][MAX_TEST_INDEX];
 static int spy_write_to_serial_arg_2[MAX_TEST_INDEX];
 static int spy_write_to_serial_call_count;
 
+static unsigned long default_timeout;
+static unsigned long progressive_ms;
+static unsigned long stub_progressive_epoch_ms_fn();
+
 // -----------------------------------------------------------------------------
 
 int stub_read_pin(int pin) {
@@ -45,8 +49,12 @@ void spy_write_to_serial(void *content, int size) {
   ++spy_write_to_serial_call_count;
 }
 
+unsigned long stub_progressive_epoch_ms_fn() {
+  return progressive_ms += 1;
+}
+
 Driver create_sample(const char *topic, const char air_data_rate,
-                        const int is_fixed, const int full_power) {
+                     const int is_fixed, const int full_power) {
   PinMap pins = {1, 2, 3};
   RadioParams params;
   params.address[0] = topic[0];
@@ -55,32 +63,34 @@ Driver create_sample(const char *topic, const char air_data_rate,
   params.air_data_rate = air_data_rate;
   params.is_fixed_transmission = is_fixed;
   params.full_transmission_power = full_power;
+  Timer timer = Timer_Create((const void *)stub_progressive_epoch_ms_fn);
   return Driver_Create(pins, params, stub_read_pin, spy_write_pin,
-                       spy_write_to_serial);
+                       spy_write_to_serial, timer, default_timeout);
 }
 
 // -----------------------------------------------------------------------------
 
-TEST_GROUP(IntegratingDriver) {
-  void setup() override {
-    stub_read_pin_return = 1; // ready by default
-    spy_write_pin_args_index = 0;
-    stub_read_pin_call_count = 0;
-    stub_read_pin_toggle_at = 1000;
-    spy_write_to_serial_call_count = 0;
-    memset(sample_address, '\0', 2);
-    for (auto &arg : spy_write_pin_args) {
-      arg[0] = -1;
-      arg[1] = -1;
-    }
-    for (auto &content_arg : spy_write_to_serial_arg_1) {
-      memset(content_arg, '\0', MAX_TEST_INDEX);
-    }
-    for (auto &size_arg : spy_write_to_serial_arg_2) {
-      size_arg = 0;
-    }
-  }
-};
+TEST_GROUP(IntegratingDriver){void setup() override{default_timeout = 20000;
+progressive_ms = 1;
+stub_read_pin_return = 1; // ready by default
+spy_write_pin_args_index = 0;
+stub_read_pin_call_count = 0;
+stub_read_pin_toggle_at = 1000;
+spy_write_to_serial_call_count = 0;
+memset(sample_address, '\0', 2);
+for (auto &arg : spy_write_pin_args) {
+  arg[0] = -1;
+  arg[1] = -1;
+}
+for (auto &content_arg : spy_write_to_serial_arg_1) {
+  memset(content_arg, '\0', MAX_TEST_INDEX);
+}
+for (auto &size_arg : spy_write_to_serial_arg_2) {
+  size_arg = 0;
+}
+}
+}
+;
 
 TEST(IntegratingDriver, CreateADriver) {
   PinMap pins = {1, 2, 3};
@@ -89,8 +99,9 @@ TEST(IntegratingDriver, CreateADriver) {
   params.address[1] = '\x09';
   params.channel = '\x06';
   params.air_data_rate = 0;
+  Timer timer = Timer_Create((const void *)stub_progressive_epoch_ms_fn);
   Driver instance = Driver_Create(pins, params, stub_read_pin, spy_write_pin,
-                                  spy_write_to_serial);
+                                  spy_write_to_serial, timer, default_timeout);
   CHECK_EQUAL(1, instance.pins.m0);
   CHECK_EQUAL(2, instance.pins.m1);
   CHECK_EQUAL(3, instance.pins.aux);
@@ -102,7 +113,7 @@ TEST(IntegratingDriver, CreateADriver) {
 
 TEST(IntegratingDriver, CreateADriverAtSleepMode) {
   Driver sample_driver = create_sample("\x08\x09\x06", 0, 0, 0);
-  CHECK_EQUAL(SLEEP, sample_driver.mode);
+  CHECK_EQUAL(SLEEP, sample_driver.state);
   CHECK_EQUAL(spy_write_pin_args[0][0], sample_driver.pins.m0);
   CHECK_EQUAL(spy_write_pin_args[0][1], HIGH_VALUE);
   CHECK_EQUAL(spy_write_pin_args[1][0], sample_driver.pins.m1);
@@ -192,14 +203,14 @@ TEST(IntegratingDriver, WaitUntilAuxGetsHigh) {
   stub_read_pin_return = 0;
   create_sample("\xA1\xA2\xA3", 0, 0, 0);
   CHECK_EQUAL(1, spy_write_to_serial_call_count);
-  CHECK_EQUAL(stub_read_pin_toggle_at, stub_read_pin_call_count -1);
+  CHECK_EQUAL(stub_read_pin_toggle_at, stub_read_pin_call_count - 1);
 }
 
-TEST(IntegratingDriver, AuxDoesNotGetHigh) {
+TEST(IntegratingDriver, TimeoutWaitingForHighOnAux) {
   stub_read_pin_return = 0;
-  create_sample("\xA1\xA2\xA3", 0, 0, 0);
-  CHECK_EQUAL(1, spy_write_to_serial_call_count);
-  CHECK_EQUAL(stub_read_pin_toggle_at, stub_read_pin_call_count -1);
+  default_timeout = progressive_ms + 1;
+  Driver driver = create_sample("\xA1\xA2\xA3", 0, 0, 0);
+  CHECK_EQUAL(ERROR, driver.state);
 }
 
 TEST(IntegratingDriver, Sends) {

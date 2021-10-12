@@ -2,11 +2,12 @@
 
 Driver Driver_Create(PinMap pins, RadioParams params, int (*read_pin)(int),
                      void (*write_pin)(int, int),
-                     void (*write_to_serial)(void *, int)) {
+                     void (*write_to_serial)(void *, int), Timer timer,
+                     unsigned long timeout_ms) {
   read_pin_callback = read_pin;
   write_pin_callback = write_pin;
   write_to_serial_callback = write_to_serial;
-  Driver self = create_driver(&pins, &params);
+  Driver self = create_driver(&pins, &params, &timer, &timeout_ms);
   set_mode_sleep(&self);
   set_configuration(&self);
   return self;
@@ -40,31 +41,29 @@ void set_configuration(Driver *driver) {
   config[SPEED] =
       (char)value_speed(PARITY_BIT_8N1, BAUD_RATE_9600, driver->air_data_rate);
   config[CHANNEL] = driver->channel;
-  config[OPTIONS] =
-      (char)value_options(
-          driver->fixed_on,
-          OPT_PULL_UP_ON,
-          OPT_WAKEUP_250,
-          OPT_FEC_ON,
-          driver->low_power_on ? OPT_MIN_POWER : OPT_MAX_POWER
-          );
+  config[OPTIONS] = (char)value_options(
+      driver->fixed_on, OPT_PULL_UP_ON, OPT_WAKEUP_250, OPT_FEC_ON,
+      driver->low_power_on ? OPT_MIN_POWER : OPT_MAX_POWER);
   write_to_serial_callback((void *)config, sizeof(config));
 }
 
 int wait_until_ready(Driver *driver) {
-  while (LOW_VALUE == read_pin_callback(driver->pins.aux))
-    ;
-  return 1;
+  int on_time;
+  Timer_Start(&driver->timer);
+  do {
+    on_time = driver->timeout_at > Timer_GetMillis(&driver->timer);
+  }while (LOW_VALUE == read_pin_callback(driver->pins.aux) && on_time);
+  return on_time;
 }
 
 void set_mode_sleep(Driver *driver) {
   write_pin_callback(driver->pins.m0, HIGH_VALUE);
   write_pin_callback(driver->pins.m1, HIGH_VALUE);
-  wait_until_ready(driver);
-  driver->mode = SLEEP;
+  driver->state = (wait_until_ready(driver)) ? SLEEP : ERROR;
 }
 
-Driver create_driver(PinMap *pins, RadioParams *params) {
+Driver create_driver(PinMap *pins, RadioParams *params, Timer *timer,
+                     const unsigned long *timeout_ms) {
   Driver result;
   result.address[0] = params->address[ADDRESS_LOW_INDEX];
   result.address[1] = params->address[ADDRESS_HIGH_INDEX];
@@ -73,5 +72,7 @@ Driver create_driver(PinMap *pins, RadioParams *params) {
   result.fixed_on = params->is_fixed_transmission;
   result.low_power_on = !params->full_transmission_power;
   result.pins = *pins;
+  result.timer = *timer;
+  result.timeout_at = *timeout_ms;
   return result;
 }

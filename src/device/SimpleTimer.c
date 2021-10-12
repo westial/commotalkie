@@ -2,7 +2,7 @@
 // Created by jaume on 2/3/21.
 //
 
-#include <Timer.h>
+#include "Timer.h"
 
 Timer Timer_Create(const void *epoch_millis_fn) {
   Timer mark;

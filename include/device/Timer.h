@@ -11,7 +11,7 @@ extern "C" {
 
 typedef struct Timer {
   unsigned long started_at;
-  unsigned long (*epoch_millis)(void);
+  unsigned long (*epoch_millis)();
 } Timer;
 
 Timer Timer_Create(const void *epoch_ms_fn);

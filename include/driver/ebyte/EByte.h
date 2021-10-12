@@ -88,6 +88,7 @@ static int (*read_pin_callback)(int);
 static void (*write_pin_callback)(int, int);
 static void (*write_to_serial_callback)(void*, int);
 
-static Driver create_driver(PinMap* pins, RadioParams* params);
+static Driver create_driver(PinMap *pins, RadioParams *params, Timer *timer,
+                            const unsigned long *timeout_ms);
 
 #endif //COMMOTALKIE_INCLUDE_DRIVER_EBYTE_H_

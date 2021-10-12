@@ -5,6 +5,7 @@
 #ifndef COMMOTALKINO_LIB_EBYTE_EBYTEDRIVER_H_
 #define COMMOTALKINO_LIB_EBYTE_EBYTEDRIVER_H_
 
+#include "Timer.h"
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -26,28 +27,28 @@ typedef struct PinMap {
   int aux;
 } PinMap;
 
-typedef enum Mode {
+typedef enum State {
   NORMAL,
-  SLEEP
-} Mode;
+  SLEEP,
+  ERROR
+} State;
 
 typedef struct Driver {
   char address[2];
   char channel;
   char air_data_rate;
   PinMap pins;
-  Mode mode;
+  State state;
   int fixed_on;
   int low_power_on;
+  Timer timer;
+  unsigned long timeout_at;
 } Driver;
 
-Driver Driver_Create(
-    PinMap pins,
-    RadioParams params,
-    int (*read_pin)(int),
-    void (*write_pin)(int, int),
-    void (*write_to_serial)(void*, int)
-    );
+Driver Driver_Create(PinMap pins, RadioParams params, int (*read_pin)(int),
+                     void (*write_pin)(int, int),
+                     void (*write_to_serial)(void *, int), Timer timer,
+                     unsigned long timeout_ms);
 
 int Driver_Send(Driver*, const char*, unsigned long size);
 
