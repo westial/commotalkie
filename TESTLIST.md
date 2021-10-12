@@ -31,6 +31,6 @@ and pending when it begins with a minus sign (-).
 ### EByte ###
 
 + Create a Driver with the appropriate speed.
-- Create a Driver with the appropriate options.
++ Create a Driver with the appropriate options.
 - Send a string.
 - Ignore setting to sleep mode when sleep mode is the current state.

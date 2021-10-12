@@ -8,7 +8,7 @@
 #define MAX_TEST_INDEX 100
 
 static char sample_address[2];
-static Driver create_sample(char, char, char, char);
+static Driver create_sample(char, char, char, char, int, int);
 
 static int stub_read_pin_return;
 static int stub_read_pin(int pin);
@@ -46,13 +46,17 @@ void spy_write_to_serial(void *content, int size) {
 Driver create_sample(const char address_low,
                      const char address_high,
                      const char channel,
-                     const char air_data_rate) {
+                     const char air_data_rate,
+                     const int is_fixed,
+                     const int full_power) {
   PinMap pins = {1, 2, 3};
   RadioParams params;
   params.address[0] = address_low;
   params.address[1] = address_high;
   params.channel = channel;
   params.air_data_rate = air_data_rate;
+  params.is_fixed_transmission = is_fixed;
+  params.full_transmission_power = full_power;
   return Driver_Create(pins,
                        params,
                        stub_read_pin,
@@ -103,7 +107,7 @@ TEST(IntegratingDriver, CreateADriver) {
 }
 
 TEST(IntegratingDriver, CreateADriverAtSleepMode) {
-  Driver sample_driver = create_sample('\x08', '\x09', '\x06', 0);
+  Driver sample_driver = create_sample('\x08', '\x09', '\x06', 0, 0, 0);
   CHECK_EQUAL(SLEEP, sample_driver.mode);
   CHECK_EQUAL(spy_write_pin_args[0][0], sample_driver.pins.m0);
   CHECK_EQUAL(spy_write_pin_args[0][1], HIGH_VALUE);
@@ -112,7 +116,7 @@ TEST(IntegratingDriver, CreateADriverAtSleepMode) {
 }
 
 TEST(IntegratingDriver, SetAddressAndChannel) {
-  create_sample('\xA1', '\xA2', '\xA3', 0);
+  create_sample('\xA1', '\xA2', '\xA3', 0, 0, 0);
   CHECK_EQUAL(1, spy_write_to_serial_call_count);
   CHECK_EQUAL('\xA1', spy_write_to_serial_arg_1[0][ADDRESS_LOW]);
   CHECK_EQUAL('\xA2', spy_write_to_serial_arg_1[0][ADDRESS_HIGH]);
@@ -120,28 +124,70 @@ TEST(IntegratingDriver, SetAddressAndChannel) {
 }
 
 TEST(IntegratingDriver, SetDefaultParityBit) {
-  create_sample('\xA1', '\xA2', '\xA3', 0);
+  create_sample('\xA1', '\xA2', '\xA3', 0, 0, 0);
   CHECK_EQUAL(PARITY_BIT_8N1,
               (spy_write_to_serial_arg_1[0][SPEED] & ALL_BITS_LOW_BUT_PARITY)
                   >> PARITY_INDEX);
 }
 
 TEST(IntegratingDriver, SetDefaultUartBaudRate) {
-  create_sample('\xA1', '\xA2', '\xA3', 0);
+  create_sample('\xA1', '\xA2', '\xA3', 0, 0, 0);
   CHECK_EQUAL(BAUD_RATE_9600,
               (spy_write_to_serial_arg_1[0][SPEED] & ALL_BITS_LOW_BUT_BAUD_RATE)
                   >> BAUD_RATE_INDEX);
 }
 
 TEST(IntegratingDriver, SetParameterizedAirDataRate) {
-  create_sample('\xA1', '\xA2', '\xA3', AIR_RATE_19200);
+  create_sample('\xA1', '\xA2', '\xA3', AIR_RATE_19200, 0, 0);
   CHECK_EQUAL(AIR_RATE_19200,
               (spy_write_to_serial_arg_1[0][SPEED] & ALL_BITS_LOW_BUT_AIR_RATE)
                   >> AIR_RATE_INDEX);
 }
 
+TEST(IntegratingDriver, SetParameterizedTransmissionMode) {
+  create_sample('\xA1', '\xA2', '\xA3', 0, 1, 0);
+  CHECK_EQUAL(
+      1, (spy_write_to_serial_arg_1[0][OPTIONS] & ALL_BITS_LOW_BUT_TRANSMISSION_MODE) >>
+             TRANSMIT_MODE_INDEX);
+}
+
+TEST(IntegratingDriver, SetDefaultPullUpState) {
+  create_sample('\xA1', '\xA2', '\xA3', 0, 0, 0);
+  CHECK_EQUAL(
+      OPT_PULL_UP_ON, (spy_write_to_serial_arg_1[0][OPTIONS] & ALL_BITS_LOW_BUT_PULL_UP) >>
+             PULL_UP_INDEX);
+}
+
+TEST(IntegratingDriver, SetDefaultWakeUpTime) {
+  create_sample('\xA1', '\xA2', '\xA3', 0, 0, 0);
+  CHECK_EQUAL(
+      OPT_WAKEUP_250, (spy_write_to_serial_arg_1[0][OPTIONS] & ALL_BITS_LOW_BUT_WAKE_UP_TIME) >>
+             WAKE_UP_TIME_INDEX);
+}
+
+TEST(IntegratingDriver, SetDefaultFECSwitch) {
+  create_sample('\xA1', '\xA2', '\xA3', 0, 0, 0);
+  CHECK_EQUAL(
+      OPT_FEC_ON, (spy_write_to_serial_arg_1[0][OPTIONS] & ALL_BITS_LOW_BUT_FEC_SWITCH) >>
+             FEC_SWITCH_INDEX);
+}
+
+TEST(IntegratingDriver, SetFullTransmissionPower) {
+  create_sample('\xA1', '\xA2', '\xA3', 0, 0, 1);
+  CHECK_EQUAL(
+      OPT_MAX_POWER, (spy_write_to_serial_arg_1[0][OPTIONS] & ALL_BITS_LOW_BUT_TRANSMIT_POWER) >>
+             TRANSMIT_POWER_INDEX);
+}
+
+TEST(IntegratingDriver, SetLowestTransmissionPower) {
+  create_sample('\xA1', '\xA2', '\xA3', 0, 0, 0);
+  CHECK_EQUAL(
+      OPT_MIN_POWER, (spy_write_to_serial_arg_1[0][OPTIONS] & ALL_BITS_LOW_BUT_TRANSMIT_POWER) >>
+             TRANSMIT_POWER_INDEX);
+}
+
 TEST(IntegratingDriver, ConfiguresADriverOnCreating) {
-  create_sample('\xA1', '\xA2', '\xA3', 0);
+  create_sample('\xA1', '\xA2', '\xA3', 0, 0, 0);
   CHECK_EQUAL(1, spy_write_to_serial_call_count);
   CHECK_EQUAL('\xA1', spy_write_to_serial_arg_1[0][ADDRESS_LOW]);
   CHECK_EQUAL('\xA2', spy_write_to_serial_arg_1[0][ADDRESS_HIGH]);
@@ -149,7 +195,7 @@ TEST(IntegratingDriver, ConfiguresADriverOnCreating) {
 }
 
 TEST(IntegratingDriver, Sends) {
-  Driver sample_driver = create_sample('\xA1', '\xA2', '\xA3', 0);
+  Driver sample_driver = create_sample('\xA1', '\xA2', '\xA3', 0, 0, 0);
   const char raw_message[] = "abcdefghi";
   int result = Driver_Send(&sample_driver, raw_message, sizeof(raw_message));
   CHECK_EQUAL(1, result);

@@ -16,6 +16,8 @@ typedef struct RadioParams {
   char address[2];
   char channel;
   char air_data_rate;
+  int is_fixed_transmission;
+  int full_transmission_power;
 } RadioParams;
 
 typedef struct PinMap {
@@ -35,6 +37,8 @@ typedef struct Driver {
   char air_data_rate;
   PinMap pins;
   Mode mode;
+  int fixed_on;
+  int low_power_on;
 } Driver;
 
 Driver Driver_Create(

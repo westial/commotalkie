@@ -17,16 +17,33 @@
 #define AIR_RATE_19200 0b101	// 19200 baud
 
 // -----------------------------------------------------------------------------
+// Default configuration
 
 #define PERSISTENT_CONF 0xC0
+
+#define OPT_PULL_UP_ON 1
+#define OPT_WAKEUP_250 0b000
+#define OPT_FEC_ON 1
+
+#define OPT_MIN_POWER 0b11
+#define OPT_MAX_POWER 0b00
+
 
 // Best configuration for full feature availability.
 #define PARITY_BIT_8N1 0b00
 #define BAUD_RATE_9600 0b011
 
+// -----------------------------------------------------------------------------
+
 #define ALL_BITS_LOW_BUT_PARITY 0xc0
 #define ALL_BITS_LOW_BUT_BAUD_RATE 0x38
 #define ALL_BITS_LOW_BUT_AIR_RATE 0x07
+
+#define ALL_BITS_LOW_BUT_TRANSMISSION_MODE 0x80
+#define ALL_BITS_LOW_BUT_PULL_UP 0x40
+#define ALL_BITS_LOW_BUT_WAKE_UP_TIME 0x38
+#define ALL_BITS_LOW_BUT_FEC_SWITCH 0x07
+#define ALL_BITS_LOW_BUT_TRANSMIT_POWER 0x03
 
 // -----------------------------------------------------------------------------
 
@@ -35,11 +52,19 @@
 
 // -----------------------------------------------------------------------------
 
-typedef enum LowerBit {
+typedef enum SpeedLowerBit {
   PARITY_INDEX = 6,
   BAUD_RATE_INDEX = 3,
   AIR_RATE_INDEX = 0
-} LowerBit;
+} SpeedLowerBit;
+
+typedef enum OptionLowerBit {
+  TRANSMIT_MODE_INDEX = 7,
+  PULL_UP_INDEX = 6,
+  WAKE_UP_TIME_INDEX = 3,
+  FEC_SWITCH_INDEX = 2,
+  TRANSMIT_POWER_INDEX = 0
+} OptionLowerBit;
 
 typedef enum ConfigIndex {
   PERSISTENT = 0,
@@ -54,12 +79,15 @@ static void set_mode_sleep(Driver*);
 static void set_mode_normal(Driver*);
 static void set_configuration(Driver *driver);
 static int value_speed(char parity, char baud_rate, char air_rate);
+static int value_options(int transmit_mode,
+                         int pull_up, char wake_up_time,
+                         int fec_switch, char transmit_power);
 static int wait_until_ready(Driver *driver);
 
 static int (*read_pin_callback)(int);
 static void (*write_pin_callback)(int, int);
 static void (*write_to_serial_callback)(void*, int);
 
-static Driver create_driver(PinMap, const char*, const char*, const char*);
+static Driver create_driver(PinMap* pins, RadioParams* params);
 
 #endif //COMMOTALKIE_INCLUDE_DRIVER_EBYTE_H_
