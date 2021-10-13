@@ -9,6 +9,10 @@
 
 // -----------------------------------------------------------------------------
 
+#define MS_DELAY_AFTER_AUX_HIGH 2
+
+// -----------------------------------------------------------------------------
+
 #define AIR_RATE_300 0b000		// 300 baud
 #define AIR_RATE_1200 0b001		// 1200 baud
 #define AIR_RATE_2400 0b010		// 2400 baud
@@ -27,7 +31,6 @@
 
 #define OPT_MIN_POWER 0b11
 #define OPT_MAX_POWER 0b00
-
 
 // Best configuration for full feature availability.
 #define PARITY_BIT_8N1 0b00
@@ -78,6 +81,7 @@ static int value_options(int transmit_mode,
                          int pull_up, char wake_up_time,
                          int fec_switch, char transmit_power);
 static int wait_until_ready(Driver *driver);
+static void delay(Driver *driver, unsigned long milliseconds);
 
 static int (*read_pin_callback)(int);
 static void (*write_pin_callback)(int, int);

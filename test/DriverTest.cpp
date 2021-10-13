@@ -52,7 +52,9 @@ unsigned long spy_write_to_serial(void *content, unsigned long size) {
   return size;
 }
 
-unsigned long stub_progressive_epoch_ms_fn() { return progressive_ms += 1; }
+unsigned long stub_progressive_epoch_ms_fn() {
+  return progressive_ms += 1;
+}
 
 Driver create_sample(const char *topic, const char air_data_rate,
                      const int is_fixed, const int full_power) {
@@ -254,4 +256,14 @@ TEST(IntegratingDriver, SetStateToSleepAfterSending) {
   CHECK_EQUAL(spy_write_pin_args[4][1], ON);
   CHECK_EQUAL(spy_write_pin_args[5][0], sample_driver.pins.m1);
   CHECK_EQUAL(spy_write_pin_args[5][1], ON);
+}
+
+TEST(IntegratingDriver, DelayAfterAuxGetsHigh) {
+  progressive_ms = 0;
+  create_sample("\xA1\xA2\xA3", 0, 0, 0);
+  CHECK_EQUAL(1, spy_write_to_serial_call_count);
+  // Epoch service stub changes progressive_ms at:
+  //  * 2 times to start and get millis to get sleep state.
+  //  * 1 time to start and MS_DELAY_AFTER_AUX_HIGH to get delayed as required.
+  CHECK_EQUAL(MS_DELAY_AFTER_AUX_HIGH + 3, progressive_ms);
 }

@@ -60,7 +60,13 @@ int wait_until_ready(Driver *driver) {
   do {
     on_time = driver->timeout_at > Timer_GetMillis(&driver->timer);
   }while (OFF == read_pin_callback(driver->pins.aux) && on_time);
+  if (on_time) delay(driver, MS_DELAY_AFTER_AUX_HIGH);
   return on_time;
+}
+
+void delay(Driver *driver, unsigned long milliseconds) {
+  Timer_Start(&driver->timer);
+  while (milliseconds > Timer_GetMillis(&driver->timer));
 }
 
 void change_state_to_sleep(Driver *driver) {

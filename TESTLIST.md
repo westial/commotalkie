@@ -34,6 +34,6 @@ and pending when it begins with a minus sign (-).
 + Create a Driver with the appropriate options.
 + Wait for Aux getting high.
 + Send a string.
-- Wait an absolute interval after Aux got high.
++ Wait an absolute interval after Aux got high.
 - Receive a string.
 - Ignore setting state when the required state is the current one.
