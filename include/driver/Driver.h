@@ -10,13 +10,16 @@
 extern "C" {
 #endif
 
-#define LOW_VALUE 0
-#define HIGH_VALUE 1
+#define OFF 0
+#define ON 1
+
+#define DRIVER_ADDRESS_LOW_INDEX 0
+#define DRIVER_ADDRESS_HIGH_INDEX 1
 
 typedef struct IOCallback {
   int (*read_pin)(int);
   void (*write_pin)(int, int);
-  void (*write_to_serial)(void *, int);
+  unsigned long (*write_to_serial)(void *, unsigned long);
 } IOCallback;
 
 typedef struct RadioParams {
@@ -50,7 +53,7 @@ typedef struct Driver {
 Driver Driver_Create(PinMap pins, RadioParams *params, IOCallback *io,
                         Timer timer, unsigned long timeout_ms);
 
-int Driver_Send(Driver *, const char *, unsigned long size);
+unsigned long Driver_Send(Driver *, const char *, unsigned long size);
 
 #ifdef __cplusplus
 }

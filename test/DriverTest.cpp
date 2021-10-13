@@ -15,13 +15,15 @@ static int stub_read_pin_call_count;
 static int stub_read_pin_toggle_at;
 static int stub_read_pin(int pin);
 
+static void reset_write_pin();
 static void spy_write_pin(int pin, int value);
 static int spy_write_pin_args[MAX_TEST_INDEX][2];
 static int spy_write_pin_args_index;
 
-static void spy_write_to_serial(void *, int);
+static void reset_write_to_serial();
+static unsigned long spy_write_to_serial(void *content, unsigned long size);
 static char spy_write_to_serial_arg_1[MAX_TEST_INDEX][MAX_TEST_INDEX];
-static int spy_write_to_serial_arg_2[MAX_TEST_INDEX];
+static unsigned long spy_write_to_serial_arg_2[MAX_TEST_INDEX];
 static int spy_write_to_serial_call_count;
 
 static unsigned long default_timeout;
@@ -42,11 +44,12 @@ void spy_write_pin(int pin, int value) {
   ++spy_write_pin_args_index;
 }
 
-void spy_write_to_serial(void *content, int size) {
+unsigned long spy_write_to_serial(void *content, unsigned long size) {
   memcpy(spy_write_to_serial_arg_1[spy_write_to_serial_call_count], content,
          size);
   spy_write_to_serial_arg_2[spy_write_to_serial_call_count] = size;
   ++spy_write_to_serial_call_count;
+  return size;
 }
 
 unsigned long stub_progressive_epoch_ms_fn() { return progressive_ms += 1; }
@@ -54,11 +57,29 @@ unsigned long stub_progressive_epoch_ms_fn() { return progressive_ms += 1; }
 Driver create_sample(const char *topic, const char air_data_rate,
                      const int is_fixed, const int full_power) {
   PinMap pins = {1, 2, 3};
-  RadioParams params = {topic[0],      topic[1], topic[2],
+  RadioParams params = {topic[DRIVER_ADDRESS_HIGH_INDEX],      topic[DRIVER_ADDRESS_LOW_INDEX], topic[2],
                         air_data_rate, is_fixed, full_power};
   Timer timer = Timer_Create((const void *)stub_progressive_epoch_ms_fn);
   IOCallback io = {stub_read_pin, spy_write_pin, spy_write_to_serial};
   return Driver_Create(pins, &params, &io, timer, default_timeout);
+}
+
+void reset_write_to_serial() {
+  spy_write_to_serial_call_count = 0;
+  for (auto &content_arg : spy_write_to_serial_arg_1) {
+    memset(content_arg, '\0', MAX_TEST_INDEX);
+  }
+  for (auto &size_arg : spy_write_to_serial_arg_2) {
+    size_arg = 0;
+  }
+}
+
+void reset_write_pin() {
+  spy_write_pin_args_index = 0;
+  for (auto &arg : spy_write_pin_args) {
+    arg[0] = -1;
+    arg[1] = -1;
+  }
 }
 
 // -----------------------------------------------------------------------------
@@ -66,21 +87,11 @@ Driver create_sample(const char *topic, const char air_data_rate,
 TEST_GROUP(IntegratingDriver){void setup() override{default_timeout = 20000;
 progressive_ms = 1;
 stub_read_pin_return = 1; // ready by default
-spy_write_pin_args_index = 0;
 stub_read_pin_call_count = 0;
 stub_read_pin_toggle_at = 1000;
-spy_write_to_serial_call_count = 0;
 memset(sample_address, '\0', 2);
-for (auto &arg : spy_write_pin_args) {
-  arg[0] = -1;
-  arg[1] = -1;
-}
-for (auto &content_arg : spy_write_to_serial_arg_1) {
-  memset(content_arg, '\0', MAX_TEST_INDEX);
-}
-for (auto &size_arg : spy_write_to_serial_arg_2) {
-  size_arg = 0;
-}
+reset_write_pin();
+reset_write_to_serial();
 }
 }
 ;
@@ -107,20 +118,20 @@ TEST(IntegratingDriver, CreateADriver) {
   CHECK_EQUAL(1, spy_write_to_serial_call_count);
 }
 
-TEST(IntegratingDriver, CreateADriverAtSleepMode) {
+TEST(IntegratingDriver, SetStateAsSleepAfterInitialization) {
   Driver sample_driver = create_sample("\x08\x09\x06", 0, 0, 0);
   CHECK_EQUAL(SLEEP, sample_driver.state);
   CHECK_EQUAL(spy_write_pin_args[0][0], sample_driver.pins.m0);
-  CHECK_EQUAL(spy_write_pin_args[0][1], HIGH_VALUE);
+  CHECK_EQUAL(spy_write_pin_args[0][1], ON);
   CHECK_EQUAL(spy_write_pin_args[1][0], sample_driver.pins.m1);
-  CHECK_EQUAL(spy_write_pin_args[1][1], HIGH_VALUE);
+  CHECK_EQUAL(spy_write_pin_args[1][1], ON);
 }
 
 TEST(IntegratingDriver, SetAddressAndChannel) {
   create_sample("\xA1\xA2\xA3", 0, 0, 0);
   CHECK_EQUAL(1, spy_write_to_serial_call_count);
-  CHECK_EQUAL('\xA1', spy_write_to_serial_arg_1[0][ADDRESS_LOW]);
-  CHECK_EQUAL('\xA2', spy_write_to_serial_arg_1[0][ADDRESS_HIGH]);
+  CHECK_EQUAL('\xA2', spy_write_to_serial_arg_1[0][ADDRESS_LOW]);
+  CHECK_EQUAL('\xA1', spy_write_to_serial_arg_1[0][ADDRESS_HIGH]);
   CHECK_EQUAL('\xA3', spy_write_to_serial_arg_1[0][CHANNEL]);
 }
 
@@ -190,8 +201,8 @@ TEST(IntegratingDriver, SetLowestTransmissionPower) {
 TEST(IntegratingDriver, ConfiguresADriverOnCreating) {
   create_sample("\xA1\xA2\xA3", 0, 0, 0);
   CHECK_EQUAL(1, spy_write_to_serial_call_count);
-  CHECK_EQUAL('\xA1', spy_write_to_serial_arg_1[0][ADDRESS_LOW]);
-  CHECK_EQUAL('\xA2', spy_write_to_serial_arg_1[0][ADDRESS_HIGH]);
+  CHECK_EQUAL('\xA2', spy_write_to_serial_arg_1[0][ADDRESS_LOW]);
+  CHECK_EQUAL('\xA1', spy_write_to_serial_arg_1[0][ADDRESS_HIGH]);
   CHECK_EQUAL('\xA3', spy_write_to_serial_arg_1[0][CHANNEL]);
 }
 
@@ -205,13 +216,42 @@ TEST(IntegratingDriver, WaitUntilAuxGetsHigh) {
 TEST(IntegratingDriver, TimeoutWaitingForHighOnAux) {
   stub_read_pin_return = 0;
   default_timeout = progressive_ms + 1;
-  Driver driver = create_sample("\xA1\xA2\xA3", 0, 0, 0);
-  CHECK_EQUAL(ERROR, driver.state);
+  Driver sample_driver = create_sample("\xA1\xA2\xA3", 0, 0, 0);
+  CHECK_EQUAL(ERROR, sample_driver.state);
 }
 
-TEST(IntegratingDriver, Sends) {
+TEST(IntegratingDriver, SendAString) {
+  Driver sample_driver = create_sample("\xA1\xA2\xA3", 0, 0, 0);
+  reset_write_to_serial();
+  const char raw_message[] = "abcdefghi";
+  unsigned long result =
+      Driver_Send(&sample_driver, raw_message, sizeof(raw_message));
+  CHECK_EQUAL(sizeof(raw_message), result);
+  MEMCMP_EQUAL("\xA1\xA2\xA3", spy_write_to_serial_arg_1[0], 3);
+  MEMCMP_EQUAL("abcdefghi", spy_write_to_serial_arg_1[0] + 3,
+               sizeof(raw_message));
+}
+
+TEST(IntegratingDriver, SetStateToNormalBeforeSending) {
   Driver sample_driver = create_sample("\xA1\xA2\xA3", 0, 0, 0);
   const char raw_message[] = "abcdefghi";
-  int result = Driver_Send(&sample_driver, raw_message, sizeof(raw_message));
-  CHECK_EQUAL(1, result);
+  unsigned long result =
+      Driver_Send(&sample_driver, raw_message, sizeof(raw_message));
+  CHECK_EQUAL(sizeof(raw_message), result);
+  CHECK_EQUAL(spy_write_pin_args[2][0], sample_driver.pins.m0);
+  CHECK_EQUAL(spy_write_pin_args[2][1], OFF);
+  CHECK_EQUAL(spy_write_pin_args[3][0], sample_driver.pins.m1);
+  CHECK_EQUAL(spy_write_pin_args[3][1], OFF);
+}
+
+TEST(IntegratingDriver, SetStateToSleepAfterSending) {
+  Driver sample_driver = create_sample("\xA1\xA2\xA3", 0, 0, 0);
+  const char raw_message[] = "abcdefghi";
+  unsigned long result =
+      Driver_Send(&sample_driver, raw_message, sizeof(raw_message));
+  CHECK_EQUAL(sizeof(raw_message), result);
+  CHECK_EQUAL(spy_write_pin_args[4][0], sample_driver.pins.m0);
+  CHECK_EQUAL(spy_write_pin_args[4][1], ON);
+  CHECK_EQUAL(spy_write_pin_args[5][0], sample_driver.pins.m1);
+  CHECK_EQUAL(spy_write_pin_args[5][1], ON);
 }

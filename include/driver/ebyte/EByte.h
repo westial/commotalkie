@@ -47,11 +47,6 @@
 
 // -----------------------------------------------------------------------------
 
-#define ADDRESS_LOW_INDEX 0
-#define ADDRESS_HIGH_INDEX 1
-
-// -----------------------------------------------------------------------------
-
 typedef enum SpeedLowerBit {
   PARITY_INDEX = 6,
   BAUD_RATE_INDEX = 3,
@@ -75,8 +70,8 @@ typedef enum ConfigIndex {
   OPTIONS = 5
 } ConfigIndex;
 
-static void set_mode_sleep(Driver*);
-static void set_mode_normal(Driver*);
+static void change_state_to_sleep(Driver* driver);
+static void change_state_to_normal(Driver* driver);
 static void set_configuration(Driver *driver);
 static int value_speed(char parity, char baud_rate, char air_rate);
 static int value_options(int transmit_mode,
@@ -86,7 +81,7 @@ static int wait_until_ready(Driver *driver);
 
 static int (*read_pin_callback)(int);
 static void (*write_pin_callback)(int, int);
-static void (*write_to_serial_callback)(void*, int);
+static unsigned long (*write_to_serial_callback)(void*, unsigned long);
 
 static Driver create_driver(PinMap *pins, RadioParams *params, Timer *timer,
                             const unsigned long *timeout_ms);
