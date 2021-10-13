@@ -1,4 +1,4 @@
-#include "ebyte/EByte.h"
+#include "driver/EByte.h"
 #include <string.h>
 
 Driver Driver_Create(PinMap pins, RadioParams *params, IOCallback *io,

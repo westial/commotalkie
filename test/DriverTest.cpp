@@ -1,7 +1,7 @@
 #include "Driver.h"
 #include "CppUTest/TestHarness.h"
 #include <cstring>
-#include <ebyte/EByte.h>
+#include <driver/EByte.h>
 
 // -----------------------------------------------------------------------------
 

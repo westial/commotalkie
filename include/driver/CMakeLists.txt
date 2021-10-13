@@ -1,6 +1,6 @@
 set(HEADER_FILES
         Driver.h
-        ebyte/EByte.h
+        EByte.h
         )
 
 add_library(driver STATIC ${HEADER_FILES})
