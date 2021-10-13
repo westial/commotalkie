@@ -59,7 +59,8 @@ unsigned long stub_progressive_epoch_ms_fn() {
 Driver create_sample(const char *topic, const char air_data_rate,
                      const int is_fixed, const int full_power) {
   PinMap pins = {1, 2, 3};
-  RadioParams params = {topic[DRIVER_ADDRESS_HIGH_INDEX],      topic[DRIVER_ADDRESS_LOW_INDEX], topic[2],
+  RadioParams params = {
+      {topic[DRIVER_ADDRESS_HIGH_INDEX], topic[DRIVER_ADDRESS_LOW_INDEX]}, topic[2],
                         air_data_rate, is_fixed, full_power};
   Timer timer = Timer_Create((const void *)stub_progressive_epoch_ms_fn);
   IOCallback io = {stub_read_pin, spy_write_pin, spy_write_to_serial};
