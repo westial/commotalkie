@@ -73,21 +73,4 @@ typedef enum ConfigIndex {
   OPTIONS = 5
 } ConfigIndex;
 
-static void change_state_to_sleep(Driver* driver);
-static void change_state_to_normal(Driver* driver);
-static void set_configuration(Driver *driver);
-static int value_speed(char parity, char baud_rate, char air_rate);
-static int value_options(int transmit_mode,
-                         int pull_up, char wake_up_time,
-                         int fec_switch, char transmit_power);
-static int wait_until_ready(Driver *driver);
-static void delay(Driver *driver, unsigned long milliseconds);
-
-static int (*read_pin_callback)(unsigned char);
-static void (*write_pin_callback)(unsigned char, unsigned char);
-static unsigned long (*write_to_serial_callback)(void*, unsigned long);
-
-static Driver create_driver(PinMap *pins, RadioParams *params, Timer *timer,
-                            const unsigned long *timeout_ms);
-
 #endif //COMMOTALKIE_INCLUDE_DRIVER_EBYTE_H_
