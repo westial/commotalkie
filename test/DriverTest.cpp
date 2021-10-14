@@ -7,7 +7,7 @@
 
 #define MAX_TEST_INDEX 100
 
-static char sample_address[2];
+static char sample_address[DRIVER_ADDRESS_SIZE];
 static Driver create_sample(const char *, char, int, int);
 
 static int stub_read_pin_return;
@@ -227,8 +227,12 @@ TEST(IntegratingDriver, SendAString) {
   Driver sample_driver = create_sample("\xA1\xA2\xA3", AIR_RATE_2400, 1, 1);
   reset_write_to_serial();
   const char raw_message[] = "abcdefghi";
-  unsigned long result =
-      Driver_Send(&sample_driver, raw_message, sizeof(raw_message));
+  char destination[2];
+  destination[DRIVER_ADDRESS_HIGH_INDEX]= '\xA1';
+  destination[DRIVER_ADDRESS_LOW_INDEX]= '\xA2';
+  const char channel = '\xA3';
+  unsigned long result = Driver_Send(&sample_driver, destination, &channel,
+                                     raw_message, sizeof(raw_message));
   CHECK_EQUAL(sizeof(raw_message), result);
   MEMCMP_EQUAL("\xA1\xA2\xA3", spy_write_to_serial_arg_1[0], 3);
   MEMCMP_EQUAL("abcdefghi", spy_write_to_serial_arg_1[0] + 3,
@@ -238,8 +242,12 @@ TEST(IntegratingDriver, SendAString) {
 TEST(IntegratingDriver, SetStateToNormalBeforeSending) {
   Driver sample_driver = create_sample("\xA1\xA2\xA3", 0, 0, 0);
   const char raw_message[] = "abcdefghi";
-  unsigned long result =
-      Driver_Send(&sample_driver, raw_message, sizeof(raw_message));
+  char destination[2];
+  destination[DRIVER_ADDRESS_HIGH_INDEX]= '\xA1';
+  destination[DRIVER_ADDRESS_LOW_INDEX]= '\xA2';
+  const char channel = '\xA3';
+  unsigned long result = Driver_Send(&sample_driver, destination, &channel,
+                                     raw_message, sizeof(raw_message));
   CHECK_EQUAL(sizeof(raw_message), result);
   CHECK_EQUAL(spy_write_pin_args[2][0], sample_driver.pins.m0);
   CHECK_EQUAL(spy_write_pin_args[2][1], OFF);
@@ -250,8 +258,12 @@ TEST(IntegratingDriver, SetStateToNormalBeforeSending) {
 TEST(IntegratingDriver, SetStateToSleepAfterSending) {
   Driver sample_driver = create_sample("\xA1\xA2\xA3", 0, 0, 0);
   const char raw_message[] = "abcdefghi";
-  unsigned long result =
-      Driver_Send(&sample_driver, raw_message, sizeof(raw_message));
+  char destination[2];
+  destination[DRIVER_ADDRESS_HIGH_INDEX]= '\xA1';
+  destination[DRIVER_ADDRESS_LOW_INDEX]= '\xA2';
+  const char channel = '\xA3';
+  unsigned long result = Driver_Send(&sample_driver, destination, &channel,
+                                     raw_message, sizeof(raw_message));
   CHECK_EQUAL(sizeof(raw_message), result);
   CHECK_EQUAL(spy_write_pin_args[4][0], sample_driver.pins.m0);
   CHECK_EQUAL(spy_write_pin_args[4][1], ON);

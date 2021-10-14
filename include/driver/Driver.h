@@ -13,6 +13,7 @@ extern "C" {
 #define OFF 0
 #define ON 1
 
+#define DRIVER_ADDRESS_SIZE 2
 #define DRIVER_ADDRESS_LOW_INDEX 0
 #define DRIVER_ADDRESS_HIGH_INDEX 1
 
@@ -23,7 +24,7 @@ typedef struct IOCallback {
 } IOCallback;
 
 typedef struct RadioParams {
-  char address[2];
+  char address[DRIVER_ADDRESS_SIZE];
   char channel;
   char air_data_rate;
   int is_fixed_transmission;
@@ -39,7 +40,7 @@ typedef struct PinMap {
 typedef enum State { NORMAL, SLEEP, ERROR } State;
 
 typedef struct Driver {
-  char address[2];
+  char address[DRIVER_ADDRESS_SIZE];
   char channel;
   char air_data_rate;
   PinMap pins;
@@ -51,9 +52,11 @@ typedef struct Driver {
 } Driver;
 
 Driver Driver_Create(PinMap pins, RadioParams *params, IOCallback *io,
-                        Timer timer, unsigned long timeout_ms);
+                     Timer timer, unsigned long timeout_ms);
 
-unsigned long Driver_Send(Driver *, const char *, unsigned long size);
+unsigned long Driver_Send(Driver *driver, const char *address,
+                             const char *channel, const char *content,
+                             unsigned long size);
 
 #ifdef __cplusplus
 }

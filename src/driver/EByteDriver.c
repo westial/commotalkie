@@ -12,13 +12,15 @@ Driver Driver_Create(PinMap pins, RadioParams *params, IOCallback *io,
   return self;
 }
 
-unsigned long Driver_Send(Driver *driver, const char *content, unsigned long size) {
-  char data[sizeof(driver->address) + 1 + size];
+unsigned long Driver_Send(Driver *driver, const char *address,
+                             const char *channel, const char *content,
+                             unsigned long size) {
+  char data[sizeof(driver->address) + sizeof(driver->channel) + size];
   unsigned long written;
   change_state_to_normal(driver);
-  data[0] = driver->address[DRIVER_ADDRESS_HIGH_INDEX];
-  data[1] = driver->address[DRIVER_ADDRESS_LOW_INDEX];
-  data[2] = driver->channel;
+  data[0] = address[DRIVER_ADDRESS_HIGH_INDEX];
+  data[1] = address[DRIVER_ADDRESS_LOW_INDEX];
+  data[2] = *channel;
   memcpy(data + 3, content, size);
   written = write_to_serial_callback(data, sizeof(data));
   change_state_to_sleep(driver);
