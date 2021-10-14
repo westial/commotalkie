@@ -15,7 +15,7 @@
 
 #define AIR_RATE_300 0b000		// 300 baud
 #define AIR_RATE_1200 0b001		// 1200 baud
-#define AIR_RATE_2400 0b010		// 2400 baud
+#define AIR_RATE_2400 0b010		// 2400 baud    (default)
 #define AIR_RATE_4800 0b011		// 4800 baud
 #define AIR_RATE_9600 0b100		// 9600 baud
 #define AIR_RATE_19200 0b101	// 19200 baud
@@ -83,8 +83,8 @@ static int value_options(int transmit_mode,
 static int wait_until_ready(Driver *driver);
 static void delay(Driver *driver, unsigned long milliseconds);
 
-static int (*read_pin_callback)(int);
-static void (*write_pin_callback)(int, int);
+static int (*read_pin_callback)(unsigned char);
+static void (*write_pin_callback)(unsigned char, unsigned char);
 static unsigned long (*write_to_serial_callback)(void*, unsigned long);
 
 static Driver create_driver(PinMap *pins, RadioParams *params, Timer *timer,

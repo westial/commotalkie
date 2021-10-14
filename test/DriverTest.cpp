@@ -13,10 +13,10 @@ static Driver create_sample(const char *, char, int, int);
 static int stub_read_pin_return;
 static int stub_read_pin_call_count;
 static int stub_read_pin_toggle_at;
-static int stub_read_pin(int pin);
+static int stub_read_pin(unsigned char pin);
 
 static void reset_write_pin();
-static void spy_write_pin(int pin, int value);
+static void spy_write_pin(unsigned char pin, unsigned char value);
 static int spy_write_pin_args[MAX_TEST_INDEX][2];
 static int spy_write_pin_args_index;
 
@@ -32,13 +32,13 @@ static unsigned long stub_progressive_epoch_ms_fn();
 
 // -----------------------------------------------------------------------------
 
-int stub_read_pin(int pin) {
+int stub_read_pin(unsigned char pin) {
   return (stub_read_pin_toggle_at == stub_read_pin_call_count++)
              ? !stub_read_pin_return
              : stub_read_pin_return;
 }
 
-void spy_write_pin(int pin, int value) {
+void spy_write_pin(unsigned char pin, unsigned char value) {
   spy_write_pin_args[spy_write_pin_args_index][0] = pin;
   spy_write_pin_args[spy_write_pin_args_index][1] = value;
   ++spy_write_pin_args_index;
@@ -224,7 +224,7 @@ TEST(IntegratingDriver, TimeoutWaitingForHighOnAux) {
 }
 
 TEST(IntegratingDriver, SendAString) {
-  Driver sample_driver = create_sample("\xA1\xA2\xA3", 0, 0, 0);
+  Driver sample_driver = create_sample("\xA1\xA2\xA3", AIR_RATE_2400, 1, 1);
   reset_write_to_serial();
   const char raw_message[] = "abcdefghi";
   unsigned long result =

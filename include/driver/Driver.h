@@ -17,8 +17,8 @@ extern "C" {
 #define DRIVER_ADDRESS_HIGH_INDEX 1
 
 typedef struct IOCallback {
-  int (*read_pin)(int);
-  void (*write_pin)(int, int);
+  int (*read_pin)(unsigned char);
+  void (*write_pin)(unsigned char, unsigned char);
   unsigned long (*write_to_serial)(void *, unsigned long);
 } IOCallback;
 
