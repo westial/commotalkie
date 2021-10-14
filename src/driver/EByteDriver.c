@@ -93,12 +93,14 @@ void change_state_to_sleep(Driver *driver) {
   write_pin_callback(driver->pins.m0, ON);
   write_pin_callback(driver->pins.m1, ON);
   driver->state = (wait_until_ready(driver)) ? SLEEP : ERROR;
+  delay(driver, MS_DELAY_AFTER_MODE_SWITCH);
 }
 
 void change_state_to_normal(Driver *driver) {
   write_pin_callback(driver->pins.m0, OFF);
   write_pin_callback(driver->pins.m1, OFF);
   driver->state = (wait_until_ready(driver)) ? NORMAL : ERROR;
+  delay(driver, MS_DELAY_AFTER_MODE_SWITCH);
 }
 
 Driver create_driver(PinMap *pins, RadioParams *params, Timer *timer,

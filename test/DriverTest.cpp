@@ -278,5 +278,6 @@ TEST(IntegratingDriver, DelayAfterAuxGetsHigh) {
   // Epoch service stub changes progressive_ms at:
   //  * 2 times to start and get millis to get sleep state.
   //  * 1 time to start and MS_DELAY_AFTER_AUX_HIGH to get delayed as required.
-  CHECK_EQUAL(MS_DELAY_AFTER_AUX_HIGH + 3, progressive_ms);
+  //  * 2 times passes through the mode switch delay.of MS_DELAY_AFTER_MODE_SWITCH.
+  CHECK_EQUAL(MS_DELAY_AFTER_AUX_HIGH + 5, progressive_ms);
 }

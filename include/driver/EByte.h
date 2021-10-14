@@ -9,7 +9,19 @@
 
 // -----------------------------------------------------------------------------
 
+/**
+ * @see E32-915T20D_Usermanual_EN_v1.6.pdf
+ * "It is recommended to check AUX pin out status and wait 2ms after AUX outputs
+ * high level before switching the mode."
+ */
 #define MS_DELAY_AFTER_AUX_HIGH 2
+
+/**
+ * @see E32-915T20D_Usermanual_EN_v1.6.pdf
+ * "After modifying M1 or M0, it will start to work in new mode 1ms later if the
+ * module is free."
+ */
+#define MS_DELAY_AFTER_MODE_SWITCH 1
 
 // -----------------------------------------------------------------------------
 
