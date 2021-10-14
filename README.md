@@ -224,14 +224,11 @@ There is an Arduino library based implementation in [./arduino](./arduino).
 To build the files for this Arduino library, go to this directory and execute
 `make`. It creates a subdirectory in [./arduino/prebuild](./arduino/prebuild)
 with the directory of the library itself [./arduino/prebuild/CommoTalkie](./arduino/prebuild/CommoTalkie)
-and a configurable parameters file [./arduino/prebuild/messageconfig.h](./arduino/prebuild/messageconfig.h)
 
 To install the library move the [./arduino/prebuild/CommoTalkie](./arduino/prebuild/CommoTalkie)
-to your OS Arduino Library and do not forget to move the configuration file
-[./arduino/prebuild/messageconfig.h](./arduino/prebuild/messageconfig.h) to every 
-project you want to use this library. This configuration file can either be left
-into the CommoTalkie Arduino Library directory as well, and then, the same
-configuration is taken for every project using this library.
+to your OS Arduino Library 
+[./arduino/prebuild/CommoTalkie/messageconfig.h](./arduino/prebuild/CommoTalkie/messageconfig.h) 
+to the project you want to use this library in.
 
 ## License ##
 
