@@ -45,6 +45,20 @@ unsigned long Driver_Send(Driver *driver, const char *address,
   return (wait_until_ready(driver) && sizeof(data) == written) ? size : 0;
 }
 
+unsigned long xx_Driver_Send(Driver *driver, const Destination *destination,
+                             const char *content, unsigned long size) {
+  char data[sizeof(driver->address) + sizeof(driver->channel) + size];
+  unsigned long written;
+  change_state_to_normal(driver);
+  data[0] = destination->address_high;
+  data[1] = destination->address_low;
+  data[2] = destination->channel;
+  memcpy(data + 3, content, size);
+  written = write_to_serial_callback(data, sizeof(data));
+  change_state_to_sleep(driver);
+  return (wait_until_ready(driver) && sizeof(data) == written) ? size : 0;
+}
+
 int value_options(int transmit_mode, int pull_up, char wake_up_time,
                   int fec_switch, char transmit_power) {
   return ((transmit_mode & 0xFF) << TRANSMIT_MODE_INDEX) |

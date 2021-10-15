@@ -17,6 +17,12 @@ extern "C" {
 #define DRIVER_ADDRESS_LOW_INDEX 0
 #define DRIVER_ADDRESS_HIGH_INDEX 1
 
+typedef struct Destination {
+  char address_high;
+  char address_low;
+  char channel;
+} Destination;
+
 typedef struct IOCallback {
   int (*read_pin)(unsigned char);
   void (*write_pin)(unsigned char, unsigned char);
@@ -55,8 +61,11 @@ Driver Driver_Create(PinMap pins, RadioParams *params, IOCallback *io,
                      Timer timer, unsigned long timeout_ms);
 
 unsigned long Driver_Send(Driver *driver, const char *address,
-                             const char *channel, const char *content,
-                             unsigned long size);
+                          const char *channel, const char *content,
+                          unsigned long size);
+
+unsigned long xx_Driver_Send(Driver *driver, const Destination *destination,
+                             const char *content, unsigned long size);
 
 #ifdef __cplusplus
 }
