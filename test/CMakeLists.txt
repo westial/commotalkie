@@ -27,7 +27,11 @@ add_library(PublishEncryptedMessageTest PublishAppTest.cpp)
 add_library(ReadEncryptedMessageTest PullAppTest.cpp)
 add_library(PublisherBuilderTest PublisherBuilderTest.cpp)
 add_library(SubscriberBuilderTest SubscriberBuilderTest.cpp)
-add_library(IntegratingDriverTest DriverTest.cpp)
+add_library(DriverConfiguringTest DriverConfiguringTest.cpp)
+add_library(DriverSendingTest DriverSendingTest.cpp)
+
+# helper
+add_library(DriverTestHelper helper/DriverTestHelper.cpp)
 
 # add mocking library
 add_library(Spy STATIC Spy.h)
@@ -36,6 +40,7 @@ set_target_properties(Spy PROPERTIES LINKER_LANGUAGE CXX)
 add_executable(RunAllTests RunAllTests.cpp)
 target_link_libraries(RunAllTests
         Spy
+        DriverTestHelper
         imp_cpputest
         PackingTest
         ValidatingTest
@@ -46,7 +51,8 @@ target_link_libraries(RunAllTests
         ReadEncryptedMessageTest
         PublisherBuilderTest
         SubscriberBuilderTest
-        IntegratingDriverTest
+        DriverConfiguringTest
+        DriverSendingTest
         PlainMessageFormatter
         SumMessageValidator
         XorMessageCrypter
