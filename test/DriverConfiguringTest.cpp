@@ -6,14 +6,7 @@
 
 // -----------------------------------------------------------------------------
 
-TEST_GROUP(DriverConfiguring){void setup() override{default_timeout = 20000;
-progressive_ms = 1;
-stub_read_pin_return = 1; // ready by default
-stub_read_pin_call_count = 0;
-stub_read_pin_toggle_at = 1000;
-memset(sample_address, '\0', 2);
-reset_write_pin();
-reset_write_to_serial();
+TEST_GROUP(DriverConfiguring){void setup() override{helperSetup();
 }
 }
 ;
@@ -139,7 +132,7 @@ TEST(DriverConfiguring, TimeoutWaitingForHighOnAux) {
   stub_read_pin_return = 0;
   default_timeout = progressive_ms + 1;
   Driver sample_driver = create_sample("\xA1\xA2\xA3", 0, 0, 0);
-  CHECK_EQUAL(ERROR, sample_driver.state);
+  CHECK_EQUAL(WARNING, sample_driver.state);
 }
 
 TEST(DriverConfiguring, DelayAfterAuxGetsHigh) {

@@ -9,11 +9,14 @@ static int value_options(int transmit_mode,
                          int pull_up, char wake_up_time,
                          int fec_switch, char transmit_power);
 static int wait_until_ready(Driver *driver);
+static int wait_until_available(Driver *driver);
 static void delay(Driver *driver, unsigned long milliseconds);
 
 static int (*read_pin_callback)(unsigned char);
 static void (*write_pin_callback)(unsigned char, unsigned char);
 static unsigned long (*write_to_serial_callback)(void*, unsigned long);
+static unsigned long (*read_from_serial_callback)(char*, unsigned long);
+static int (*is_serial_available_callback)();
 
 static Driver create_driver(PinMap *pins, RadioParams *params, Timer *timer,
                             const unsigned long *timeout_ms);
@@ -24,6 +27,8 @@ Driver Driver_Create(PinMap pins, RadioParams *params, IOCallback *io,
   read_pin_callback = io->read_pin;
   write_pin_callback = io->write_pin;
   write_to_serial_callback = io->write_to_serial;
+  read_from_serial_callback = io->read_from_serial;
+  is_serial_available_callback = io->is_serial_available;
   Driver self = create_driver(&pins, params, &timer, &timeout_ms);
   change_state_to_sleep(&self);
   set_configuration(&self);
@@ -42,6 +47,16 @@ unsigned long Driver_Send(Driver *driver, const Destination *destination,
   written = write_to_serial_callback(data, sizeof(data));
   change_state_to_sleep(driver);
   return (wait_until_ready(driver) && sizeof(data) == written) ? size : 0;
+}
+
+long Driver_Receive(Driver *driver, char* buffer, unsigned long size) {
+  unsigned long result = 0;
+  change_state_to_normal(driver);
+  if (wait_until_available(driver)) {
+    result = read_from_serial_callback(buffer, size);
+  }
+  change_state_to_sleep(driver);
+  return (long)result;
 }
 
 int value_options(int transmit_mode, int pull_up, char wake_up_time,
@@ -83,6 +98,15 @@ int wait_until_ready(Driver *driver) {
   return on_time;
 }
 
+int wait_until_available(Driver *driver) {
+  int on_time;
+  Timer_Start(&driver->timer);
+  do {
+    on_time = driver->timeout_at > Timer_GetMillis(&driver->timer);
+  }while (0 >= is_serial_available_callback() && on_time);
+  return on_time;
+}
+
 void delay(Driver *driver, unsigned long milliseconds) {
   Timer_Start(&driver->timer);
   while (milliseconds > Timer_GetMillis(&driver->timer));
@@ -91,14 +115,14 @@ void delay(Driver *driver, unsigned long milliseconds) {
 void change_state_to_sleep(Driver *driver) {
   write_pin_callback(driver->pins.m0, ON);
   write_pin_callback(driver->pins.m1, ON);
-  driver->state = (wait_until_ready(driver)) ? SLEEP : ERROR;
+  driver->state = (wait_until_ready(driver)) ? SLEEP : WARNING;
   delay(driver, MS_DELAY_AFTER_MODE_SWITCH);
 }
 
 void change_state_to_normal(Driver *driver) {
   write_pin_callback(driver->pins.m0, OFF);
   write_pin_callback(driver->pins.m1, OFF);
-  driver->state = (wait_until_ready(driver)) ? NORMAL : ERROR;
+  driver->state = (wait_until_ready(driver)) ? NORMAL : WARNING;
   delay(driver, MS_DELAY_AFTER_MODE_SWITCH);
 }
 

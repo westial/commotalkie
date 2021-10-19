@@ -11,6 +11,7 @@ IMPORT_TEST_GROUP(PublisherBuilder);
 IMPORT_TEST_GROUP(SubscriberBuilder);
 IMPORT_TEST_GROUP(DriverConfiguring);
 IMPORT_TEST_GROUP(DriverSending);
+IMPORT_TEST_GROUP(DriverReceiving);
 
 int main(int argc, char** argv)
 {

@@ -5,13 +5,7 @@
 
 // -----------------------------------------------------------------------------
 
-TEST_GROUP(DriverSending){void setup() override{default_timeout = 20000;
-progressive_ms = 1;
-stub_read_pin_return = 1; // ready by default
-stub_read_pin_call_count = 0;
-stub_read_pin_toggle_at = 1000;
-reset_write_pin();
-reset_write_to_serial();
+TEST_GROUP(DriverSending){void setup() override{helperSetup();
 }
 }
 ;

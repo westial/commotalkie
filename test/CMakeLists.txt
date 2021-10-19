@@ -29,6 +29,7 @@ add_library(PublisherBuilderTest PublisherBuilderTest.cpp)
 add_library(SubscriberBuilderTest SubscriberBuilderTest.cpp)
 add_library(DriverConfiguringTest DriverConfiguringTest.cpp)
 add_library(DriverSendingTest DriverSendingTest.cpp)
+add_library(DriverReceivingTest DriverReceivingTest.cpp)
 
 # helper
 add_library(DriverTestHelper helper/DriverTestHelper.cpp)
@@ -53,6 +54,7 @@ target_link_libraries(RunAllTests
         SubscriberBuilderTest
         DriverConfiguringTest
         DriverSendingTest
+        DriverReceivingTest
         PlainMessageFormatter
         SumMessageValidator
         XorMessageCrypter

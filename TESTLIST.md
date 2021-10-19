@@ -35,5 +35,9 @@ and pending when it begins with a minus sign (-).
 + Wait for Aux getting high.
 + Send a string.
 + Wait an absolute interval after Aux got high.
-- Receive a string.
++ Receive nothing.
++ Change to normal state before receiving.
++ Change to sleep state after receiving.
++ Receive a string.
++ Expire receiving timeout.
 - Ignore setting state when the required state is the current one.

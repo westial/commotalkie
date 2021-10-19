@@ -27,6 +27,8 @@ typedef struct IOCallback {
   int (*read_pin)(unsigned char);
   void (*write_pin)(unsigned char, unsigned char);
   unsigned long (*write_to_serial)(void *, unsigned long);
+  unsigned long (*read_from_serial)(char *, unsigned long);
+  int (*is_serial_available)();
 } IOCallback;
 
 typedef struct RadioParams {
@@ -43,7 +45,7 @@ typedef struct PinMap {
   int aux;
 } PinMap;
 
-typedef enum State { NORMAL, SLEEP, ERROR } State;
+typedef enum State { NORMAL, SLEEP, ERROR, WARNING } State;
 
 typedef struct Driver {
   char address[DRIVER_ADDRESS_SIZE];
@@ -62,6 +64,8 @@ Driver Driver_Create(PinMap pins, RadioParams *params, IOCallback *io,
 
 unsigned long Driver_Send(Driver *driver, const Destination *destination,
                              const char *content, unsigned long size);
+
+long Driver_Receive(Driver *driver, char* buffer, unsigned long size);
 
 #ifdef __cplusplus
 }
