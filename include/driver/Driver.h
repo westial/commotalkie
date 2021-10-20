@@ -62,7 +62,7 @@ typedef struct Driver {
 } Driver;
 
 Driver Driver_Create(PinMap pins, RadioParams *params, IOCallback *io,
-                     Timer timer, unsigned long *timeouts);
+                     Timer* timer, unsigned long *timeouts);
 
 unsigned long Driver_Send(Driver *driver, const Destination *destination,
                              const char *content, unsigned long size);

@@ -126,7 +126,7 @@ Driver create_sample(const char *topic, const char air_data_rate,
                    spy_write_to_serial,
                    dynamic_from_serial,
                    dynamic_serial_is_available};
-  return Driver_Create(pins, &params, &io, timer, default_timeout);
+  return Driver_Create(pins, &params, &io, &timer, default_timeout);
 }
 
 void reset_write_to_serial() {

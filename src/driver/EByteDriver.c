@@ -21,13 +21,13 @@ static Driver create_driver(PinMap *pins, RadioParams *params, Timer *timer,
                             const unsigned long *timeout_ms);
 
 Driver Driver_Create(PinMap pins, RadioParams *params, IOCallback *io,
-                     Timer timer, unsigned long *timeouts) {
+                     Timer *timer, unsigned long *timeouts) {
   read_pin_callback = io->read_pin;
   write_pin_callback = io->write_pin;
   write_to_serial_callback = io->write_to_serial;
   read_from_serial_callback = io->read_from_serial;
   is_serial_available_callback = io->is_serial_available;
-  Driver self = create_driver(&pins, params, &timer, timeouts);
+  Driver self = create_driver(&pins, params, timer, timeouts);
   change_state_to_sleep(&self);
   set_configuration(&self);
   return self;

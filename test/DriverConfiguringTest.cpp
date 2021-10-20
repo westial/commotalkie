@@ -23,7 +23,7 @@ TEST(DriverConfiguring, CreateADriver) {
   io.read_pin = stub_read_pin;
   io.write_pin = spy_write_pin;
   io.write_to_serial = spy_write_to_serial;
-  Driver instance = Driver_Create(pins, &params, &io, timer, default_timeout);
+  Driver instance = Driver_Create(pins, &params, &io, &timer, default_timeout);
   CHECK_EQUAL(1, instance.pins.m0);
   CHECK_EQUAL(2, instance.pins.m1);
   CHECK_EQUAL(3, instance.pins.aux);
