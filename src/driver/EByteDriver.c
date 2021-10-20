@@ -84,6 +84,7 @@ void set_configuration(Driver *driver) {
       driver->fixed_on, OPT_PULL_UP_ON, OPT_WAKEUP_250, OPT_FEC_ON,
       driver->low_power_on ? OPT_MIN_POWER : OPT_MAX_POWER);
   write_to_serial_callback(config, sizeof(config));
+  wait_until_ebyte_is_ready(driver);
 }
 
 int wait_until_ebyte_is_ready(Driver *driver) {
