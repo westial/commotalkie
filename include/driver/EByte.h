@@ -9,6 +9,11 @@
 
 // -----------------------------------------------------------------------------
 
+#define AUX_TIMEOUT_INDEX 0
+#define RECEIVING_TIMEOUT_INDEX 1
+
+// -----------------------------------------------------------------------------
+
 /**
  * @see E32-915T20D_Usermanual_EN_v1.6.pdf
  * "It is recommended to check AUX pin out status and wait 2ms after AUX outputs

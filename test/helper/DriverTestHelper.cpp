@@ -1,4 +1,5 @@
 #include "Driver.h"
+#include <EByte.h>
 #include <cstring>
 
 // -----------------------------------------------------------------------------
@@ -41,14 +42,15 @@ static unsigned short stub_availability_value;
 static unsigned long stub_read_nothing_from_serial(char *buffer,
                                                    unsigned long size);
 
-static unsigned long default_timeout;
+static unsigned long default_timeout[MAX_TIMEOUTS];
 static unsigned long progressive_ms;
 static unsigned long stub_progressive_epoch_ms_fn();
 
 // -----------------------------------------------------------------------------
 
 void helperSetup() {
-  default_timeout = 20000;
+  default_timeout[AUX_TIMEOUT_INDEX] = 5 * 1000;
+  default_timeout[RECEIVING_TIMEOUT_INDEX] = 60 * 1000;
   progressive_ms = 1;
   stub_read_pin_return = 1; // ready by default
   stub_read_pin_call_count = 0;

@@ -130,7 +130,7 @@ TEST(DriverConfiguring, WaitUntilAuxGetsHigh) {
 
 TEST(DriverConfiguring, TimeoutWaitingForHighOnAux) {
   stub_read_pin_return = 0;
-  default_timeout = progressive_ms + 1;
+  default_timeout[AUX_TIMEOUT_INDEX] = progressive_ms + 1;
   Driver sample_driver = create_sample("\xA1\xA2\xA3", 0, 0, 0);
   CHECK_EQUAL(WARNING, sample_driver.state);
 }

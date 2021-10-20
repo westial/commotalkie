@@ -61,5 +61,5 @@ TEST(DriverReceiving, ExpireReceivingTimeout) {
   char buffer[MAX_TEST_INDEX];
   Driver_Receive(&sample_driver, buffer, sizeof(buffer));
   MEMCMP_EQUAL(expected, buffer, MAX_TEST_INDEX);
-  CHECK_EQUAL(20000, spy_availability_check_count);
+  CHECK_EQUAL(default_timeout[RECEIVING_TIMEOUT_INDEX], spy_availability_check_count);
 }

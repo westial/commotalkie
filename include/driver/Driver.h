@@ -17,6 +17,8 @@ extern "C" {
 #define DRIVER_ADDRESS_LOW_INDEX 0
 #define DRIVER_ADDRESS_HIGH_INDEX 1
 
+#define MAX_TIMEOUTS 2
+
 typedef struct Destination {
   char address_high;
   char address_low;
@@ -56,11 +58,11 @@ typedef struct Driver {
   int fixed_on;
   int low_power_on;
   Timer timer;
-  unsigned long timeout_at;
+  unsigned long timeouts[MAX_TIMEOUTS];
 } Driver;
 
 Driver Driver_Create(PinMap pins, RadioParams *params, IOCallback *io,
-                     Timer timer, unsigned long timeout_ms);
+                     Timer timer, unsigned long *timeouts);
 
 unsigned long Driver_Send(Driver *driver, const Destination *destination,
                              const char *content, unsigned long size);
