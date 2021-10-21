@@ -5,7 +5,6 @@
 #include "MessageSubscriber.h"
 #include "Receiver.h"
 #include "Timer.h"
-#include <stddef.h>
 
 #define TIMEOUT_OFF 0
 
