@@ -9,7 +9,7 @@
 
 // -----------------------------------------------------------------------------
 
-static int stub_message_fn(const char* address, const char*, int);
+static int stub_message_fn(const char* address, const char*, unsigned long);
 static int stub_not_valid_fn(const char* address, const char*, int);
 static int stub_message_after_not_valid_failure_fn(const char*, const char*, int);
 static int stub_io_error_fn(const char*, const char*, int);
@@ -24,13 +24,13 @@ static unsigned long progressive_ms;
 
 // -----------------------------------------------------------------------------
 
-int stub_message_fn(const char* address, const char* content, const int size) {
+int stub_message_fn(const char* address, const char* content, const unsigned long size) {
   pull_fn_spy.calledCount ++;
   Message message;
   MessageFormatter_Pack("0123456789AB", &message);
   MessageValidator_Sign(&message);
   memcpy((void *)content, (void *)&message, MESSAGE_LENGTH);
-  return size;
+  return 0 < size;;
 }
 
 int stub_not_valid_fn(const char* address, const char* content, const int size) {

@@ -134,7 +134,7 @@ The listening function listens for a message input from whatever communication
 device is provided in the integration and fills up the input content and 
 returns one of the following integer values:
 
-* The size of the received content on success.
+* 1 on success.
 * 0 when it did receive nothing.
 * -1 on error.
 

@@ -8,7 +8,7 @@
 
 // -----------------------------------------------------------------------------
 
-static int stub_message_fn(const char*, const char*, int);
+static int stub_message_fn(const char*, const char*, unsigned long);
 static int mock_address_fn(const char*, const char*, int);
 static unsigned long stub_push_fn(const char*, const char*, unsigned long);
 static int stub_pull_fn(const char*, const char*, int);
@@ -23,9 +23,9 @@ static unsigned long progressive_ms;
 
 // -----------------------------------------------------------------------------
 
-int stub_message_fn(const char* address, const char* content, const int size) {
+int stub_message_fn(const char* address, const char* content, const unsigned long size) {
   memcpy((void *)content, "0123456789AB", MESSAGE_LENGTH);
-  return MESSAGE_LENGTH;
+  return 1;
 }
 int mock_address_fn(const char* address, const char* content, const int size) {
   MEMCMP_EQUAL(address, "address", 7);

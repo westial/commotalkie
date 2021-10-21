@@ -14,10 +14,10 @@ static int size = 0;
  * @return int number of bytes received or -1 in case of error. Returns 0 if
  * nothing.
  */
-static int (*listen)(const char* address, const char* content, const int size) = 0;
+static int (*listen)(const char* address, const char* content, const unsigned long size) = 0;
 
 void Receiver_Create(const void *listen_function, int buffer_size) {
-  listen = (int (*)(const char*, const char*, const int)) listen_function;
+  listen = (int (*)(const char*, const char*, const unsigned long)) listen_function;
   buffer = malloc(buffer_size);
   size = buffer_size;
 }

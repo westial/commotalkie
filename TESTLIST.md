@@ -42,4 +42,4 @@ and pending when it begins with a minus sign (-).
 + Expire receiving timeout.
 + Auxiliary wait and receiving window have a different timeout.
 - Lora address and channel add 3 bytes to the message length.
-- Listen callback returns a long.
++ Listen callback returns a boolean value.
