@@ -40,4 +40,5 @@ and pending when it begins with a minus sign (-).
 + Change to sleep state after receiving.
 + Receive a string.
 + Expire receiving timeout.
-- Auxiliary wait and receiving window have a different timeout.
++ Auxiliary wait and receiving window have a different timeout.
+- Lora address and channel add 3 bytes to the message length.

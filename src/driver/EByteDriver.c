@@ -47,7 +47,7 @@ unsigned long Driver_Send(Driver *driver, const Destination *destination,
   return (wait_until_ebyte_is_ready(driver) && sizeof(data) == written) ? size : 0;
 }
 
-long Driver_Receive(Driver *driver, char *buffer, unsigned long size) {
+long Driver_Receive(Driver *driver, const char *buffer, unsigned long size) {
   unsigned long result = 0;
   change_state_to_normal(driver);
   if (wait_until_serial_is_available(driver)) {
