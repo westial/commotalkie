@@ -141,7 +141,7 @@ returns one of the following integer values:
 The listening function has the following signature:
 
 ```c
-int listen_fn(const char* address, const char* buffer, const int size);
+int listen_fn(const char* address, const char* buffer, const unsigned long size);
 ```
 
 The time service function signature is pretty simple, it's just a call to a 
