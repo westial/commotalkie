@@ -46,8 +46,8 @@
 #define OPT_WAKEUP_250 0b000
 #define OPT_FEC_ON 1
 
-#define OPT_MIN_POWER 0b11
-#define OPT_MAX_POWER 0b10
+#define OPT_MIN_POWER 0b10    // 14dBm
+#define OPT_MAX_POWER 0b00    // 20dBm
 
 // Best configuration for full feature availability.
 #define PARITY_BIT_8N1 0b00
