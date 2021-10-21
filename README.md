@@ -101,7 +101,7 @@ Pull_Create(
     &to_id
 );
 
-// Start listening for a message from a "destination::address" only
+// Start listening for messages sent to "destination::address" only
 char body[MESSAGE_BODY_LENGTH];
 unsigned char port, id;
 result = Pull_Invoke("destination::address", &port, &id, body);

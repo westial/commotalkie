@@ -43,3 +43,4 @@ and pending when it begins with a minus sign (-).
 + Auxiliary wait and receiving window have a different timeout.
 - Lora address and channel add 3 bytes to the message length.
 + Listen callback returns a boolean value.
++ passing argument 1 of 'read_from_serial_callback' discards 'const' qualifier from pointer target type
