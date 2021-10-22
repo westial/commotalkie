@@ -27,10 +27,13 @@ static char spy_write_to_serial_arg_1[MAX_TEST_INDEX][MAX_TEST_INDEX];
 static unsigned long spy_write_to_serial_arg_2[MAX_TEST_INDEX];
 static int spy_write_to_serial_call_count;
 
-static unsigned long (*dynamic_from_serial)(char *buffer, unsigned long size);
-static unsigned long fake_read_from_serial(char *buffer, unsigned long size);
+static unsigned long (*dynamic_from_serial)(char *buffer, unsigned long size,
+                                            unsigned long position);
+static unsigned long fake_read_from_serial(char *buffer, unsigned long size,
+                                           unsigned long position);
 static void reset_read_from_serial();
-static unsigned long spy_read_from_serial(char *buffer, unsigned long size);
+static unsigned long spy_read_from_serial(char *buffer, unsigned long size,
+                                          unsigned long position);
 static char stub_read_from_serial_buffer[MAX_TEST_INDEX];
 
 static int (*dynamic_serial_is_available)();
@@ -39,7 +42,8 @@ static int serial_is_available_by_value_stub();
 static unsigned short stub_availability_value;
 
 static unsigned long stub_read_nothing_from_serial(char *buffer,
-                                                   unsigned long size);
+                                                   unsigned long size,
+                                                   unsigned long position);
 
 static unsigned long default_timeout[MAX_TIMEOUTS];
 static unsigned long progressive_ms;
@@ -82,18 +86,21 @@ unsigned long spy_write_to_serial(void *content, unsigned long size) {
   return size;
 }
 
-unsigned long stub_read_nothing_from_serial(char *buffer, unsigned long size) {
+unsigned long stub_read_nothing_from_serial(char *buffer, unsigned long size,
+                                            unsigned long position) {
   memset(buffer, '\x00', size);
   return 0;
 }
 
-unsigned long spy_read_from_serial(char *buffer, unsigned long size) {
+unsigned long spy_read_from_serial(char *buffer, unsigned long size,
+                                   unsigned long position) {
   memcpy(buffer, stub_read_from_serial_buffer, size);
   stub_availability_value = 0;
   return size;
 }
 
-unsigned long fake_read_from_serial(char *buffer, unsigned long size) {
+unsigned long fake_read_from_serial(char *buffer, unsigned long size,
+                                    unsigned long position) {
   return size;
 }
 
@@ -114,9 +121,7 @@ Driver create_sample(const char *topic, const char air_data_rate,
       is_fixed,
       full_power};
   Timer timer = Timer_Create((const void *)stub_progressive_epoch_ms_fn);
-  IOCallback io = {stub_read_pin,
-                   spy_write_pin,
-                   spy_write_to_serial,
+  IOCallback io = {stub_read_pin, spy_write_pin, spy_write_to_serial,
                    dynamic_from_serial};
   return Driver_Create(pins, &params, &io, &timer, default_timeout);
 }

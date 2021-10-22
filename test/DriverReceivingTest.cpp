@@ -15,7 +15,7 @@ TEST(DriverReceiving, ReceiveNothing) {
   dynamic_from_serial = stub_read_nothing_from_serial;
   Driver sample_driver = create_sample("\xA1\xA2\xA3", AIR_RATE_2400, 1, 1);
   char buffer[MAX_TEST_INDEX];
-  long result = Driver_Receive(&sample_driver, buffer, sizeof(buffer));
+  long result = Driver_Receive(&sample_driver, buffer, sizeof(buffer), 0);
   CHECK_EQUAL(0, result);
 }
 
@@ -44,6 +44,6 @@ TEST(DriverReceiving, ReceiveSomething) {
   memcpy(stub_read_from_serial_buffer, sample, sizeof(sample));
   Driver sample_driver = create_sample("\xA1\xA2\xA3", 0, 0, 0);
   char buffer[MAX_TEST_INDEX];
-  Driver_Receive(&sample_driver, buffer, sizeof(buffer));
+  Driver_Receive(&sample_driver, buffer, sizeof(buffer), 0);
   MEMCMP_EQUAL(sample, buffer, sizeof(sample));
 }

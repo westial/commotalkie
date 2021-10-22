@@ -7,13 +7,14 @@ static void set_configuration(Driver *driver);
 static int value_speed(char parity, char baud_rate, char air_rate);
 static int value_options(int transmit_mode, int pull_up, char wake_up_time,
                          int fec_switch, char transmit_power);
-static int wait_until_ebyte_is_ready(Driver *driver);
+static short wait_until_ebyte_is_ready(Driver *driver);
 static void delay(Driver *driver, unsigned long milliseconds);
 
 static int (*read_pin_callback)(unsigned char);
 static void (*write_pin_callback)(unsigned char, unsigned char);
 static unsigned long (*write_to_serial_callback)(void *, unsigned long);
-static unsigned long (*read_from_serial_callback)(char *, unsigned long);
+static unsigned long (*read_from_serial_callback)(char *, unsigned long,
+                                                  unsigned long);
 
 static Driver create_driver(PinMap *pins, RadioParams *params, Timer *timer,
                             const unsigned long *timeout_ms);
@@ -41,20 +42,19 @@ unsigned long Driver_Send(Driver *driver, const Destination *destination,
   memcpy(data + 3, content, size);
   written = write_to_serial_callback(data, sizeof(data));
   change_state_to_sleep(driver);
-  return (wait_until_ebyte_is_ready(driver) && sizeof(data) == written) ? size : 0;
+  return (wait_until_ebyte_is_ready(driver) && sizeof(data) == written) ? size
+                                                                        : 0;
 }
 
-long Driver_Receive(Driver *driver, char *buffer, unsigned long size) {
-  return (long)read_from_serial_callback(buffer, size);
+long Driver_Receive(Driver *driver, char *buffer, unsigned long size,
+                    unsigned long position) {
+  memset(buffer, '\x00', size);
+  return (long)read_from_serial_callback(buffer, size, position);
 }
 
-void Driver_TurnOn(Driver *driver) {
-  change_state_to_normal(driver);
-}
+void Driver_TurnOn(Driver *driver) { change_state_to_normal(driver); }
 
-void Driver_TurnOff(Driver *driver) {
-  change_state_to_sleep(driver);
-}
+void Driver_TurnOff(Driver *driver) { change_state_to_sleep(driver); }
 
 int value_options(int transmit_mode, int pull_up, char wake_up_time,
                   int fec_switch, char transmit_power) {
@@ -86,7 +86,7 @@ void set_configuration(Driver *driver) {
   wait_until_ebyte_is_ready(driver);
 }
 
-int wait_until_ebyte_is_ready(Driver *driver) {
+short wait_until_ebyte_is_ready(Driver *driver) {
   int on_time;
   Timer_Start(&driver->timer);
   do {
