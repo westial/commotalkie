@@ -12,16 +12,16 @@
 // -----------------------------------------------------------------------------
 
 static struct Spy pull_fn_spy;
-static int stub_message_fn(const char *, const char *, unsigned long);
+static int stub_message_fn(const char *, char *, unsigned long);
 static unsigned long fake_epoch_ms_fn();
 static unsigned char port, id;
 static char body[MESSAGE_BODY_LENGTH];
-static int stub_pull_nothing_yet_fn(const char*, const char*, int);
+static int stub_pull_nothing_yet_fn(const char*, char*, unsigned long);
 static unsigned long nothing_until_zero;
 
 // -----------------------------------------------------------------------------
 
-int stub_message_fn(const char *address, const char *content, const unsigned long size) {
+int stub_message_fn(const char *address, char *content, const unsigned long size) {
   pull_fn_spy.calledCount++;
   Message message;
   MessageFormatter_Pack("0123456789AB", &message);
@@ -34,7 +34,7 @@ unsigned long fake_epoch_ms_fn() {
   return 100;
 }
 
-int stub_pull_nothing_yet_fn(const char* address, const char* content, const unsigned long size) {
+int stub_pull_nothing_yet_fn(const char* address, char* content, const unsigned long size) {
   if (--nothing_until_zero) {
     pull_fn_spy.calledCount++;
     return 0;

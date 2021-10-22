@@ -14,9 +14,9 @@ void SubscriberBuilder_Create();
 void SubscriberBuilder_SetSalt(const char *salt);
 
 void SubscriberBuilder_SetListenCallback(
-    int (*)(const char *, const char *, const unsigned long));
+    int (*)(const char *, char *, const unsigned long));
 
-void SubscriberBuilder_SetTimeService(unsigned long (*)(void));
+void SubscriberBuilder_SetTimeService(unsigned long (*)());
 
 void SubscriberBuilder_SetTimeout(const unsigned long *);
 
