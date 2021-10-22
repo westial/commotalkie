@@ -41,9 +41,9 @@ and pending when it begins with a minus sign (-).
 + Receive a string.
 + Expire receiving timeout.
 + Auxiliary wait and receiving window have a different timeout.
-- Lora address and channel add 3 bytes to the message length.
 + Listen callback returns a boolean value.
 + passing argument 1 of 'read_from_serial_callback' discards 'const' qualifier from pointer target type
 + Subscriber turns on the receiver when it starts pulling in.
 + Subscriber turns off the receiver when the input is read.
 + Receiver is turned off by default.
+- Do not change the state if the new state is the current one.

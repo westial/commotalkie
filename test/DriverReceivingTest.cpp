@@ -19,20 +19,19 @@ TEST(DriverReceiving, ReceiveNothing) {
   CHECK_EQUAL(0, result);
 }
 
-TEST(DriverReceiving, SetStateToNormalBeforeReceiving) {
+TEST(DriverReceiving, SetStateToNormal) {
   Driver sample_driver = create_sample("\xA1\xA2\xA3", 0, 0, 0);
-  char buffer[MAX_TEST_INDEX];
-  Driver_Receive(&sample_driver, buffer, sizeof(buffer));
+  Driver_TurnOn(&sample_driver);
   CHECK_EQUAL(spy_write_pin_args[2][0], sample_driver.pins.m0);
   CHECK_EQUAL(spy_write_pin_args[2][1], OFF);
   CHECK_EQUAL(spy_write_pin_args[3][0], sample_driver.pins.m1);
   CHECK_EQUAL(spy_write_pin_args[3][1], OFF);
 }
 
-TEST(DriverReceiving, SetStateToSleepAfterReceiving) {
+TEST(DriverReceiving, ChangeStateToSleep) {
   Driver sample_driver = create_sample("\xA1\xA2\xA3", 0, 0, 0);
-  char buffer[MAX_TEST_INDEX];
-  Driver_Receive(&sample_driver, buffer, sizeof(buffer));
+  Driver_TurnOn(&sample_driver);
+  Driver_TurnOff(&sample_driver);
   CHECK_EQUAL(spy_write_pin_args[4][0], sample_driver.pins.m0);
   CHECK_EQUAL(spy_write_pin_args[4][1], ON);
   CHECK_EQUAL(spy_write_pin_args[5][0], sample_driver.pins.m1);

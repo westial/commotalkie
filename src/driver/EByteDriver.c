@@ -45,11 +45,15 @@ unsigned long Driver_Send(Driver *driver, const Destination *destination,
 }
 
 long Driver_Receive(Driver *driver, char *buffer, unsigned long size) {
-  unsigned long result;
+  return (long)read_from_serial_callback(buffer, size);
+}
+
+void Driver_TurnOn(Driver *driver) {
   change_state_to_normal(driver);
-  result = read_from_serial_callback(buffer, size);
+}
+
+void Driver_TurnOff(Driver *driver) {
   change_state_to_sleep(driver);
-  return (long)result;
 }
 
 int value_options(int transmit_mode, int pull_up, char wake_up_time,
