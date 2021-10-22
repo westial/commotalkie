@@ -30,7 +30,6 @@ typedef struct IOCallback {
   void (*write_pin)(unsigned char, unsigned char);
   unsigned long (*write_to_serial)(void *, unsigned long);
   unsigned long (*read_from_serial)(char *, unsigned long);
-  int (*is_serial_available)();
 } IOCallback;
 
 typedef struct RadioParams {

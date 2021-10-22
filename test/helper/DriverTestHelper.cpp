@@ -35,7 +35,6 @@ static char stub_read_from_serial_buffer[MAX_TEST_INDEX];
 
 static int (*dynamic_serial_is_available)();
 static unsigned long spy_availability_check_count;
-static int serial_is_never_available();
 static int serial_is_available_by_value_stub();
 static unsigned short stub_availability_value;
 
@@ -50,7 +49,6 @@ static unsigned long stub_progressive_epoch_ms_fn();
 
 void helperSetup() {
   default_timeout[AUX_TIMEOUT_INDEX] = 5 * 1000;
-  default_timeout[RECEIVING_TIMEOUT_INDEX] = 60 * 1000;
   progressive_ms = 1;
   stub_read_pin_return = 1; // ready by default
   stub_read_pin_call_count = 0;
@@ -99,11 +97,6 @@ unsigned long fake_read_from_serial(char *buffer, unsigned long size) {
   return size;
 }
 
-int serial_is_never_available() {
-  ++spy_availability_check_count;
-  return -1;
-}
-
 int serial_is_available_by_value_stub() {
   ++spy_availability_check_count;
   return stub_availability_value == 1;
@@ -124,8 +117,7 @@ Driver create_sample(const char *topic, const char air_data_rate,
   IOCallback io = {stub_read_pin,
                    spy_write_pin,
                    spy_write_to_serial,
-                   dynamic_from_serial,
-                   dynamic_serial_is_available};
+                   dynamic_from_serial};
   return Driver_Create(pins, &params, &io, &timer, default_timeout);
 }
 

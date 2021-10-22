@@ -47,19 +47,4 @@ TEST(DriverReceiving, ReceiveSomething) {
   char buffer[MAX_TEST_INDEX];
   Driver_Receive(&sample_driver, buffer, sizeof(buffer));
   MEMCMP_EQUAL(sample, buffer, sizeof(sample));
-  CHECK_EQUAL(1, spy_availability_check_count);
-}
-
-TEST(DriverReceiving, ExpireReceivingTimeout) {
-  char expected[MAX_TEST_INDEX];
-  char sample[] = "hello baby";
-  dynamic_from_serial = spy_read_from_serial;
-  memcpy(stub_read_from_serial_buffer, sample, sizeof(sample));
-  dynamic_serial_is_available = serial_is_never_available;
-  memset(expected, '\x00', sizeof(expected));
-  Driver sample_driver = create_sample("\xA1\xA2\xA3", 0, 0, 0);
-  char buffer[MAX_TEST_INDEX];
-  Driver_Receive(&sample_driver, buffer, sizeof(buffer));
-  MEMCMP_EQUAL(expected, buffer, MAX_TEST_INDEX);
-  CHECK_EQUAL(default_timeout[RECEIVING_TIMEOUT_INDEX], spy_availability_check_count);
 }
