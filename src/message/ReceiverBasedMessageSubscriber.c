@@ -10,6 +10,7 @@
 
 #define NO_BUFFER 0
 
+static Result receive(const char* topic, void *message);
 static unsigned long timeout_at;
 static Timer timer;
 
@@ -19,6 +20,7 @@ void MessageSubscriber_Create(
     const void *turn_on,
     const void *turn_off) {
   Receiver_Create(pull, turn_on, turn_off, MESSAGE_LENGTH);
+  Receiver_TurnOff();
   timer = Timer_Create(epoch);
   timeout_at = TIMEOUT_OFF;
 }
@@ -28,15 +30,24 @@ void MessageSubscriber_CountDown(const unsigned long timeout_at_) {
   Timer_Start(&timer);
 }
 
-Result MessageSubscriber_Pull(const char* topic, const Message *message) {
+Result receive(const char* topic, void *message) {
   int available = NO_BUFFER;
   while (NO_BUFFER == available) {
-    available = Receiver_listen(topic);
-    if (Timer_IsRunning(&timer) && Timer_GetMillis(&timer) > timeout_at) return Timeout;
+    available = Receiver_Listen(topic);
+    if (Timer_IsRunning(&timer) && Timer_GetMillis(&timer) > timeout_at) {
+      return Timeout;
+    }
   }
   if (NO_BUFFER > available) return IOError;
-  Receiver_read((const char *) message);
+  Receiver_Read((void*)message);
   return Success;
+}
+
+Result MessageSubscriber_Pull(const char* topic, const Message *message) {
+  Receiver_TurnOn();
+  Result result = receive(topic, (void *)message);
+  Receiver_TurnOff();
+  return result;
 }
 
 void MessageSubscriber_Destroy() {

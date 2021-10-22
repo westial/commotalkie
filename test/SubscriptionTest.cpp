@@ -17,6 +17,8 @@ static int stub_pull_nothing_yet_fn(const char*, const char*, int);
 static unsigned long fake_epoch_ms_fn();
 static unsigned long stub_progressive_epoch_ms_fn();
 
+static unsigned int spy_state_on_counter;
+static unsigned int spy_state_off_counter;
 static int spy_receiver_state;
 static void spy_turn_on_receiver_fn();
 static void spy_turn_off_receiver_fn();
@@ -65,9 +67,11 @@ unsigned long stub_progressive_epoch_ms_fn() {
 }
 
 void spy_turn_on_receiver_fn() {
+  spy_state_on_counter++;
   spy_receiver_state = 1;
 }
 void spy_turn_off_receiver_fn() {
+  spy_state_off_counter++;
   spy_receiver_state = 0;
 }
 
@@ -78,6 +82,8 @@ TEST_GROUP(Subscription) {
     progressive_ms = 1;
     nothing_until_zero = 10000;
     spy_receiver_state = -1;
+    spy_state_on_counter = 0;
+    spy_state_off_counter = 0;
   }
 };
 
@@ -91,6 +97,8 @@ TEST(Subscription, Timeout) {
   result = MessageSubscriber_Pull("address", &message);
   MessageSubscriber_Destroy();
   CHECK_EQUAL(Timeout, result);
+  CHECK_EQUAL(1, spy_state_on_counter);
+  CHECK_EQUAL(0, spy_receiver_state);
 };
 
 TEST(Subscription, NoTimeout) {
@@ -103,6 +111,15 @@ TEST(Subscription, NoTimeout) {
   MessageSubscriber_Destroy();
   CHECK_EQUAL(Success, result);
   CHECK_EQUAL(0, nothing_until_zero);
+  CHECK_EQUAL(1, spy_state_on_counter);
+  CHECK_EQUAL(0, spy_receiver_state);
+};
+
+TEST(Subscription, ReceiverIsOffByDefault) {
+  MessageSubscriber_Create(
+      (void *)stub_pull_nothing_yet_fn, (void *)stub_progressive_epoch_ms_fn,
+      (void *)spy_turn_on_receiver_fn, (void *)spy_turn_off_receiver_fn);
+  CHECK_EQUAL(0, spy_receiver_state);
 };
 
 TEST(Subscription, IOError) {

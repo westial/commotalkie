@@ -140,8 +140,8 @@ TEST(PublishApp, PublishAndRead) {
   memcpy(expected_body, "23456789A", MESSAGE_BODY_LENGTH);
   Publish_Invoke("topic", expected_port, expected_id, expected_body);
   Publish_Destroy();
-  Pull_Create("salt", (void *)mock_pull_fn, (void *)fake_epoch_ms_fn,
-              (void *)spy_turn_on_receiver_fn, (void *)spy_turn_off_receiver_fn,
+  Pull_Create("salt", (const void *)mock_pull_fn, (const void *)fake_epoch_ms_fn,
+              (const void *)spy_turn_on_receiver_fn, (const void *)spy_turn_off_receiver_fn,
               999, 0);
   result = Pull_Invoke("topic", &result_port, &result_id, result_body);
   Pull_Destroy();

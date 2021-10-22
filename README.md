@@ -120,15 +120,31 @@ Initialization example for wildcard ID:
 ```c
 Pull_Create(
     "salt",
-    (void *) listen_fn,
-    (void *) now_fn,
-    timeout_milliseconds,
+    (const void *) listen_fn,
+    (const void *) now_fn,
+    (const void *) turn_on_fn,
+    (const void *) turn_off_fn,
+    timeout_at,
     0x00
 );
 ```
 
-The dependencies for the pulling service are two functions, the function to
-listen for a message and the time service.
+There is a salt value in the first argument.
+
+The `timeout_at` argument value is the listening expiration time. The unit for
+this value depends on the value returned by the time service `now_fn`. If the 
+`timeout_at` value is 0, there is no timeout and the device is listening
+permanently.
+
+The last argument is an ID to make the listener selective. If a received message
+is not forwarded to this ID, the message is discarded.
+
+The remaining arguments are the following function:
+
+* Listen for a message whatever port or device the implementation uses.
+* A time service providing a time in a number type value.
+* A command function to turn on the listener.
+* A command function to turn off the listener.
 
 The listening function listens for a message input from whatever communication 
 device is provided in the integration, fills up the `buffer` with and 
@@ -153,6 +169,21 @@ clock to get an increasing number of milliseconds:
 ```c
 unsigned long now_fn();
 ```
+
+The signature for the `turn_on_fn` is as follows:
+
+```c
+void turn_on_fn();
+```
+
+The signature for the `turn_off_fn` is as follows:
+
+```c
+void turn_off_fn();
+```
+
+The listener is turned off by default and turned on for listening during the 
+window limited by the timeout only.
 
 ### Builders make it easier ###
 

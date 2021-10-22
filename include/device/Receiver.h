@@ -12,9 +12,13 @@ extern "C" {
 void Receiver_Create(const void *listen, const void *turn_on,
                         const void *turn_off, int buffer_size);
 
-void Receiver_read(const char *content);
+void Receiver_Read(char *content);
 
-int Receiver_listen(const char *address);
+void Receiver_TurnOn();
+
+void Receiver_TurnOff();
+
+int Receiver_Listen(const char *address);
 
 void Receiver_Destroy(void);
 

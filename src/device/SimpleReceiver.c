@@ -28,9 +28,15 @@ void Receiver_Create(const void *listen_, const void *turn_on_,
   size = buffer_size;
 }
 
-void Receiver_read(char *content) { memcpy(content, buffer, size); }
+void Receiver_TurnOn() {turn_on();}
 
-int Receiver_listen(const char *address) {
+void Receiver_TurnOff() {turn_off();}
+
+void Receiver_Read(char *content) {
+  memcpy(content, buffer, size);
+}
+
+int Receiver_Listen(const char *address) {
   return listen(address, buffer, size);
 }
 
