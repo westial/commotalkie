@@ -26,6 +26,10 @@ static int spy_pushed_topics_index;
 static char spy_pushed_topics[MAX_MESSAGES][TOPIC_LENGTH];
 static int spy_pushed_contents_index;
 
+static int spy_receiver_state;
+static void spy_turn_on_receiver_fn();
+static void spy_turn_off_receiver_fn();
+
 // -----------------------------------------------------------------------------
 
 unsigned long mock_push_fn(const char* address, const char* content, unsigned long size) {
@@ -49,6 +53,13 @@ unsigned long fake_epoch_ms_fn() {
   return 100;
 }
 
+void spy_turn_on_receiver_fn() {
+  spy_receiver_state = 1;
+}
+void spy_turn_off_receiver_fn() {
+  spy_receiver_state = 0;
+}
+
 // -----------------------------------------------------------------------------
 
 TEST_GROUP(PublishApp) {
@@ -63,6 +74,7 @@ TEST_GROUP(PublishApp) {
     for (auto & spy_pushed_topic : spy_pushed_topics) {
       memset(spy_pushed_topic, '\0', TOPIC_LENGTH);
     }
+    spy_receiver_state = -1;
   }
 };
 
@@ -124,17 +136,13 @@ TEST(PublishApp, PublishAndRead) {
   char result_body[MESSAGE_BODY_LENGTH];
   unsigned char expected_port = 0x07;
   unsigned char expected_id = 0x08;
-
   Publish_Create("salt", (const void *) mock_push_fn);
   memcpy(expected_body, "23456789A", MESSAGE_BODY_LENGTH);
   Publish_Invoke("topic", expected_port, expected_id, expected_body);
   Publish_Destroy();
-
-  Pull_Create(
-      "salt",
-      (void *) mock_pull_fn,
-      (void *) fake_epoch_ms_fn,
-      999, 0);
+  Pull_Create("salt", (void *)mock_pull_fn, (void *)fake_epoch_ms_fn,
+              (void *)spy_turn_on_receiver_fn, (void *)spy_turn_off_receiver_fn,
+              999, 0);
   result = Pull_Invoke("topic", &result_port, &result_id, result_body);
   Pull_Destroy();
   CHECK_EQUAL(Success, result);

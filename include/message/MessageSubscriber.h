@@ -13,14 +13,16 @@ extern "C" {
 #endif
 
 void MessageSubscriber_Create(
-    const void *pull_function,
-    const void *epoch_function);
+    const void *pull,
+    const void *epoch,
+    const void *turn_on,
+    const void *turn_off);
 
 /**
  * Start timeout countdown
- * @param timeout_millis
+ * @param timeout_at
  */
-void MessageSubscriber_CountDown(unsigned long timeout_millis);
+void MessageSubscriber_CountDown(unsigned long timeout_at);
 
 /**
  * Listen from a topic

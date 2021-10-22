@@ -14,6 +14,8 @@
 static struct Spy pull_fn_spy;
 static int stub_message_fn(const char *, char *, unsigned long);
 static unsigned long fake_epoch_ms_fn();
+static void fake_turn_on_fn();
+static void fake_turn_off_fn();
 static unsigned char port, id;
 static char body[MESSAGE_BODY_LENGTH];
 static int stub_pull_nothing_yet_fn(const char*, char*, unsigned long);
@@ -42,6 +44,9 @@ int stub_pull_nothing_yet_fn(const char* address, char* content, const unsigned 
   else return stub_message_fn(address, content, size);
 }
 
+void fake_turn_on_fn() {}
+void fake_turn_off_fn() {}
+
 // -----------------------------------------------------------------------------
 
 TEST_GROUP(SubscriberBuilder) {
@@ -61,6 +66,7 @@ TEST(SubscriberBuilder, BuiltSubscriberPullsForIdOnly) {
   SubscriberBuilder_SetSalt("salt");
   SubscriberBuilder_SetListenCallback(stub_message_fn);
   SubscriberBuilder_SetTimeService(fake_epoch_ms_fn);
+  SubscriberBuilder_SetReceiverStateCallback(fake_turn_on_fn, fake_turn_off_fn);
   SubscriberBuilder_SetTimeout(&timeout);
   SubscriberBuilder_SetId(&id);
   CHECK_TRUE(SubscriberBuilder_Build());
@@ -76,6 +82,7 @@ TEST(SubscriberBuilder, BuiltSubscriberPullsForAnyId) {
   SubscriberBuilder_SetSalt("salt");
   SubscriberBuilder_SetListenCallback(stub_message_fn);
   SubscriberBuilder_SetTimeService(fake_epoch_ms_fn);
+  SubscriberBuilder_SetReceiverStateCallback(fake_turn_on_fn, fake_turn_off_fn);
   SubscriberBuilder_SetTimeout(&timeout);
   CHECK_TRUE(SubscriberBuilder_Build());
   SubscriberBuilder_Destroy();
@@ -90,6 +97,7 @@ TEST(SubscriberBuilder, BuildASubscriberNoTimeout) {
   SubscriberBuilder_Create();
   SubscriberBuilder_SetSalt("salt");
   SubscriberBuilder_SetListenCallback(stub_pull_nothing_yet_fn);
+  SubscriberBuilder_SetReceiverStateCallback(fake_turn_on_fn, fake_turn_off_fn);
   SubscriberBuilder_SetId(&id);
   CHECK_TRUE(SubscriberBuilder_Build());
   SubscriberBuilder_Destroy();
@@ -103,18 +111,32 @@ TEST(SubscriberBuilder, BuildWithMinimumRequired) {
   SubscriberBuilder_Create();
   SubscriberBuilder_SetSalt("salt");
   SubscriberBuilder_SetListenCallback(stub_message_fn);
+  SubscriberBuilder_SetReceiverStateCallback(fake_turn_on_fn, fake_turn_off_fn);
   CHECK_TRUE(SubscriberBuilder_Build());
+  SubscriberBuilder_Destroy();
 }
 
 TEST(SubscriberBuilder, SaltIsRequired) {
   SubscriberBuilder_Create();
   SubscriberBuilder_SetSalt("");
   SubscriberBuilder_SetListenCallback(stub_message_fn);
+  SubscriberBuilder_SetReceiverStateCallback(fake_turn_on_fn, fake_turn_off_fn);
   CHECK_FALSE(SubscriberBuilder_Build());
+  SubscriberBuilder_Destroy();
 }
 
 TEST(SubscriberBuilder, ListenCallbackIsRequired) {
   SubscriberBuilder_Create();
   SubscriberBuilder_SetSalt("salt");
+  SubscriberBuilder_SetReceiverStateCallback(fake_turn_on_fn, fake_turn_off_fn);
   CHECK_FALSE(SubscriberBuilder_Build());
+  SubscriberBuilder_Destroy();
+}
+
+TEST(SubscriberBuilder, ReceiverTurnOnCallbackIsRequired) {
+  SubscriberBuilder_Create();
+  SubscriberBuilder_SetSalt("salt");
+  SubscriberBuilder_SetListenCallback(stub_message_fn);
+  CHECK_FALSE(SubscriberBuilder_Build());
+  SubscriberBuilder_Destroy();
 }

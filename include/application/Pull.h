@@ -11,17 +11,12 @@
 extern "C" {
 #endif
 
-void Pull_Create(const char *salt,
-                 const void *pull_function,
-                 const void *epoch_function,
-                 unsigned long timeout_millis,
-                 const unsigned char *to_id);
+void Pull_Create(const char *salt, const void *pull, const void *epoch,
+                    const void *turn_on, const void *turn_off,
+                    unsigned long timeout_at, const unsigned char *to_id);
 
-Result Pull_Invoke(
-    const char *topic,
-    unsigned char *port,
-    unsigned char *id,
-    char *body);
+Result Pull_Invoke(const char *topic, unsigned char *port, unsigned char *id,
+                   char *body);
 
 void Pull_Destroy();
 
@@ -29,4 +24,4 @@ void Pull_Destroy();
 }
 #endif
 
-#endif //COMMOTALKIE_INCLUDE_APPLICATION_PULL_H_
+#endif // COMMOTALKIE_INCLUDE_APPLICATION_PULL_H_

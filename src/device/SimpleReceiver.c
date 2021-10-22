@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-static char* buffer = 0;
+static char *buffer = 0;
 static int size = 0;
 /**
  * Listen and get an event from the address.
@@ -14,19 +14,23 @@ static int size = 0;
  * @return int number of bytes received or -1 in case of error. Returns 0 if
  * nothing.
  */
-static int (*listen)(const char* address, const char* content, const unsigned long size) = 0;
+static int (*listen)(const char *address, const char *content,
+                     const unsigned long size) = 0;
+static void (*turn_on)() = 0;
+static void (*turn_off)() = 0;
 
-void Receiver_Create(const void *listen_function, int buffer_size) {
-  listen = (int (*)(const char*, const char*, const unsigned long)) listen_function;
+void Receiver_Create(const void *listen_, const void *turn_on_,
+                     const void *turn_off_, int buffer_size) {
+  listen = (int(*)(const char *, const char *, const unsigned long))listen_;
+  turn_on = (void(*)())turn_on_;
+  turn_off = (void(*)())turn_off_;
   buffer = malloc(buffer_size);
   size = buffer_size;
 }
 
-void Receiver_read(char* content) {
-  memcpy(content, buffer, size);
-}
+void Receiver_read(char *content) { memcpy(content, buffer, size); }
 
-int Receiver_listen(const char* address) {
+int Receiver_listen(const char *address) {
   return listen(address, buffer, size);
 }
 

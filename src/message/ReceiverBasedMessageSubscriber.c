@@ -14,15 +14,17 @@ static unsigned long timeout_at;
 static Timer timer;
 
 void MessageSubscriber_Create(
-    const void *pull_function,
-    const void *epoch_function) {
-  Receiver_Create(pull_function, MESSAGE_LENGTH);
-  timer = Timer_Create(epoch_function);
+    const void *pull,
+    const void *epoch,
+    const void *turn_on,
+    const void *turn_off) {
+  Receiver_Create(pull, turn_on, turn_off, MESSAGE_LENGTH);
+  timer = Timer_Create(epoch);
   timeout_at = TIMEOUT_OFF;
 }
 
-void MessageSubscriber_CountDown(const unsigned long timeout_millis) {
-  timeout_at = timeout_millis;
+void MessageSubscriber_CountDown(const unsigned long timeout_at_) {
+  timeout_at = timeout_at_;
   Timer_Start(&timer);
 }
 

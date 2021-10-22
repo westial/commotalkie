@@ -9,11 +9,12 @@
 extern "C" {
 #endif
 
-void Receiver_Create(const void *listen_function, int buffer_size);
+void Receiver_Create(const void *listen, const void *turn_on,
+                        const void *turn_off, int buffer_size);
 
-void Receiver_read(const char* content);
+void Receiver_read(const char *content);
 
-int Receiver_listen(const char* address);
+int Receiver_listen(const char *address);
 
 void Receiver_Destroy(void);
 
@@ -21,4 +22,4 @@ void Receiver_Destroy(void);
 }
 #endif
 
-#endif //COMMOTALKIE_INCLUDE_DEVICE_RECEIVER_H_
+#endif // COMMOTALKIE_INCLUDE_DEVICE_RECEIVER_H_

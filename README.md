@@ -131,14 +131,17 @@ The dependencies for the pulling service are two functions, the function to
 listen for a message and the time service.
 
 The listening function listens for a message input from whatever communication 
-device is provided in the integration and fills up the input content and 
+device is provided in the integration, fills up the `buffer` with and 
 returns one of the following integer values:
 
 * 1 on success.
 * 0 when it did receive nothing.
 * -1 on error.
 
-The listening function has the following signature:
+The listening function has the following signature. The `size` argument
+is exactly the value of MESSAGE_LENGTH. If the transporter driver prepends or 
+appends bytes to the message for technical requirements, the `listen_fn` fills
+up the `buffer` argument with the content without the transporter additions.
 
 ```c
 int listen_fn(const char* address, const char* buffer, const unsigned long size);
@@ -192,6 +195,7 @@ Create an instance of Pull and use it as follows:
 SubscriberBuilder_Create();
 SubscriberBuilder_SetSalt("salt");
 SubscriberBuilder_SetListenCallback(listen_fn);
+SubscriberBuilder_SetReceiverStateCallback(turn_on_fn, turn_off_fn);
 SubscriberBuilder_SetId(&id);
 if (!SubscriberBuilder_Build()) exit(-1);
 SubscriberBuilder_Destroy();

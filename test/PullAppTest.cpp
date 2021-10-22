@@ -22,6 +22,10 @@ static struct Spy pull_fn_spy;
 static unsigned long nothing_until_zero;
 static unsigned long progressive_ms;
 
+static int spy_receiver_state;
+static void spy_turn_on_receiver_fn();
+static void spy_turn_off_receiver_fn();
+
 // -----------------------------------------------------------------------------
 
 int stub_message_fn(const char* address, const char* content, const unsigned long size) {
@@ -69,6 +73,13 @@ int stub_pull_nothing_yet_fn(const char* address, const char* content, const int
   else return stub_message_fn(address, content, size);
 }
 
+void spy_turn_on_receiver_fn() {
+  spy_receiver_state = 1;
+}
+void spy_turn_off_receiver_fn() {
+  spy_receiver_state = 0;
+}
+
 // -----------------------------------------------------------------------------
 
 TEST_GROUP(PullApp) {
@@ -79,16 +90,15 @@ TEST_GROUP(PullApp) {
     port = 0;
     id = 0;
     progressive_ms = 1;
+    spy_receiver_state = -1;
   }
 };
 
 TEST(PullApp, PullingSuccess) {
   Result result;
-  Pull_Create(
-      "",
-      (void *) stub_message_fn,
-      (void *) fake_epoch_ms_fn,
-      999, nullptr);
+  Pull_Create("", (void *)stub_message_fn, (void *)fake_epoch_ms_fn,
+              (void *)spy_turn_on_receiver_fn, (void *)spy_turn_off_receiver_fn,
+              999, nullptr);
   result = Pull_Invoke("address", &port, &id, body);
   Pull_Destroy();
   CHECK_EQUAL(pull_fn_spy.calledCount, 1);
@@ -100,11 +110,9 @@ TEST(PullApp, PullingSuccess) {
 
 TEST(PullApp, PullingSuccessAfterFailure) {
   Result result;
-  Pull_Create(
-      "",
-      (void *) stub_message_after_not_valid_failure_fn,
-      (void *) fake_epoch_ms_fn,
-      999, nullptr);
+  Pull_Create("", (void *)stub_message_after_not_valid_failure_fn,
+              (void *)fake_epoch_ms_fn, (void *)spy_turn_on_receiver_fn,
+              (void *)spy_turn_off_receiver_fn, 999, nullptr);
   result = Pull_Invoke("address", &port, &id, body);
   Pull_Destroy();
   CHECK_EQUAL(pull_fn_spy.calledCount, 2);
@@ -116,11 +124,9 @@ TEST(PullApp, PullingSuccessAfterFailure) {
 
 TEST(PullApp, NoTimeoutPulling) {
   Result result;
-  Pull_Create(
-      "",
-      (void *) stub_pull_nothing_yet_fn,
-      (void *) fake_epoch_ms_fn,
-      0, nullptr);
+  Pull_Create("", (void *)stub_pull_nothing_yet_fn, (void *)fake_epoch_ms_fn,
+              (void *)spy_turn_on_receiver_fn, (void *)spy_turn_off_receiver_fn,
+              0, nullptr);
   result = Pull_Invoke("address", &port, &id, body);
   Pull_Destroy();
   CHECK_EQUAL(10000, pull_fn_spy.calledCount);
@@ -133,11 +139,10 @@ TEST(PullApp, NoTimeoutPulling) {
 
 TEST(PullApp, NotValidEndsByTimeout) {
   Result result;
-  Pull_Create(
-      "",
-      (void *) stub_not_valid_fn,
-      (void *) stub_progressive_epoch_ms_fn,
-      10000, nullptr);
+  Pull_Create("", (void *)stub_not_valid_fn,
+              (void *)stub_progressive_epoch_ms_fn,
+              (void *)spy_turn_on_receiver_fn, (void *)spy_turn_off_receiver_fn,
+              10000, nullptr);
   result = Pull_Invoke("address", &port, &id, body);
   Pull_Destroy();
   CHECK_FALSE(1 == pull_fn_spy.calledCount);
@@ -150,11 +155,9 @@ TEST(PullApp, NotValidEndsByTimeout) {
 TEST(PullApp, UnexpectedIdEndsWithTimeout) {
   Result result;
   const unsigned char strict_id = 0xA1;
-  Pull_Create(
-      "",
-      (void *) stub_message_fn,
-      (void *) stub_progressive_epoch_ms_fn,
-      10000, &strict_id);
+  Pull_Create("", (void *)stub_message_fn, (void *)stub_progressive_epoch_ms_fn,
+              (void *)spy_turn_on_receiver_fn, (void *)spy_turn_off_receiver_fn,
+              10000, &strict_id);
   result = Pull_Invoke("address", &port, &id, body);
   Pull_Destroy();
   CHECK_FALSE(1 == pull_fn_spy.calledCount);
@@ -167,11 +170,9 @@ TEST(PullApp, UnexpectedIdEndsWithTimeout) {
 TEST(PullApp, PullFromId) {
   Result result;
   const unsigned char strict_id = '2';
-  Pull_Create(
-      "",
-      (void *) stub_message_fn,
-      (void *) stub_progressive_epoch_ms_fn,
-      10000, &strict_id);
+  Pull_Create("", (void *)stub_message_fn, (void *)stub_progressive_epoch_ms_fn,
+              (void *)spy_turn_on_receiver_fn, (void *)spy_turn_off_receiver_fn,
+              10000, &strict_id);
   result = Pull_Invoke("address", &port, &id, body);
   Pull_Destroy();
   CHECK_EQUAL(Success, result);
@@ -183,11 +184,9 @@ TEST(PullApp, PullFromId) {
 
 TEST(PullApp, IOErrorFailure) {
   Result result;
-  Pull_Create(
-      "",
-      (void *) stub_io_error_fn,
-      (void *) fake_epoch_ms_fn,
-      999, nullptr);
+  Pull_Create("", (void *)stub_io_error_fn, (void *)fake_epoch_ms_fn,
+              (void *)spy_turn_on_receiver_fn, (void *)spy_turn_off_receiver_fn,
+              999, nullptr);
   result = Pull_Invoke("address", &port, &id, body);
   Pull_Destroy();
   CHECK_EQUAL(pull_fn_spy.calledCount, 1);
