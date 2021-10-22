@@ -44,8 +44,9 @@ Result receive(const char* topic, void *message) {
 }
 
 Result MessageSubscriber_Pull(const char* topic, const Message *message) {
+  Result result;
   Receiver_TurnOn();
-  Result result = receive(topic, (void *)message);
+  result = receive(topic, (void *)message);
   Receiver_TurnOff();
   return result;
 }

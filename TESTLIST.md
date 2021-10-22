@@ -46,6 +46,6 @@ and pending when it begins with a minus sign (-).
 + Subscriber turns on the receiver when it starts pulling in.
 + Subscriber turns off the receiver when the input is read.
 + Receiver is turned off by default.
-- Driver does not cut receiving while aux input is still low.
-- Driver does not transmit data out until aux input is high.
++ Driver does not cut receiving while aux input is still low.
+- Driver expires a timeout if aux input low on receiving.
 - Do not change the state if the new state is the current one.

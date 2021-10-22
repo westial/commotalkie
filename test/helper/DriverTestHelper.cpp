@@ -11,10 +11,15 @@ static void helperSetup();
 static char sample_address[DRIVER_ADDRESS_SIZE];
 static Driver create_sample(const char *, char, int, int);
 
+static int (*dynamic_read_pin)(unsigned char pin);
+
 static int stub_read_pin_return;
 static int stub_read_pin_call_count;
 static int stub_read_pin_toggle_at;
 static int stub_read_pin(unsigned char pin);
+
+static int sequence_return[MAX_TEST_INDEX];
+static int stub_read_pin_sequence(unsigned char pin);
 
 static void reset_write_pin();
 static void spy_write_pin(unsigned char pin, unsigned char value);
@@ -34,6 +39,12 @@ static unsigned long fake_read_from_serial(char *buffer, unsigned long size,
 static void reset_read_from_serial();
 static unsigned long spy_read_from_serial(char *buffer, unsigned long size,
                                           unsigned long position);
+
+static char stub_read_from_serial_buffer_4_char_chunks[10][4];
+static int buffer_chunks_index;
+static unsigned long spy_read_from_serial_by_chunks(char *buffer,
+                                                    unsigned long size,
+                                                    unsigned long position);
 static char stub_read_from_serial_buffer[MAX_TEST_INDEX];
 
 static int (*dynamic_serial_is_available)();
@@ -54,9 +65,11 @@ static unsigned long stub_progressive_epoch_ms_fn();
 void helperSetup() {
   default_timeout[AUX_TIMEOUT_INDEX] = 5 * 1000;
   progressive_ms = 1;
+  memset(sequence_return, 1, sizeof(sequence_return));
   stub_read_pin_return = 1; // ready by default
   stub_read_pin_call_count = 0;
   stub_read_pin_toggle_at = 1000;
+  dynamic_read_pin = stub_read_pin;
   reset_write_pin();
   reset_write_to_serial();
   dynamic_from_serial = fake_read_from_serial;
@@ -70,6 +83,10 @@ int stub_read_pin(unsigned char pin) {
   return (stub_read_pin_toggle_at == stub_read_pin_call_count++)
              ? !stub_read_pin_return
              : stub_read_pin_return;
+}
+
+int stub_read_pin_sequence(unsigned char pin) {
+  return sequence_return[stub_read_pin_call_count++];
 }
 
 void spy_write_pin(unsigned char pin, unsigned char value) {
@@ -99,6 +116,16 @@ unsigned long spy_read_from_serial(char *buffer, unsigned long size,
   return size;
 }
 
+unsigned long spy_read_from_serial_by_chunks(char *buffer, unsigned long size,
+                                             unsigned long position) {
+  memcpy(
+      buffer + position, stub_read_from_serial_buffer_4_char_chunks[buffer_chunks_index],
+      sizeof(stub_read_from_serial_buffer_4_char_chunks[buffer_chunks_index]));
+  buffer_chunks_index++;
+  position += sizeof(stub_read_from_serial_buffer_4_char_chunks[buffer_chunks_index]);
+  return position;
+}
+
 unsigned long fake_read_from_serial(char *buffer, unsigned long size,
                                     unsigned long position) {
   return size;
@@ -121,7 +148,7 @@ Driver create_sample(const char *topic, const char air_data_rate,
       is_fixed,
       full_power};
   Timer timer = Timer_Create((const void *)stub_progressive_epoch_ms_fn);
-  IOCallback io = {stub_read_pin, spy_write_pin, spy_write_to_serial,
+  IOCallback io = {dynamic_read_pin, spy_write_pin, spy_write_to_serial,
                    dynamic_from_serial};
   return Driver_Create(pins, &params, &io, &timer, default_timeout);
 }
@@ -139,6 +166,10 @@ void reset_write_to_serial() {
 void reset_read_from_serial() {
   memset(stub_read_from_serial_buffer, '\x00',
          sizeof(stub_read_from_serial_buffer));
+  buffer_chunks_index = 0;
+  for (auto &chunk : stub_read_from_serial_buffer_4_char_chunks) {
+    memset(chunk, '\x00', sizeof(chunk));
+  }
 }
 
 void reset_write_pin() {

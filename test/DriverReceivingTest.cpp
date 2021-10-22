@@ -15,7 +15,7 @@ TEST(DriverReceiving, ReceiveNothing) {
   dynamic_from_serial = stub_read_nothing_from_serial;
   Driver sample_driver = create_sample("\xA1\xA2\xA3", AIR_RATE_2400, 1, 1);
   char buffer[MAX_TEST_INDEX];
-  long result = Driver_Receive(&sample_driver, buffer, sizeof(buffer), 0);
+  long result = Driver_Receive(&sample_driver, buffer, sizeof(buffer));
   CHECK_EQUAL(0, result);
 }
 
@@ -41,9 +41,40 @@ TEST(DriverReceiving, ChangeStateToSleep) {
 TEST(DriverReceiving, ReceiveSomething) {
   char sample[] = "hello baby";
   dynamic_from_serial = spy_read_from_serial;
+  sequence_return[2] = 0;     // Let read with AUX at 0 for one time
+  dynamic_read_pin = stub_read_pin_sequence;
   memcpy(stub_read_from_serial_buffer, sample, sizeof(sample));
   Driver sample_driver = create_sample("\xA1\xA2\xA3", 0, 0, 0);
   char buffer[MAX_TEST_INDEX];
-  Driver_Receive(&sample_driver, buffer, sizeof(buffer), 0);
+  long result = Driver_Receive(&sample_driver, buffer, sizeof(buffer));
   MEMCMP_EQUAL(sample, buffer, sizeof(sample));
+  CHECK_EQUAL(1, result);
+}
+
+TEST(DriverReceiving, ReceiveSomethingByChunks) {
+  char chunk1[] = "1234";
+  char chunk2[] = "5678";
+  sequence_return[2] = 0;     // Let read with AUX at 0 for two times
+  sequence_return[3] = 0;
+  dynamic_read_pin = stub_read_pin_sequence;
+  dynamic_from_serial = spy_read_from_serial_by_chunks;
+  memcpy(stub_read_from_serial_buffer_4_char_chunks[0], chunk1, 4);
+  memcpy(stub_read_from_serial_buffer_4_char_chunks[1], chunk2, 4);
+  Driver sample_driver = create_sample("\xA1\xA2\xA3", 0, 0, 0);
+  char buffer[MAX_TEST_INDEX];
+  long result = Driver_Receive(&sample_driver, buffer, 8);
+  MEMCMP_EQUAL("12345678", buffer, 8);
+  CHECK_EQUAL(1, result);
+}
+
+TEST(DriverReceiving, ReceiveIncompleteMessage) {
+  char chunk1[] = "1234";
+  sequence_return[2] = 0;     // Let read with AUX at 0 for one time only
+  dynamic_read_pin = stub_read_pin_sequence;
+  dynamic_from_serial = spy_read_from_serial_by_chunks;
+  memcpy(stub_read_from_serial_buffer_4_char_chunks[0], chunk1, 4);
+  Driver sample_driver = create_sample("\xA1\xA2\xA3", 0, 0, 0);
+  char buffer[MAX_TEST_INDEX];
+  long result = Driver_Receive(&sample_driver, buffer, 8);
+  CHECK_EQUAL(-1, result);
 }
