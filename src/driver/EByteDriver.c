@@ -7,7 +7,7 @@ static void set_configuration(Driver *driver);
 static int value_speed(char parity, char baud_rate, char air_rate);
 static int value_options(int transmit_mode, int pull_up, char wake_up_time,
                          int fec_switch, char transmit_power);
-static short wait_until_ebyte_is_ready(Driver *driver);
+static int wait_until_ebyte_is_ready(Driver *driver);
 static void delay(Driver *driver, unsigned long milliseconds);
 
 static int (*read_pin_callback)(unsigned char);
@@ -46,10 +46,13 @@ unsigned long Driver_Send(Driver *driver, const Destination *destination,
                                                                         : 0;
 }
 
-long Driver_Receive(Driver *driver, char *buffer, unsigned long size,
-                    unsigned long position) {
+long Driver_Receive(Driver *driver, char *buffer, unsigned long size) {
   memset(buffer, '\x00', size);
-  return (long)read_from_serial_callback(buffer, size, position);
+  unsigned long position = 0;
+  while (OFF == read_pin_callback(driver->pins.aux)) {
+    position = read_from_serial_callback(buffer, size, position);
+  }
+  return (long)position;
 }
 
 void Driver_TurnOn(Driver *driver) { change_state_to_normal(driver); }
@@ -86,7 +89,7 @@ void set_configuration(Driver *driver) {
   wait_until_ebyte_is_ready(driver);
 }
 
-short wait_until_ebyte_is_ready(Driver *driver) {
+int wait_until_ebyte_is_ready(Driver *driver) {
   int on_time;
   Timer_Start(&driver->timer);
   do {
