@@ -7,6 +7,8 @@
 #include "Result.h"
 #include "Pull.h"
 
+#include "helper/TimerTestHelper.cpp"
+
 
 // -----------------------------------------------------------------------------
 
@@ -17,7 +19,6 @@ static unsigned long mock_push_fn(const char*, const char*, unsigned long);
 static unsigned long mock_push_fn_keep_topic(const char*, const char*, unsigned long);
 static int mock_pull_fn(const char*, const char*, int);
 static unsigned long mock_address_fn(const char*, const char*, unsigned long);
-static unsigned long fake_epoch_ms_fn();
 
 static struct Spy push_fn_spy;
 static char spy_expected[MESSAGE_LENGTH];
@@ -47,10 +48,6 @@ unsigned long mock_push_fn_keep_topic(const char* address, const char* content, 
 int mock_pull_fn(const char* address, const char* content, const int size) {
   memcpy((void *)content, spy_pushed_contents[0], MESSAGE_LENGTH);
   return size;
-}
-
-unsigned long fake_epoch_ms_fn() {
-  return 100;
 }
 
 void spy_turn_on_receiver_fn() {

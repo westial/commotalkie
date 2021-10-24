@@ -5,7 +5,7 @@
 
 // -----------------------------------------------------------------------------
 
-TEST_GROUP(DriverSending){void setup() override{helperSetup();
+TEST_GROUP(DriverSending){void setup() override{driverHelperSetup();
 }
 }
 ;

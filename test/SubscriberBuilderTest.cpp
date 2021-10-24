@@ -8,12 +8,12 @@
 #include <MessageFormatter.h>
 #include <MessageValidator.h>
 
+#include "helper/TimerTestHelper.cpp"
 
 // -----------------------------------------------------------------------------
 
 static struct Spy pull_fn_spy;
 static int stub_message_fn(const char *, char *, unsigned long);
-static unsigned long fake_epoch_ms_fn();
 static void fake_turn_on_fn();
 static void fake_turn_off_fn();
 static unsigned char port, id;
@@ -30,10 +30,6 @@ int stub_message_fn(const char *address, char *content, const unsigned long size
   MessageValidator_Sign(&message);
   memcpy((void *)content, (void *)&message, MESSAGE_LENGTH);
   return 0 < size;
-}
-
-unsigned long fake_epoch_ms_fn() {
-  return 100;
 }
 
 int stub_pull_nothing_yet_fn(const char* address, char* content, const unsigned long size) {

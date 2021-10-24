@@ -22,7 +22,7 @@ int Timer_IsRunning(Timer *timer);
 
 unsigned long Timer_GetMillis(Timer *timer);
 
-void Timer_Destroy();
+void Timer_Destroy(Timer *timer);
 
 #ifdef __cplusplus
 }

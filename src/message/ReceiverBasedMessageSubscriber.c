@@ -53,5 +53,5 @@ Result MessageSubscriber_Pull(const char* topic, const Message *message) {
 
 void MessageSubscriber_Destroy() {
   Receiver_Destroy();
-  Timer_Destroy();
+  Timer_Destroy(&timer);
 }

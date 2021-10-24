@@ -1,21 +1,20 @@
 #include "CppUTest/TestHarness.h"
 
-#include <cstring>
-#include "MessageSubscriber.h"
 #include "MessageFormatter.h"
 #include "MessagePublisher.h"
+#include "MessageSubscriber.h"
+#include <cstring>
 
+#include "helper/TimerTestHelper.cpp"
 
 // -----------------------------------------------------------------------------
 
-static int stub_message_fn(const char*, const char*, unsigned long);
-static int mock_address_fn(const char*, const char*, int);
-static unsigned long stub_push_fn(const char*, const char*, unsigned long);
-static int stub_pull_fn(const char*, const char*, int);
-static int stub_force_error_pull_fn(const char*, const char*, int);
-static int stub_pull_nothing_yet_fn(const char*, const char*, int);
-static unsigned long fake_epoch_ms_fn();
-static unsigned long stub_progressive_epoch_ms_fn();
+static int stub_message_fn(const char *, const char *, unsigned long);
+static int mock_address_fn(const char *, const char *, int);
+static unsigned long stub_push_fn(const char *, const char *, unsigned long);
+static int stub_pull_fn(const char *, const char *, int);
+static int stub_force_error_pull_fn(const char *, const char *, int);
+static int stub_pull_nothing_yet_fn(const char *, const char *, int);
 
 static unsigned int spy_state_on_counter;
 static unsigned int spy_state_off_counter;
@@ -25,45 +24,41 @@ static void spy_turn_off_receiver_fn();
 
 static char stub_message_content[MESSAGE_LENGTH];
 static unsigned long nothing_until_zero;
-static unsigned long progressive_ms;
 
 // -----------------------------------------------------------------------------
 
-int stub_message_fn(const char* address, const char* content, const unsigned long size) {
+int stub_message_fn(const char *address, const char *content,
+                    const unsigned long size) {
   memcpy((void *)content, "0123456789AB", MESSAGE_LENGTH);
   return 1;
 }
-int mock_address_fn(const char* address, const char* content, const int size) {
+int mock_address_fn(const char *address, const char *content, const int size) {
   MEMCMP_EQUAL(address, "address", 7);
   return 7;
 }
 
-unsigned long stub_push_fn(const char* address, const char* content, unsigned long size) {
+unsigned long stub_push_fn(const char *address, const char *content,
+                           unsigned long size) {
   memcpy(stub_message_content, content, size);
   return size;
 }
 
-int stub_pull_fn(const char* address, const char* content, const int size) {
+int stub_pull_fn(const char *address, const char *content, const int size) {
   memcpy((void *)content, stub_message_content, size);
   return size;
 }
 
-int stub_force_error_pull_fn(const char* address, const char* content, const int size) {
+int stub_force_error_pull_fn(const char *address, const char *content,
+                             const int size) {
   return -1;
 }
 
-int stub_pull_nothing_yet_fn(const char* address, const char* content, const int size) {
-  if (--nothing_until_zero) return 0;
-  else return MESSAGE_LENGTH;
-}
-
-unsigned long fake_epoch_ms_fn() {
-  return 100;
-}
-
-unsigned long stub_progressive_epoch_ms_fn() {
-  // It returns 1 for the Timer_Start and 1001 for the Timer_GetMillis
-  return progressive_ms += 1000;
+int stub_pull_nothing_yet_fn(const char *address, const char *content,
+                             const int size) {
+  if (--nothing_until_zero)
+    return 0;
+  else
+    return MESSAGE_LENGTH;
 }
 
 void spy_turn_on_receiver_fn() {
@@ -77,15 +72,14 @@ void spy_turn_off_receiver_fn() {
 
 // -----------------------------------------------------------------------------
 
-TEST_GROUP(Subscription) {
-  void setup() override {
-    progressive_ms = 1;
-    nothing_until_zero = 10000;
-    spy_receiver_state = -1;
-    spy_state_on_counter = 0;
-    spy_state_off_counter = 0;
-  }
-};
+TEST_GROUP(Subscription){void setup() override{timerHelperSetup();
+nothing_until_zero = 10000;
+spy_receiver_state = -1;
+spy_state_on_counter = 0;
+spy_state_off_counter = 0;
+}
+}
+;
 
 TEST(Subscription, Timeout) {
   Result result;
@@ -161,7 +155,7 @@ TEST(Subscription, PullFromCorrectTopic) {
 TEST(Subscription, PushAndPull) {
   Message sent_message;
   MessageFormatter_Pack("0123456789AB", &sent_message);
-  MessagePublisher_Create((const void *) stub_push_fn);
+  MessagePublisher_Create((const void *)stub_push_fn);
   MessagePublisher_Push("address", &sent_message);
   MessagePublisher_Destroy();
   Message received_message;

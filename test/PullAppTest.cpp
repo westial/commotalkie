@@ -7,6 +7,8 @@
 #include "Pull.h"
 #include <cstring>
 
+#include "helper/TimerTestHelper.cpp"
+
 // -----------------------------------------------------------------------------
 
 static int stub_message_fn(const char *address, const char *, unsigned long);
@@ -14,14 +16,12 @@ static int stub_not_valid_fn(const char *address, const char *, int);
 static int stub_message_after_not_valid_failure_fn(const char *, const char *,
                                                    int);
 static int stub_io_error_fn(const char *, const char *, int);
-static unsigned long fake_epoch_ms_fn();
 static int stub_pull_nothing_yet_fn(const char *, const char *, int);
 
 static char body[MESSAGE_BODY_LENGTH];
 static unsigned char port, id;
 static struct Spy pull_fn_spy;
 static unsigned long nothing_until_zero;
-static unsigned long progressive_ms;
 
 static int spy_receiver_state;
 static void spy_turn_on_receiver_fn();
@@ -62,13 +62,6 @@ int stub_io_error_fn(const char *address, const char *content, const int size) {
   return -1;
 }
 
-unsigned long fake_epoch_ms_fn() { return 100; }
-
-unsigned long stub_progressive_epoch_ms_fn() {
-  // It returns 1 for the Timer_Start and 1001 for the Timer_GetMillis
-  return progressive_ms += 1000;
-}
-
 int stub_pull_nothing_yet_fn(const char *address, const char *content,
                              const int size) {
   if (--nothing_until_zero) {
@@ -88,7 +81,7 @@ pull_fn_spy.calledCount = 0;
 memset(body, 0, MESSAGE_BODY_LENGTH);
 port = 0;
 id = 0;
-progressive_ms = 1;
+timerHelperSetup();
 spy_receiver_state = -1;
 }
 }

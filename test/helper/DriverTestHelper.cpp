@@ -12,7 +12,7 @@
 //  * 5 for waiting after setting configuration.
 #define TIMER_CALLS_ON_CREATING_DRIVER (MS_DELAY_AFTER_READY_CHECK + 3 + 5)
 
-static void helperSetup();
+static void driverHelperSetup();
 
 static char sample_address[DRIVER_ADDRESS_SIZE];
 static Driver create_sample(const char *, char, int, int);
@@ -69,7 +69,7 @@ static unsigned long stub_progressive_epoch_ms_fn();
 
 // -----------------------------------------------------------------------------
 
-void helperSetup() {
+void driverHelperSetup() {
   default_timeouts[MODE_TIMEOUT_INDEX] = 5 * 1000;
   default_timeouts[SERIAL_TIMEOUT_INDEX] = 2 * 1000;
   progressive_ms = 1;

@@ -30,9 +30,11 @@ add_library(SubscriberBuilderTest SubscriberBuilderTest.cpp)
 add_library(DriverConfiguringTest DriverConfiguringTest.cpp)
 add_library(DriverSendingTest DriverSendingTest.cpp)
 add_library(DriverReceivingTest DriverReceivingTest.cpp)
+add_library(TimerTest TimerTest.cpp)
 
 # helper
 add_library(DriverTestHelper helper/DriverTestHelper.cpp)
+add_library(TimerTestHelper helper/TimerTestHelper.cpp)
 
 # add mocking library
 add_library(Spy STATIC Spy.h)
@@ -42,6 +44,7 @@ add_executable(RunAllTests RunAllTests.cpp)
 target_link_libraries(RunAllTests
         Spy
         DriverTestHelper
+        TimerTestHelper
         imp_cpputest
         PackingTest
         ValidatingTest
@@ -55,6 +58,7 @@ target_link_libraries(RunAllTests
         DriverConfiguringTest
         DriverSendingTest
         DriverReceivingTest
+        TimerTest
         PlainMessageFormatter
         SumMessageValidator
         XorMessageCrypter

@@ -24,4 +24,4 @@ unsigned long Timer_GetMillis(Timer *timer) {
   return timer->epoch_millis() - timer->started_at;
 }
 
-void Timer_Destroy() {}
+void Timer_Destroy(Timer *timer) {}
