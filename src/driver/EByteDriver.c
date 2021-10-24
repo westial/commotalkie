@@ -19,6 +19,12 @@ static unsigned long (*read_from_serial_callback)(char *, unsigned long,
 static Driver create_driver(PinMap *pins, RadioParams *params, Timer *timer,
                             const unsigned long *timeout_ms);
 
+static void start_timer(Timer *timer);
+static int is_timer_on_time(Timer *timer, unsigned long timeout_at);
+
+static int is_ebyte_busy(Driver *driver);
+static int is_ebyte_busy_check_on_time(Driver *driver);
+
 Driver Driver_Create(PinMap pins, RadioParams *params, IOCallback *io,
                      Timer *timer, unsigned long *timeouts) {
   read_pin_callback = io->read_pin;
@@ -49,7 +55,7 @@ unsigned long Driver_Send(Driver *driver, const Destination *destination,
 long Driver_Receive(Driver *driver, char *buffer, unsigned long size) {
   memset(buffer, '\x00', size);
   unsigned long position = 0;
-  while (OFF == read_pin_callback(driver->pins.aux)) {
+  while (is_ebyte_busy(driver)) {
     position = read_from_serial_callback(buffer, size, position);
   }
   return position == size ? 1 : position == 0 ? 0 : -1;
@@ -89,16 +95,23 @@ void set_configuration(Driver *driver) {
   wait_until_ebyte_is_ready(driver);
 }
 
+int is_ebyte_busy(Driver *driver) {
+  return OFF == read_pin_callback(driver->pins.aux);
+}
+
+int is_ebyte_busy_check_on_time(Driver *driver) {
+  return is_timer_on_time(&driver->timer, driver->timeouts[MODE_SWITCH_TIMEOUT_INDEX]);
+}
+
 int wait_until_ebyte_is_ready(Driver *driver) {
-  int on_time;
-  Timer_Start(&driver->timer);
-  do {
-    on_time =
-        driver->timeouts[AUX_TIMEOUT_INDEX] > Timer_GetMillis(&driver->timer);
-  } while (OFF == read_pin_callback(driver->pins.aux) && on_time);
-  if (on_time)
-    delay(driver, MS_DELAY_AFTER_AUX_HIGH);
-  return on_time;
+  start_timer(&driver->timer);
+  while (is_ebyte_busy(driver) && is_ebyte_busy_check_on_time(driver))
+    ;
+  if (is_ebyte_busy_check_on_time(driver)) {
+    delay(driver, MS_DELAY_AFTER_READY_CHECK);
+    return 1;
+  }
+  return 0;
 }
 
 void delay(Driver *driver, unsigned long milliseconds) {
@@ -111,14 +124,18 @@ void change_state_to_sleep(Driver *driver) {
   write_pin_callback(driver->pins.m0, ON);
   write_pin_callback(driver->pins.m1, ON);
   driver->state = (wait_until_ebyte_is_ready(driver)) ? SLEEP : WARNING;
-  delay(driver, MS_DELAY_AFTER_MODE_SWITCH);
+}
+
+void start_timer(Timer *timer) { Timer_Start(timer); }
+
+int is_timer_on_time(Timer *timer, unsigned long timeout_at) {
+  return timeout_at > Timer_GetMillis(timer);
 }
 
 void change_state_to_normal(Driver *driver) {
   write_pin_callback(driver->pins.m0, OFF);
   write_pin_callback(driver->pins.m1, OFF);
   driver->state = (wait_until_ebyte_is_ready(driver)) ? NORMAL : WARNING;
-  delay(driver, MS_DELAY_AFTER_MODE_SWITCH);
 }
 
 Driver create_driver(PinMap *pins, RadioParams *params, Timer *timer,
@@ -132,6 +149,6 @@ Driver create_driver(PinMap *pins, RadioParams *params, Timer *timer,
   result.low_power_on = !params->full_transmission_power;
   result.pins = *pins;
   result.timer = *timer;
-  result.timeouts[AUX_TIMEOUT_INDEX] = timeout_ms[AUX_TIMEOUT_INDEX];
+  result.timeouts[MODE_SWITCH_TIMEOUT_INDEX] = timeout_ms[MODE_SWITCH_TIMEOUT_INDEX];
   return result;
 }

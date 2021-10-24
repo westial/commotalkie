@@ -9,7 +9,7 @@
 
 // -----------------------------------------------------------------------------
 
-#define AUX_TIMEOUT_INDEX 0
+#define MODE_SWITCH_TIMEOUT_INDEX 0
 
 // -----------------------------------------------------------------------------
 
@@ -17,24 +17,19 @@
  * @see E32-915T20D_Usermanual_EN_v1.6.pdf
  * "It is recommended to check AUX pin out status and wait 2ms after AUX outputs
  * high level before switching the mode."
- */
-#define MS_DELAY_AFTER_AUX_HIGH 2
-
-/**
- * @see E32-915T20D_Usermanual_EN_v1.6.pdf
  * "After modifying M1 or M0, it will start to work in new mode 1ms later if the
  * module is free."
  */
-#define MS_DELAY_AFTER_MODE_SWITCH 1
+#define MS_DELAY_AFTER_READY_CHECK 2
 
 // -----------------------------------------------------------------------------
 
-#define AIR_RATE_300 0b000		// 300 baud
-#define AIR_RATE_1200 0b001		// 1200 baud
-#define AIR_RATE_2400 0b010		// 2400 baud    (default)
-#define AIR_RATE_4800 0b011		// 4800 baud
-#define AIR_RATE_9600 0b100		// 9600 baud
-#define AIR_RATE_19200 0b101	// 19200 baud
+#define AIR_RATE_300 0b000   // 300 baud
+#define AIR_RATE_1200 0b001  // 1200 baud
+#define AIR_RATE_2400 0b010  // 2400 baud    (default)
+#define AIR_RATE_4800 0b011  // 4800 baud
+#define AIR_RATE_9600 0b100  // 9600 baud
+#define AIR_RATE_19200 0b101 // 19200 baud
 
 // -----------------------------------------------------------------------------
 // Default configuration
@@ -45,8 +40,8 @@
 #define OPT_WAKEUP_250 0b000
 #define OPT_FEC_ON 1
 
-#define OPT_MIN_POWER 0b10    // 14dBm
-#define OPT_MAX_POWER 0b00    // 20dBm
+#define OPT_MIN_POWER 0b10 // 14dBm
+#define OPT_MAX_POWER 0b00 // 20dBm
 
 // Best configuration for full feature availability.
 #define PARITY_BIT_8N1 0b00
@@ -89,4 +84,4 @@ typedef enum ConfigIndex {
   OPTIONS = 5
 } ConfigIndex;
 
-#endif //COMMOTALKIE_INCLUDE_DRIVER_EBYTE_H_
+#endif // COMMOTALKIE_INCLUDE_DRIVER_EBYTE_H_

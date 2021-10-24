@@ -78,3 +78,14 @@ TEST(DriverReceiving, ReceiveIncompleteMessage) {
   long result = Driver_Receive(&sample_driver, buffer, 8);
   CHECK_EQUAL(-1, result);
 }
+
+//TEST(DriverReceiving, AuxNeverGetsHighBack) {
+//  sequence_return[2] = 0;     // Let read with AUX at 0 for one time only
+//  memset(sequence_return + 2, 0, sizeof(sequence_return) - (2 * sizeof(sequence_return[0])));
+//  dynamic_read_pin = stub_read_pin_sequence_end_by_permanent_zero;
+//  dynamic_from_serial = stub_read_nothing_from_serial;
+//  Driver sample_driver = create_sample("\xA1\xA2\xA3", 0, 0, 0);
+//  char buffer[MAX_TEST_INDEX];
+//  long result = Driver_Receive(&sample_driver, buffer, 8);
+//  CHECK_EQUAL(-1, result);
+//}

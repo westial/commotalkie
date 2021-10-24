@@ -20,6 +20,7 @@ static int stub_read_pin(unsigned char pin);
 
 static int sequence_return[MAX_TEST_INDEX];
 static int stub_read_pin_sequence(unsigned char pin);
+static int stub_read_pin_sequence_end_by_permanent_zero(unsigned char pin);
 
 static void reset_write_pin();
 static void spy_write_pin(unsigned char pin, unsigned char value);
@@ -63,7 +64,7 @@ static unsigned long stub_progressive_epoch_ms_fn();
 // -----------------------------------------------------------------------------
 
 void helperSetup() {
-  default_timeout[AUX_TIMEOUT_INDEX] = 5 * 1000;
+  default_timeout[MODE_SWITCH_TIMEOUT_INDEX] = 5 * 1000;
   progressive_ms = 1;
   memset(sequence_return, 1, sizeof(sequence_return));
   stub_read_pin_return = 1; // ready by default
@@ -87,6 +88,12 @@ int stub_read_pin(unsigned char pin) {
 
 int stub_read_pin_sequence(unsigned char pin) {
   return sequence_return[stub_read_pin_call_count++];
+}
+
+int stub_read_pin_sequence_end_by_permanent_zero(unsigned char pin) {
+  if (sizeof(sequence_return)/sizeof(sequence_return[0]) > stub_read_pin_call_count)
+    return stub_read_pin_sequence(pin);
+  return 0;
 }
 
 void spy_write_pin(unsigned char pin, unsigned char value) {
