@@ -18,6 +18,8 @@ Timer Timer_Create(const void *epoch_ms_fn);
 
 void Timer_Start(Timer *timer);
 
+void Timer_Stop(Timer *timer);
+
 int Timer_IsRunning(Timer *timer);
 
 unsigned long Timer_GetMillis(Timer *timer);

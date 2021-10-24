@@ -29,3 +29,11 @@ TEST(Timer, GetCurrentTimestamp) {
   result = Timer_GetMillis(&timer);
   CHECK_EQUAL(progressive_ms - STUB_PROGRESSIVE_INTERVAL, result);
 }
+
+TEST(Timer, TimerDoesNotStartTwice) {
+  unsigned long result;
+  Timer timer = Timer_Create((const void*)fake_epoch_ms_fn);
+  Timer_Start(&timer);
+  Timer_Start(&timer);
+  CHECK_FALSE(Timer_IsRunning(&timer));
+}

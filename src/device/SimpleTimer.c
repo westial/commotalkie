@@ -12,7 +12,14 @@ Timer Timer_Create(const void *epoch_millis_fn) {
 }
 
 void Timer_Start(Timer *timer) {
-  timer->started_at = timer->epoch_millis();
+  if (Timer_IsRunning(timer))
+    Timer_Stop(timer);
+  else
+    timer->started_at = timer->epoch_millis();
+}
+
+void Timer_Stop(Timer *timer) {
+  timer->started_at = 0;
 }
 
 int Timer_IsRunning(Timer *timer) {
@@ -24,4 +31,6 @@ unsigned long Timer_GetMillis(Timer *timer) {
   return timer->epoch_millis() - timer->started_at;
 }
 
-void Timer_Destroy(Timer *timer) {}
+void Timer_Destroy(Timer *timer) {
+  Timer_Stop(timer);
+}

@@ -8,7 +8,7 @@ static int value_speed(char parity, char baud_rate, char air_rate);
 static int value_options(int transmit_mode, int pull_up, char wake_up_time,
                          int fec_switch, char transmit_power);
 static int wait_until_ebyte_is_ready(Driver *driver);
-static void delay(Driver *driver, unsigned long milliseconds);
+static void delay(Timer *timer, unsigned long timeout);
 
 static int (*read_pin_callback)(unsigned char);
 static void (*write_pin_callback)(unsigned char, unsigned char);
@@ -20,6 +20,7 @@ static Driver create_driver(PinMap *pins, RadioParams *params, Timer *timer,
                             const unsigned long *timeout_ms);
 
 static void start_timer(Timer *timer);
+static void stop_timer(Timer *timer);
 static int is_timer_on_time(Timer *timer, unsigned long timeout_at);
 
 static int is_ebyte_busy(Driver *driver);
@@ -62,6 +63,7 @@ long Driver_Receive(Driver *driver, char *buffer, unsigned long size) {
     if (!is_serial_receiving_on_time(driver)) return -1;
     position = read_from_serial_callback(buffer, size, position);
   }
+  stop_timer(&driver->timer);
   return position == size ? 1 : position == 0 ? 0 : -1;
 }
 
@@ -112,19 +114,22 @@ int is_ebyte_busy_waiting_on_time(Driver *driver) {
 }
 
 int wait_until_ebyte_is_ready(Driver *driver) {
+  int on_time;
   start_timer(&driver->timer);
-  while (is_ebyte_busy(driver) && is_ebyte_busy_waiting_on_time(driver))
-    ;
-  if (is_ebyte_busy_waiting_on_time(driver)) {
-    delay(driver, MS_DELAY_AFTER_READY_CHECK);
+  do {
+    on_time = is_ebyte_busy_waiting_on_time(driver);
+  } while (is_ebyte_busy(driver) && on_time);
+  if (on_time) {
+    stop_timer(&driver->timer);
+    delay(&driver->timer, MS_DELAY_AFTER_READY_CHECK);
     return 1;
   }
   return 0;
 }
 
-void delay(Driver *driver, unsigned long milliseconds) {
-  Timer_Start(&driver->timer);
-  while (milliseconds > Timer_GetMillis(&driver->timer))
+void delay(Timer *timer, unsigned long timeout) {
+  start_timer(timer);
+  while (is_timer_on_time(timer, timeout))
     ;
 }
 
@@ -135,9 +140,14 @@ void change_state_to_sleep(Driver *driver) {
 }
 
 void start_timer(Timer *timer) { Timer_Start(timer); }
+void stop_timer(Timer *timer) { Timer_Stop(timer); }
 
 int is_timer_on_time(Timer *timer, unsigned long timeout_at) {
-  return timeout_at > Timer_GetMillis(timer);
+  if (timeout_at > Timer_GetMillis(timer)) return 1;
+  else {
+    stop_timer(timer);
+    return 0;
+  }
 }
 
 void change_state_to_normal(Driver *driver) {
