@@ -49,4 +49,3 @@ and pending when it begins with a minus sign (-).
 + Driver does not cut receiving while aux input is still low.
 + Driver gets out from receiving when aux is permanently low.
 + Do not start a Timer if it is already running.
-- Do not change the state if the new state is the current one.
