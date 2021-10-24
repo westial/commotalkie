@@ -16,7 +16,7 @@ TEST(DriverReceiving, ReceiveNothing) {
   dynamic_from_serial = stub_read_nothing_from_serial;
   Driver sample_driver = create_sample("\xA1\xA2\xA3", AIR_RATE_2400, 1, 1);
   char buffer[MAX_TEST_INDEX];
-  long result = Driver_Receive(&sample_driver, buffer, sizeof(buffer));
+  int result = Driver_Receive(&sample_driver, buffer, sizeof(buffer));
   CHECK_EQUAL(0, result);
 }
 
@@ -47,7 +47,7 @@ TEST(DriverReceiving, ReceiveSomething) {
   memcpy(stub_read_from_serial_buffer, sample, sizeof(sample));
   Driver sample_driver = create_sample("\xA1\xA2\xA3", 0, 0, 0);
   char buffer[MAX_TEST_INDEX];
-  long result = Driver_Receive(&sample_driver, buffer, sizeof(buffer));
+  int result = Driver_Receive(&sample_driver, buffer, sizeof(buffer));
   MEMCMP_EQUAL(sample, buffer, sizeof(sample));
   CHECK_EQUAL(1, result);
 }
@@ -63,7 +63,7 @@ TEST(DriverReceiving, ReceiveSomethingByChunks) {
   memcpy(stub_read_from_serial_buffer_4_char_chunks[1], chunk2, 4);
   Driver sample_driver = create_sample("\xA1\xA2\xA3", 0, 0, 0);
   char buffer[MAX_TEST_INDEX];
-  long result = Driver_Receive(&sample_driver, buffer, 8);
+  int result = Driver_Receive(&sample_driver, buffer, 8);
   MEMCMP_EQUAL("12345678", buffer, 8);
   CHECK_EQUAL(1, result);
 }
@@ -76,7 +76,7 @@ TEST(DriverReceiving, ReceiveIncompleteMessage) {
   memcpy(stub_read_from_serial_buffer_4_char_chunks[0], chunk1, 4);
   Driver sample_driver = create_sample("\xA1\xA2\xA3", 0, 0, 0);
   char buffer[MAX_TEST_INDEX];
-  long result = Driver_Receive(&sample_driver, buffer, 8);
+  int result = Driver_Receive(&sample_driver, buffer, 8);
   CHECK_EQUAL(-1, result);
 }
 
@@ -89,7 +89,7 @@ TEST(DriverReceiving, AuxNeverGetsHighBack) {
   dynamic_from_serial = stub_read_nothing_from_serial;
   Driver sample_driver = create_sample("\xA1\xA2\xA3", 0, 0, 0);
   char buffer[MAX_TEST_INDEX];
-  long result = Driver_Receive(&sample_driver, buffer, 8);
+  int result = Driver_Receive(&sample_driver, buffer, 8);
   CHECK_EQUAL(-1, result);
   CHECK_EQUAL(TIMER_CALLS_ON_CREATING_DRIVER +
                   default_timeouts[SERIAL_TIMEOUT_INDEX] + 1,

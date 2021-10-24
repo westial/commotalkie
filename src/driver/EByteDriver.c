@@ -55,7 +55,7 @@ unsigned long Driver_Send(Driver *driver, const Destination *destination,
                                                                         : 0;
 }
 
-long Driver_Receive(Driver *driver, char *buffer, unsigned long size) {
+int Driver_Receive(Driver *driver, char *buffer, unsigned long size) {
   unsigned long position = 0;
   memset(buffer, '\x00', size);
   start_timer(&driver->timer);
