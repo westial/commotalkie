@@ -6,6 +6,12 @@
 
 #define MAX_TEST_INDEX 100
 
+// Epoch service stub changes progressive_ms at:
+//  * 2 times to start and get millis to get sleep state.
+//  * 1 time to start and MS_DELAY_AFTER_AUX_HIGH to get delayed as required.
+//  * 5 for waiting after setting configuration.
+#define TIMER_CALLS_ON_CREATING_DRIVER (MS_DELAY_AFTER_READY_CHECK + 3 + 5)
+
 static void helperSetup();
 
 static char sample_address[DRIVER_ADDRESS_SIZE];
@@ -57,14 +63,15 @@ static unsigned long stub_read_nothing_from_serial(char *buffer,
                                                    unsigned long size,
                                                    unsigned long position);
 
-static unsigned long default_timeout[MAX_TIMEOUTS];
+static unsigned long default_timeouts[MAX_TIMEOUTS];
 static unsigned long progressive_ms;
 static unsigned long stub_progressive_epoch_ms_fn();
 
 // -----------------------------------------------------------------------------
 
 void helperSetup() {
-  default_timeout[MODE_SWITCH_TIMEOUT_INDEX] = 5 * 1000;
+  default_timeouts[MODE_TIMEOUT_INDEX] = 5 * 1000;
+  default_timeouts[SERIAL_TIMEOUT_INDEX] = 2 * 1000;
   progressive_ms = 1;
   memset(sequence_return, 1, sizeof(sequence_return));
   stub_read_pin_return = 1; // ready by default
@@ -157,7 +164,7 @@ Driver create_sample(const char *topic, const char air_data_rate,
   Timer timer = Timer_Create((const void *)stub_progressive_epoch_ms_fn);
   IOCallback io = {dynamic_read_pin, spy_write_pin, spy_write_to_serial,
                    dynamic_from_serial};
-  return Driver_Create(pins, &params, &io, &timer, default_timeout);
+  return Driver_Create(pins, &params, &io, &timer, default_timeouts);
 }
 
 void reset_write_to_serial() {

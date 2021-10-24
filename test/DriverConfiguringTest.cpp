@@ -24,7 +24,7 @@ TEST(DriverConfiguring, CreateADriver) {
   io.write_pin = spy_write_pin;
   io.write_to_serial = spy_write_to_serial;
   io.read_from_serial = spy_read_from_serial;
-  Driver instance = Driver_Create(pins, &params, &io, &timer, default_timeout);
+  Driver instance = Driver_Create(pins, &params, &io, &timer, default_timeouts);
   CHECK_EQUAL(1, instance.pins.m0);
   CHECK_EQUAL(2, instance.pins.m1);
   CHECK_EQUAL(3, instance.pins.aux);
@@ -127,12 +127,12 @@ TEST(DriverConfiguring, WaitUntilAuxGetsHigh) {
   create_sample("\xA1\xA2\xA3", 0, 0, 0);
   CHECK_EQUAL(1, spy_write_to_serial_call_count);
   // Read pin call count + setting configuration timeout
-  CHECK_EQUAL(stub_read_pin_toggle_at + default_timeout[MODE_SWITCH_TIMEOUT_INDEX], stub_read_pin_call_count - 1);
+  CHECK_EQUAL(stub_read_pin_toggle_at + default_timeouts[MODE_TIMEOUT_INDEX], stub_read_pin_call_count - 1);
 }
 
 TEST(DriverConfiguring, TimeoutWaitingForHighOnAux) {
   stub_read_pin_return = 0;
-  default_timeout[MODE_SWITCH_TIMEOUT_INDEX] = progressive_ms + 1;
+  default_timeouts[MODE_TIMEOUT_INDEX] = progressive_ms + 1;
   Driver sample_driver = create_sample("\xA1\xA2\xA3", 0, 0, 0);
   CHECK_EQUAL(WARNING, sample_driver.state);
 }
@@ -141,9 +141,5 @@ TEST(DriverConfiguring, DelayAfterAuxGetsHigh) {
   progressive_ms = 0;
   create_sample("\xA1\xA2\xA3", 0, 0, 0);
   CHECK_EQUAL(1, spy_write_to_serial_call_count);
-  // Epoch service stub changes progressive_ms at:
-  //  * 2 times to start and get millis to get sleep state.
-  //  * 1 time to start and MS_DELAY_AFTER_AUX_HIGH to get delayed as required.
-  //  * 5 for waiting after setting configuration.
-  CHECK_EQUAL(MS_DELAY_AFTER_READY_CHECK + 3 + 5, progressive_ms);
+  CHECK_EQUAL(TIMER_CALLS_ON_CREATING_DRIVER, progressive_ms);
 }
