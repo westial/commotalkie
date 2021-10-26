@@ -20,8 +20,10 @@
  * high level before switching the mode."
  * "After modifying M1 or M0, it will start to work in new mode 1ms later if the
  * module is free."
+ * I tested 2ms and it really does not work, the serial communication gets
+ * corrupted.
  */
-#define MS_DELAY_AFTER_READY_CHECK 2
+#define MS_DELAY_AFTER_READY_CHECK 4
 
 // -----------------------------------------------------------------------------
 
