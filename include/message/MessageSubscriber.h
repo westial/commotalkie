@@ -18,11 +18,9 @@ void MessageSubscriber_Create(
     const void *turn_on,
     const void *turn_off);
 
-/**
- * Start timeout countdown
- * @param timeout_at
- */
-void MessageSubscriber_CountDown(unsigned long timeout_at);
+void MessageSubscriber_StartCountDown(unsigned long timeout_at);
+
+void MessageSubscriber_StopCountDown();
 
 /**
  * Listen from a topic

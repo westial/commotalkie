@@ -47,8 +47,7 @@ int stub_not_valid_fn(const char *address, const char *content,
   return size;
 }
 
-int stub_empty_message_fn(const char *address, const char *content,
-                      const int size) {
+int stub_empty_message_fn(const char *address, const char *content, const int size) {
   return 0;
 }
 
@@ -150,6 +149,45 @@ TEST(PullApp, NotValidEndsByTimeout) {
   CHECK_EQUAL('\0', port);
   CHECK_EQUAL('\0', id);
   CHECK_EQUAL('\0', body[0]);
+}
+
+TEST(PullApp, EmptyEndsByTimeout) {
+  Result result;
+  Pull_Create("", (const void *)stub_empty_message_fn,
+              (const void *)stub_progressive_epoch_ms_fn,
+              (const void *)spy_turn_on_receiver_fn,
+              (const void *)spy_turn_off_receiver_fn, 10000, nullptr);
+  result = Pull_Invoke("address", &port, &id, body);
+  Pull_Destroy();
+  CHECK_FALSE(1 == pull_fn_spy.calledCount);
+  CHECK_EQUAL(Timeout, result);
+  CHECK_EQUAL('\0', port);
+  CHECK_EQUAL('\0', id);
+  CHECK_EQUAL('\0', body[0]);
+}
+
+TEST(PullApp, MultipleTimeouts) {
+  Result result;
+  int timeout_at = 10000;
+  Pull_Create("", (const void *)stub_empty_message_fn,
+              (const void *)stub_progressive_epoch_ms_fn,
+              (const void *)spy_turn_on_receiver_fn,
+              (const void *)spy_turn_off_receiver_fn, timeout_at, nullptr);
+  result = Pull_Invoke("address", &port, &id, body);
+  CHECK_EQUAL(Timeout, result);
+  result = Pull_Invoke("address", &port, &id, body);
+  CHECK_EQUAL(Timeout, result);
+  result = Pull_Invoke("address", &port, &id, body);
+  CHECK_EQUAL(Timeout, result);
+  Pull_Destroy();
+  CHECK_FALSE(3 == pull_fn_spy.calledCount);
+  /**
+   * `3 * ` Three times pulling.
+   * `(STUB_PROGRESSIVE_INTERVAL * 2)` The progressive incremental method is
+   *    visited on starting and for the last checking.
+   * `+ 1` Progressive ms starts at 1.
+   */
+  CHECK_EQUAL(3 * (timeout_at + (STUB_PROGRESSIVE_INTERVAL * 2)) + 1, progressive_ms);
 }
 
 TEST(PullApp, UnexpectedIdEndsWithTimeout) {

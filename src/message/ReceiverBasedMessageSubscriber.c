@@ -25,9 +25,13 @@ void MessageSubscriber_Create(
   timeout_at = TIMEOUT_OFF;
 }
 
-void MessageSubscriber_CountDown(const unsigned long timeout_at_) {
+void MessageSubscriber_StartCountDown(const unsigned long timeout_at_) {
   timeout_at = timeout_at_;
   Timer_Start(&timer);
+}
+
+void MessageSubscriber_StopCountDown() {
+  Timer_Stop(&timer);
 }
 
 Result receive(const char* topic, void *message) {

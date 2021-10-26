@@ -10,7 +10,8 @@
 static unsigned long countdown;
 static const unsigned char *exclusive_id = 0;
 
-void handle_countdown();
+void start_countdown();
+void stop_countdown();
 void pull(const char *topic, Message *message, Result *result,
           Message *decrypted);
 void decrypt(Message *, Message *);
@@ -32,8 +33,9 @@ Result Pull_Invoke(const char *topic, unsigned char *port, unsigned char *id,
   Result result;
   Message message;
   Message decrypted;
-  handle_countdown();
+  start_countdown();
   pull(topic, &message, &result, &decrypted);
+  stop_countdown();
   if (Success == result) {
     parse(&decrypted, port, id, body);
     return result;
@@ -70,9 +72,14 @@ void parse(Message *output, unsigned char *port, unsigned char *id,
   memcpy(body, output->body, MESSAGE_BODY_LENGTH);
 }
 
-void handle_countdown() {
+void start_countdown() {
   if (0 != countdown)
-    MessageSubscriber_CountDown(countdown);
+    MessageSubscriber_StartCountDown(countdown);
+}
+
+void stop_countdown() {
+  if (0 != countdown)
+    MessageSubscriber_StopCountDown();
 }
 
 void pull(const char *topic, Message *message, Result *result,
