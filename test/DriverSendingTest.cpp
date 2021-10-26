@@ -48,3 +48,17 @@ TEST(DriverSending, SetStateToSleepAfterSending) {
   CHECK_EQUAL(spy_write_pin_args[5][0], sample_driver.pins.m1);
   CHECK_EQUAL(spy_write_pin_args[5][1], ON);
 }
+
+TEST(DriverSending, WaitUntilAuxIsHighAfterSending) {
+  Driver sample_driver = create_sample("\xA1\xA2\xA3", AIR_RATE_2400, 1, 1);
+  read_pin_sequence[2] = 0; // Let read with AUX at 0 for two times
+  read_pin_sequence[3] = 0;
+  dynamic_read_pin = stub_read_pin_sequence;
+  const char raw_message[] = "abcdefghi";
+  const Destination target = {'\xA1', '\xA2', '\xA3'};
+  unsigned long result =
+      Driver_Send(&sample_driver, &target, raw_message, sizeof(raw_message));
+  CHECK_EQUAL(sizeof(raw_message), result);
+  CHECK_EQUAL(TIMER_CALLS_ON_CREATING_DRIVER + 1 + TIMER_CALLS_ON_SENDING,
+              progressive_ms);
+}

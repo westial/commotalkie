@@ -7,7 +7,9 @@ static void set_configuration(Driver *driver);
 static int value_speed(char parity, char baud_rate, char air_rate);
 static int value_options(int transmit_mode, int pull_up, char wake_up_time,
                          int fec_switch, char transmit_power);
-static int wait_until_ebyte_is_ready(Driver *driver);
+static int wait_until_event(Driver *driver, int (*event)(Driver*));
+static int wait_until_mode_is_ready(Driver *driver);
+static int wait_until_writing_finished(Driver *driver);
 static void delay(Timer *timer, unsigned long timeout);
 
 static int (*read_pin_callback)(unsigned char);
@@ -24,7 +26,7 @@ static void stop_timer(Timer *timer);
 static int is_timer_on_time(Timer *timer, unsigned long timeout_at);
 
 static int is_ebyte_busy(Driver *driver);
-static int is_ebyte_busy_waiting_on_time(Driver *driver);
+static int is_waiting_for_mode_on_time(Driver *driver);
 
 static int is_serial_receiving_on_time(Driver *driver);
 
@@ -50,8 +52,9 @@ unsigned long Driver_Send(Driver *driver, const Destination *destination,
   data[2] = destination->channel;
   memcpy(data + 3, content, size);
   written = write_to_serial_callback(data, sizeof(data));
+  wait_until_writing_finished(driver);
   change_state_to_sleep(driver);
-  return (wait_until_ebyte_is_ready(driver) && sizeof(data) == written) ? size
+  return (wait_until_mode_is_ready(driver) && sizeof(data) == written) ? size
                                                                         : 0;
 }
 
@@ -64,6 +67,7 @@ int Driver_Receive(Driver *driver, char *buffer, unsigned long size) {
     position = read_from_serial_callback(buffer, size, position);
   }
   stop_timer(&driver->timer);
+  delay(&driver->timer, MS_DELAY_AFTER_READY_CHECK);
   return position == size ? 1 : position == 0 ? 0 : -1;
 }
 
@@ -102,22 +106,22 @@ void set_configuration(Driver *driver) {
       driver->fixed_on, OPT_PULL_UP_ON, OPT_WAKEUP_250, OPT_FEC_ON,
       driver->low_power_on ? OPT_MIN_POWER : OPT_MAX_POWER);
   write_to_serial_callback(config, sizeof(config));
-  wait_until_ebyte_is_ready(driver);
+  wait_until_mode_is_ready(driver);
 }
 
 int is_ebyte_busy(Driver *driver) {
   return OFF == read_pin_callback(driver->pins.aux);
 }
 
-int is_ebyte_busy_waiting_on_time(Driver *driver) {
+int is_waiting_for_mode_on_time(Driver *driver) {
   return is_timer_on_time(&driver->timer, driver->timeouts[MODE_TIMEOUT_INDEX]);
 }
 
-int wait_until_ebyte_is_ready(Driver *driver) {
+int wait_until_event(Driver *driver, int (*event)(Driver*)) {
   int on_time;
   start_timer(&driver->timer);
   do {
-    on_time = is_ebyte_busy_waiting_on_time(driver);
+    on_time = event(driver);
   } while (is_ebyte_busy(driver) && on_time);
   if (on_time) {
     stop_timer(&driver->timer);
@@ -125,6 +129,14 @@ int wait_until_ebyte_is_ready(Driver *driver) {
     return 1;
   }
   return 0;
+}
+
+int wait_until_mode_is_ready(Driver *driver) {
+  return wait_until_event(driver, is_waiting_for_mode_on_time);
+}
+
+int wait_until_writing_finished(Driver *driver) {
+  return wait_until_event(driver, is_serial_receiving_on_time);
 }
 
 void delay(Timer *timer, unsigned long timeout) {
@@ -136,7 +148,7 @@ void delay(Timer *timer, unsigned long timeout) {
 void change_state_to_sleep(Driver *driver) {
   write_pin_callback(driver->pins.m0, ON);
   write_pin_callback(driver->pins.m1, ON);
-  driver->state = (wait_until_ebyte_is_ready(driver)) ? SLEEP : WARNING;
+  driver->state = (wait_until_mode_is_ready(driver)) ? SLEEP : WARNING;
 }
 
 void start_timer(Timer *timer) { Timer_Start(timer); }
@@ -153,7 +165,7 @@ int is_timer_on_time(Timer *timer, unsigned long timeout_at) {
 void change_state_to_normal(Driver *driver) {
   write_pin_callback(driver->pins.m0, OFF);
   write_pin_callback(driver->pins.m1, OFF);
-  driver->state = (wait_until_ebyte_is_ready(driver)) ? NORMAL : WARNING;
+  driver->state = (wait_until_mode_is_ready(driver)) ? NORMAL : WARNING;
 }
 
 Driver create_driver(PinMap *pins, RadioParams *params, Timer *timer,

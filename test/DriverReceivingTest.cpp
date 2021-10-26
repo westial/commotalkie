@@ -42,7 +42,7 @@ TEST(DriverReceiving, ChangeStateToSleep) {
 TEST(DriverReceiving, ReceiveSomething) {
   char sample[] = "hello baby";
   dynamic_from_serial = spy_read_from_serial;
-  sequence_return[2] = 0; // Let read with AUX at 0 for one time
+  read_pin_sequence[2] = 0; // Let read with AUX at 0 for one time
   dynamic_read_pin = stub_read_pin_sequence;
   memcpy(stub_read_from_serial_buffer, sample, sizeof(sample));
   Driver sample_driver = create_sample("\xA1\xA2\xA3", 0, 0, 0);
@@ -55,8 +55,8 @@ TEST(DriverReceiving, ReceiveSomething) {
 TEST(DriverReceiving, ReceiveSomethingByChunks) {
   char chunk1[] = "1234";
   char chunk2[] = "5678";
-  sequence_return[2] = 0; // Let read with AUX at 0 for two times
-  sequence_return[3] = 0;
+  read_pin_sequence[2] = 0; // Let read with AUX at 0 for two times
+  read_pin_sequence[3] = 0;
   dynamic_read_pin = stub_read_pin_sequence;
   dynamic_from_serial = spy_read_from_serial_by_chunks;
   memcpy(stub_read_from_serial_buffer_4_char_chunks[0], chunk1, 4);
@@ -70,7 +70,7 @@ TEST(DriverReceiving, ReceiveSomethingByChunks) {
 
 TEST(DriverReceiving, ReceiveIncompleteMessage) {
   char chunk1[] = "1234";
-  sequence_return[2] = 0; // Let read with AUX at 0 for one time only
+  read_pin_sequence[2] = 0; // Let read with AUX at 0 for one time only
   dynamic_read_pin = stub_read_pin_sequence;
   dynamic_from_serial = spy_read_from_serial_by_chunks;
   memcpy(stub_read_from_serial_buffer_4_char_chunks[0], chunk1, 4);
@@ -82,9 +82,9 @@ TEST(DriverReceiving, ReceiveIncompleteMessage) {
 
 TEST(DriverReceiving, AuxNeverGetsHighBack) {
   progressive_ms = 0;
-  sequence_return[2] = 0; // Let read with AUX at 0 for one time only
-  memset(sequence_return + 2, 0,
-         sizeof(sequence_return) - (2 * sizeof(sequence_return[0])));
+  read_pin_sequence[2] = 0; // Let read with AUX at 0 for one time only
+  memset(read_pin_sequence + 2, 0,
+         sizeof(read_pin_sequence) - (2 * sizeof(read_pin_sequence[0])));
   dynamic_read_pin = stub_read_pin_sequence_end_by_permanent_zero;
   dynamic_from_serial = stub_read_nothing_from_serial;
   Driver sample_driver = create_sample("\xA1\xA2\xA3", 0, 0, 0);

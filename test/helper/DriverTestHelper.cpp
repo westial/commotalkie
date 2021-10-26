@@ -12,6 +12,8 @@
 //  * 5 for waiting after setting configuration.
 #define TIMER_CALLS_ON_CREATING_DRIVER (MS_DELAY_AFTER_READY_CHECK + 3 + 5)
 
+#define TIMER_CALLS_ON_SENDING 20
+
 static void driverHelperSetup();
 
 static char sample_address[DRIVER_ADDRESS_SIZE];
@@ -24,7 +26,7 @@ static int stub_read_pin_call_count;
 static int stub_read_pin_toggle_at;
 static int stub_read_pin(unsigned char pin);
 
-static int sequence_return[MAX_TEST_INDEX];
+static int read_pin_sequence[MAX_TEST_INDEX];
 static int stub_read_pin_sequence(unsigned char pin);
 static int stub_read_pin_sequence_end_by_permanent_zero(unsigned char pin);
 
@@ -73,7 +75,7 @@ void driverHelperSetup() {
   default_timeouts[MODE_TIMEOUT_INDEX] = 5 * 1000;
   default_timeouts[SERIAL_TIMEOUT_INDEX] = 2 * 1000;
   progressive_ms = 1;
-  memset(sequence_return, 1, sizeof(sequence_return));
+  memset(read_pin_sequence, 1, sizeof(read_pin_sequence));
   stub_read_pin_return = 1; // ready by default
   stub_read_pin_call_count = 0;
   stub_read_pin_toggle_at = 1000;
@@ -94,11 +96,11 @@ int stub_read_pin(unsigned char pin) {
 }
 
 int stub_read_pin_sequence(unsigned char pin) {
-  return sequence_return[stub_read_pin_call_count++];
+  return read_pin_sequence[stub_read_pin_call_count++];
 }
 
 int stub_read_pin_sequence_end_by_permanent_zero(unsigned char pin) {
-  if (sizeof(sequence_return)/sizeof(sequence_return[0]) > stub_read_pin_call_count)
+  if (sizeof(read_pin_sequence)/sizeof(read_pin_sequence[0]) > stub_read_pin_call_count)
     return stub_read_pin_sequence(pin);
   return 0;
 }
