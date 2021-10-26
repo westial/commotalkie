@@ -10,9 +10,10 @@
 //  * 2 times to start and get millis to get sleep state.
 //  * 1 time to start and MS_DELAY_AFTER_AUX_HIGH to get delayed as required.
 //  * 5 for waiting after setting configuration.
-#define TIMER_CALLS_ON_CREATING_DRIVER (MS_DELAY_AFTER_READY_CHECK + 3 + 5)
+//  * 2 times at delay after getting aux high again.
+#define TIMER_CALLS_ON_CREATING_DRIVER (MS_DELAY_AFTER_READY_CHECK + 3 + 5 + 2)
 
-#define TIMER_CALLS_ON_SENDING 20
+#define TIMER_CALLS_ON_SENDING 28
 
 static void driverHelperSetup();
 

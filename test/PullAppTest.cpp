@@ -47,6 +47,11 @@ int stub_not_valid_fn(const char *address, const char *content,
   return size;
 }
 
+int stub_empty_message_fn(const char *address, const char *content,
+                      const int size) {
+  return 0;
+}
+
 int stub_message_after_not_valid_failure_fn(const char *address,
                                             const char *content,
                                             const int size) {
