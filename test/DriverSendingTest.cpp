@@ -59,6 +59,6 @@ TEST(DriverSending, WaitUntilAuxIsHighAfterSending) {
   unsigned long result =
       Driver_Send(&sample_driver, &target, raw_message, sizeof(raw_message));
   CHECK_EQUAL(sizeof(raw_message), result);
-  CHECK_EQUAL(TIMER_CALLS_ON_CREATING_DRIVER + 1 + TIMER_CALLS_ON_SENDING,
+  CHECK_EQUAL(TIMER_CALLS_ON_CREATING_DRIVER + (TIMER_CALLS_ON_SENDING * 2) + 5,
               progressive_ms);
 }

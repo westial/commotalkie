@@ -15,15 +15,19 @@
 // -----------------------------------------------------------------------------
 
 /**
- * @see E32-915T20D_Usermanual_EN_v1.6.pdf
+ * ### Documentation says
+ * @see E32-915T20D_Usermanual_EN_v1.6.pdf.
  * "It is recommended to check AUX pin out status and wait 2ms after AUX outputs
  * high level before switching the mode."
  * "After modifying M1 or M0, it will start to work in new mode 1ms later if the
  * module is free."
- * I tested 2ms and it really does not work, the serial communication gets
- * corrupted.
+ *
+ * ### My experience
+ * Waiting 2ms is not stable. This delay value varies among different circuit voltage.
+ * I tried with Arduino Nano at 5v and it works better at 4ms. Although in an
+ * Arduino ProMini 8MHz 3.3v the value must be 20ms to get reliable.
  */
-#define MS_DELAY_AFTER_READY_CHECK 4
+#define MS_DELAY_AFTER_READY_CHECK 20
 
 // -----------------------------------------------------------------------------
 
