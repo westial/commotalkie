@@ -37,7 +37,7 @@ Driver Driver_Create(PinMap pins, RadioParams *params, IOCallback *io,
   write_to_serial_callback = io->write_to_serial;
   read_from_serial_callback = io->read_from_serial;
   Driver self = create_driver(&pins, params, timer, timeouts);
-  change_state_to_sleep(&self);
+  Driver_TurnOff(&self);
   set_configuration(&self);
   return self;
 }
@@ -46,15 +46,15 @@ unsigned long Driver_Send(Driver *driver, const Destination *destination,
                           const char *content, unsigned long size) {
   char data[sizeof(driver->address) + sizeof(driver->channel) + size];
   unsigned long written;
-  change_state_to_normal(driver);
+  Driver_TurnOn(driver);
   data[0] = destination->address_high;
   data[1] = destination->address_low;
   data[2] = destination->channel;
   memcpy(data + 3, content, size);
   written = write_to_serial_callback(data, sizeof(data));
   wait_until_writing_finished(driver);
-  change_state_to_sleep(driver);
-  return (wait_until_mode_is_ready(driver) && sizeof(data) == written) ? size
+  Driver_TurnOff(driver);
+  return (SLEEP == driver->state && sizeof(data) == written) ? size
                                                                         : 0;
 }
 
@@ -71,9 +71,15 @@ int Driver_Receive(Driver *driver, char *buffer, unsigned long size) {
   return position == size ? 1 : position == 0 ? 0 : -1;
 }
 
-void Driver_TurnOn(Driver *driver) { change_state_to_normal(driver); }
+int Driver_TurnOn(Driver *driver) {
+  change_state_to_normal(driver);
+  return driver->state == NORMAL;
+}
 
-void Driver_TurnOff(Driver *driver) { change_state_to_sleep(driver); }
+int Driver_TurnOff(Driver *driver) {
+  change_state_to_sleep(driver);
+  return driver->state == SLEEP;
+}
 
 int is_serial_receiving_on_time(Driver *driver) {
   return is_timer_on_time(&driver->timer, driver->timeouts[SERIAL_TIMEOUT_INDEX]);

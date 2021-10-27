@@ -68,8 +68,8 @@ unsigned long Driver_Send(Driver *driver, const Destination *destination,
 
 int Driver_Receive(Driver *driver, char *buffer, unsigned long size);
 
-void Driver_TurnOn(Driver *driver);
-void Driver_TurnOff(Driver *driver);
+int Driver_TurnOn(Driver *driver);
+int Driver_TurnOff(Driver *driver);
 
 #ifdef __cplusplus
 }
