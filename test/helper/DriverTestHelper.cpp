@@ -13,7 +13,7 @@
 static void driverHelperSetup();
 
 static char sample_address[DRIVER_ADDRESS_SIZE];
-static Driver create_sample(const unsigned char *, char, int, int);
+static Driver create_sample(const char *, char, int, int);
 
 static int (*dynamic_read_pin)(unsigned char pin);
 
@@ -150,7 +150,7 @@ int serial_is_available_by_value_stub() {
 
 unsigned long stub_progressive_epoch_ms_fn() { return progressive_ms += 1; }
 
-Driver create_sample(const unsigned char *topic, const char air_data_rate,
+Driver create_sample(const char *topic, const char air_data_rate,
                      const int is_fixed, const int full_power) {
   PinMap pins = {1, 2, 3};
   RadioParams params = {
