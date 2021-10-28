@@ -44,7 +44,7 @@ Driver Driver_Create(PinMap pins, RadioParams *params, IOCallback *io,
 
 unsigned long Driver_Send(Driver *driver, const Destination *destination,
                           const char *content, unsigned long size) {
-  char data[sizeof(driver->address) + sizeof(driver->channel) + size];
+  unsigned char data[sizeof(driver->address) + sizeof(driver->channel) + size];
   unsigned long written;
   Driver_TurnOn(driver);
   data[0] = destination->address_high;

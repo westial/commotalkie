@@ -20,9 +20,9 @@ extern "C" {
 #define MAX_TIMEOUTS 2
 
 typedef struct Destination {
-  char address_high;
-  char address_low;
-  char channel;
+  unsigned char address_high;
+  unsigned char address_low;
+  unsigned char channel;
 } Destination;
 
 typedef struct IOCallback {
@@ -33,8 +33,8 @@ typedef struct IOCallback {
 } IOCallback;
 
 typedef struct RadioParams {
-  char address[DRIVER_ADDRESS_SIZE];
-  char channel;
+  unsigned char address[DRIVER_ADDRESS_SIZE];
+  unsigned char channel;
   char air_data_rate;
   int is_fixed_transmission;
   int full_transmission_power;
@@ -49,8 +49,8 @@ typedef struct PinMap {
 typedef enum State { NORMAL, SLEEP, ERROR, WARNING } State;
 
 typedef struct Driver {
-  char address[DRIVER_ADDRESS_SIZE];
-  char channel;
+  unsigned char address[DRIVER_ADDRESS_SIZE];
+  unsigned char channel;
   char air_data_rate;
   PinMap pins;
   State state;
