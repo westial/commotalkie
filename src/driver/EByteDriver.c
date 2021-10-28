@@ -62,7 +62,7 @@ int Driver_Receive(Driver *driver, char *buffer, unsigned long size) {
   unsigned long position = 0;
   memset(buffer, '\x00', size);
   start_timer(&driver->timer);
-  while (is_ebyte_busy(driver)) {
+  while (is_ebyte_busy(driver) && position < size) {
     if (!is_serial_receiving_on_time(driver)) return -1;
     position = read_from_serial_callback(buffer, size, position);
   }
