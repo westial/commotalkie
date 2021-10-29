@@ -49,13 +49,14 @@ Driver Driver_Create(PinMap pins, RadioParams *params, IOCallback *io,
 
 unsigned long Driver_Send(Driver *driver, const Destination *destination,
                           const char *content, unsigned long size) {
-  unsigned char data[sizeof(driver->address) + sizeof(driver->channel) + size];
+  unsigned char head_size = 3;
+  unsigned char data[head_size + size];
   unsigned long written;
   Driver_TurnOn(driver);
   data[0] = destination->address_high;
   data[1] = destination->address_low;
   data[2] = destination->channel;
-  memcpy(data + 3, content, size);
+  memcpy(data + head_size, content, size);
   written = write_to_serial_callback(data, sizeof(data));
   wait_until_writing_finished(driver);
   Driver_TurnOff(driver);
