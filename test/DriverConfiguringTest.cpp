@@ -13,7 +13,7 @@ TEST_GROUP(DriverConfiguring){void setup() override{driverHelperSetup();
 
 TEST(DriverConfiguring, CreateADriver) {
   PinMap pins = {1, 2, 3};
-  xx_RadioParams params;
+  RadioParams params;
   params.address[0] = 0x08;
   params.address[1] = 0x09;
   params.channel = 0x06;
@@ -24,7 +24,7 @@ TEST(DriverConfiguring, CreateADriver) {
   io.write_pin = spy_write_pin;
   io.write_to_serial = spy_write_to_serial;
   io.read_from_serial = spy_read_from_serial;
-  xx_Driver instance = xx_Driver_Create(pins, &params, &io, &timer, default_timeouts);
+  Driver instance = Driver_Create(pins, &params, &io, &timer, default_timeouts);
   CHECK_EQUAL(1, instance.pins.m0);
   CHECK_EQUAL(2, instance.pins.m1);
   CHECK_EQUAL(3, instance.pins.aux);
@@ -35,7 +35,7 @@ TEST(DriverConfiguring, CreateADriver) {
 }
 
 TEST(DriverConfiguring, SetStateAsSleepAfterInitialization) {
-  xx_Driver sample_driver =
+  Driver sample_driver =
       create_sample((const unsigned char *)"\x08\x09\x06", 0, 0, 0);
   CHECK_EQUAL(SLEEP, sample_driver.state);
   CHECK_EQUAL(spy_write_pin_args[0][0], sample_driver.pins.m0);
@@ -45,7 +45,7 @@ TEST(DriverConfiguring, SetStateAsSleepAfterInitialization) {
 }
 
 TEST(DriverConfiguring, SetAddressAndChannel) {
-  xx_Driver sample_driver =
+  Driver sample_driver =
       create_sample((const unsigned char *)"\xA1\xA2\xA3", 0, 0, 0);
   CHECK_EQUAL(1, spy_write_to_serial_call_count);
   CHECK_EQUAL('\xA2', spy_write_to_serial_arg_1[0][ADDRESS_LOW]);
@@ -135,7 +135,7 @@ TEST(DriverConfiguring, WaitUntilAuxGetsHigh) {
 TEST(DriverConfiguring, TimeoutWaitingForHighOnAux) {
   stub_read_pin_return = 0;
   default_timeouts[MODE_TIMEOUT_INDEX] = progressive_ms + 1;
-  xx_Driver sample_driver =
+  Driver sample_driver =
       create_sample((const unsigned char *)"\xA1\xA2\xA3", 0, 0, 0);
   CHECK_EQUAL(WARNING, sample_driver.state);
 }

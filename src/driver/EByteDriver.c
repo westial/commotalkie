@@ -21,9 +21,6 @@ static unsigned long (*read_from_serial_callback)(char *, unsigned long,
 static Driver create_driver(PinMap *pins, RadioParams *params, Timer *timer,
                             const unsigned long *timeout_ms);
 
-static xx_Driver xx_create_driver(PinMap *pins, xx_RadioParams *params,
-                               Timer *timer, const unsigned long *timeout_ms);
-
 static void start_timer(Timer *timer);
 static void stop_timer(Timer *timer);
 static int is_timer_on_time(Timer *timer, unsigned long timeout_at);
@@ -42,18 +39,6 @@ Driver Driver_Create(PinMap pins, RadioParams *params, IOCallback *io,
   Driver self = create_driver(&pins, params, timer, timeouts);
   Driver_TurnOff(&self);
   set_configuration(&self);
-  return self;
-}
-
-xx_Driver xx_Driver_Create(PinMap pins, xx_RadioParams *params, IOCallback *io,
-                        Timer *timer, unsigned long *timeouts) {
-  read_pin_callback = io->read_pin;
-  write_pin_callback = io->write_pin;
-  write_to_serial_callback = io->write_to_serial;
-  read_from_serial_callback = io->read_from_serial;
-  xx_Driver self = xx_create_driver(&pins, params, timer, timeouts);
-  Driver_TurnOff((Driver*)&self);
-  set_configuration((Driver*)&self);
   return self;
 }
 
@@ -194,22 +179,6 @@ void change_state_to_normal(Driver *driver) {
 Driver create_driver(PinMap *pins, RadioParams *params, Timer *timer,
                      const unsigned long *timeout_ms) {
   Driver result;
-  result.address[0] = params->address[DRIVER_ADDRESS_LOW_INDEX];
-  result.address[1] = params->address[DRIVER_ADDRESS_HIGH_INDEX];
-  result.channel = params->channel;
-  result.air_data_rate = params->air_data_rate;
-  result.fixed_on = params->is_fixed_transmission;
-  result.low_power_on = !params->full_transmission_power;
-  result.pins = *pins;
-  result.timer = *timer;
-  result.timeouts[MODE_TIMEOUT_INDEX] = timeout_ms[MODE_TIMEOUT_INDEX];
-  result.timeouts[SERIAL_TIMEOUT_INDEX] = timeout_ms[SERIAL_TIMEOUT_INDEX];
-  return result;
-}
-
-xx_Driver xx_create_driver(PinMap *pins, xx_RadioParams *params, Timer *timer,
-                        const unsigned long *timeout_ms) {
-  xx_Driver result;
   result.address[0] = params->address[DRIVER_ADDRESS_LOW_INDEX];
   result.address[1] = params->address[DRIVER_ADDRESS_HIGH_INDEX];
   result.channel = params->channel;
