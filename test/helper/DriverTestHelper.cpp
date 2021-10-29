@@ -12,8 +12,9 @@
 
 static void driverHelperSetup();
 
-static char sample_address[DRIVER_ADDRESS_SIZE];
-static Driver create_sample(const char *, char, int, int);
+static xx_Driver create_sample(const unsigned char *topic,
+                                  unsigned char air_data_rate, int is_fixed,
+                                  int full_power);
 
 static int (*dynamic_read_pin)(unsigned char pin);
 
@@ -96,7 +97,8 @@ int stub_read_pin_sequence(unsigned char pin) {
 }
 
 int stub_read_pin_sequence_end_by_permanent_zero(unsigned char pin) {
-  if (sizeof(read_pin_sequence)/sizeof(read_pin_sequence[0]) > stub_read_pin_call_count)
+  if (sizeof(read_pin_sequence) / sizeof(read_pin_sequence[0]) >
+      stub_read_pin_call_count)
     return stub_read_pin_sequence(pin);
   return 0;
 }
@@ -131,10 +133,12 @@ unsigned long spy_read_from_serial(char *buffer, unsigned long size,
 unsigned long spy_read_from_serial_by_chunks(char *buffer, unsigned long size,
                                              unsigned long position) {
   memcpy(
-      buffer + position, stub_read_from_serial_buffer_4_char_chunks[buffer_chunks_index],
+      buffer + position,
+      stub_read_from_serial_buffer_4_char_chunks[buffer_chunks_index],
       sizeof(stub_read_from_serial_buffer_4_char_chunks[buffer_chunks_index]));
   buffer_chunks_index++;
-  position += sizeof(stub_read_from_serial_buffer_4_char_chunks[buffer_chunks_index]);
+  position +=
+      sizeof(stub_read_from_serial_buffer_4_char_chunks[buffer_chunks_index]);
   return position;
 }
 
@@ -150,10 +154,11 @@ int serial_is_available_by_value_stub() {
 
 unsigned long stub_progressive_epoch_ms_fn() { return progressive_ms += 1; }
 
-Driver create_sample(const char *topic, const char air_data_rate,
-                     const int is_fixed, const int full_power) {
+xx_Driver create_sample(const unsigned char *topic,
+                           unsigned char air_data_rate, int is_fixed,
+                           int full_power) {
   PinMap pins = {1, 2, 3};
-  RadioParams params = {
+  xx_RadioParams params = {
       {topic[DRIVER_ADDRESS_HIGH_INDEX], topic[DRIVER_ADDRESS_LOW_INDEX]},
       topic[2],
       air_data_rate,
@@ -162,7 +167,7 @@ Driver create_sample(const char *topic, const char air_data_rate,
   Timer timer = Timer_Create((const void *)stub_progressive_epoch_ms_fn);
   IOCallback io = {dynamic_read_pin, spy_write_pin, spy_write_to_serial,
                    dynamic_from_serial};
-  return Driver_Create(pins, &params, &io, &timer, default_timeouts);
+  return xx_Driver_Create(pins, &params, &io, &timer, default_timeouts);
 }
 
 void reset_write_to_serial() {

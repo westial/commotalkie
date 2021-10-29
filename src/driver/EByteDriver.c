@@ -7,7 +7,7 @@ static void set_configuration(Driver *driver);
 static int value_speed(char parity, char baud_rate, char air_rate);
 static int value_options(int transmit_mode, int pull_up, char wake_up_time,
                          int fec_switch, char transmit_power);
-static int wait_until_event(Driver *driver, int (*event)(Driver*));
+static int wait_until_event(Driver *driver, int (*event)(Driver *));
 static int wait_until_mode_is_ready(Driver *driver);
 static int wait_until_writing_finished(Driver *driver);
 static void delay(Timer *timer, unsigned long timeout);
@@ -20,6 +20,9 @@ static unsigned long (*read_from_serial_callback)(char *, unsigned long,
 
 static Driver create_driver(PinMap *pins, RadioParams *params, Timer *timer,
                             const unsigned long *timeout_ms);
+
+static xx_Driver xx_create_driver(PinMap *pins, xx_RadioParams *params,
+                               Timer *timer, const unsigned long *timeout_ms);
 
 static void start_timer(Timer *timer);
 static void stop_timer(Timer *timer);
@@ -42,9 +45,21 @@ Driver Driver_Create(PinMap pins, RadioParams *params, IOCallback *io,
   return self;
 }
 
+xx_Driver xx_Driver_Create(PinMap pins, xx_RadioParams *params, IOCallback *io,
+                        Timer *timer, unsigned long *timeouts) {
+  read_pin_callback = io->read_pin;
+  write_pin_callback = io->write_pin;
+  write_to_serial_callback = io->write_to_serial;
+  read_from_serial_callback = io->read_from_serial;
+  xx_Driver self = xx_create_driver(&pins, params, timer, timeouts);
+  Driver_TurnOff((Driver*)&self);
+  set_configuration((Driver*)&self);
+  return self;
+}
+
 unsigned long Driver_Send(Driver *driver, const Destination *destination,
                           const char *content, unsigned long size) {
-  char data[sizeof(driver->address) + sizeof(driver->channel) + size];
+  unsigned char data[sizeof(driver->address) + sizeof(driver->channel) + size];
   unsigned long written;
   Driver_TurnOn(driver);
   data[0] = destination->address_high;
@@ -54,8 +69,7 @@ unsigned long Driver_Send(Driver *driver, const Destination *destination,
   written = write_to_serial_callback(data, sizeof(data));
   wait_until_writing_finished(driver);
   Driver_TurnOff(driver);
-  return (SLEEP == driver->state && sizeof(data) == written) ? size
-                                                                        : 0;
+  return (SLEEP == driver->state && sizeof(data) == written) ? size : 0;
 }
 
 int Driver_Receive(Driver *driver, char *buffer, unsigned long size) {
@@ -63,7 +77,8 @@ int Driver_Receive(Driver *driver, char *buffer, unsigned long size) {
   memset(buffer, '\x00', size);
   start_timer(&driver->timer);
   while (is_ebyte_busy(driver) && position < size) {
-    if (!is_serial_receiving_on_time(driver)) return -1;
+    if (!is_serial_receiving_on_time(driver))
+      return -1;
     position = read_from_serial_callback(buffer, size, position);
   }
   stop_timer(&driver->timer);
@@ -82,7 +97,8 @@ int Driver_TurnOff(Driver *driver) {
 }
 
 int is_serial_receiving_on_time(Driver *driver) {
-  return is_timer_on_time(&driver->timer, driver->timeouts[SERIAL_TIMEOUT_INDEX]);
+  return is_timer_on_time(&driver->timer,
+                          driver->timeouts[SERIAL_TIMEOUT_INDEX]);
 }
 
 int value_options(int transmit_mode, int pull_up, char wake_up_time,
@@ -123,7 +139,7 @@ int is_waiting_for_mode_on_time(Driver *driver) {
   return is_timer_on_time(&driver->timer, driver->timeouts[MODE_TIMEOUT_INDEX]);
 }
 
-int wait_until_event(Driver *driver, int (*event)(Driver*)) {
+int wait_until_event(Driver *driver, int (*event)(Driver *)) {
   int on_time;
   start_timer(&driver->timer);
   do {
@@ -161,7 +177,8 @@ void start_timer(Timer *timer) { Timer_Start(timer); }
 void stop_timer(Timer *timer) { Timer_Stop(timer); }
 
 int is_timer_on_time(Timer *timer, unsigned long timeout_at) {
-  if (timeout_at > Timer_GetMillis(timer)) return 1;
+  if (timeout_at > Timer_GetMillis(timer))
+    return 1;
   else {
     stop_timer(timer);
     return 0;
@@ -177,6 +194,22 @@ void change_state_to_normal(Driver *driver) {
 Driver create_driver(PinMap *pins, RadioParams *params, Timer *timer,
                      const unsigned long *timeout_ms) {
   Driver result;
+  result.address[0] = params->address[DRIVER_ADDRESS_LOW_INDEX];
+  result.address[1] = params->address[DRIVER_ADDRESS_HIGH_INDEX];
+  result.channel = params->channel;
+  result.air_data_rate = params->air_data_rate;
+  result.fixed_on = params->is_fixed_transmission;
+  result.low_power_on = !params->full_transmission_power;
+  result.pins = *pins;
+  result.timer = *timer;
+  result.timeouts[MODE_TIMEOUT_INDEX] = timeout_ms[MODE_TIMEOUT_INDEX];
+  result.timeouts[SERIAL_TIMEOUT_INDEX] = timeout_ms[SERIAL_TIMEOUT_INDEX];
+  return result;
+}
+
+xx_Driver xx_create_driver(PinMap *pins, xx_RadioParams *params, Timer *timer,
+                        const unsigned long *timeout_ms) {
+  xx_Driver result;
   result.address[0] = params->address[DRIVER_ADDRESS_LOW_INDEX];
   result.address[1] = params->address[DRIVER_ADDRESS_HIGH_INDEX];
   result.channel = params->channel;

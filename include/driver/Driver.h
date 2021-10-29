@@ -20,9 +20,9 @@ extern "C" {
 #define MAX_TIMEOUTS 2
 
 typedef struct Destination {
-  char address_high;
-  char address_low;
-  char channel;
+  unsigned char address_high;
+  unsigned char address_low;
+  unsigned char channel;
 } Destination;
 
 typedef struct IOCallback {
@@ -39,6 +39,14 @@ typedef struct RadioParams {
   int is_fixed_transmission;
   int full_transmission_power;
 } RadioParams;
+
+typedef struct xx_RadioParams {
+  unsigned char address[DRIVER_ADDRESS_SIZE];
+  unsigned char channel;
+  unsigned char air_data_rate;
+  int is_fixed_transmission;
+  int full_transmission_power;
+} xx_RadioParams;
 
 typedef struct PinMap {
   int m0;
@@ -60,7 +68,22 @@ typedef struct Driver {
   unsigned long timeouts[MAX_TIMEOUTS];
 } Driver;
 
+typedef struct xx_Driver {
+  unsigned char address[DRIVER_ADDRESS_SIZE];
+  unsigned char channel;
+  unsigned char air_data_rate;
+  PinMap pins;
+  State state;
+  int fixed_on;
+  int low_power_on;
+  Timer timer;
+  unsigned long timeouts[MAX_TIMEOUTS];
+} xx_Driver;
+
 Driver Driver_Create(PinMap pins, RadioParams *params, IOCallback *io,
+                     Timer *timer, unsigned long *timeouts);
+
+xx_Driver xx_Driver_Create(PinMap pins, xx_RadioParams *params, IOCallback *io,
                      Timer *timer, unsigned long *timeouts);
 
 unsigned long Driver_Send(Driver *driver, const Destination *destination,
