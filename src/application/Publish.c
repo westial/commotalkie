@@ -15,7 +15,7 @@ void Publish_Create(
 }
 
 void Publish_Invoke(
-    const char *topic,
+    const unsigned char *topic,
     const unsigned char port,
     const unsigned char id,
     const char *body) {
@@ -30,7 +30,7 @@ void Publish_Invoke(
   MessageFormatter_Pack(content, &message);
   MessageCrypter_Encrypt(&message, encrypted);
   MessageValidator_Sign((Message *) encrypted);
-  MessagePublisher_Push(topic, (Message *) encrypted);
+  MessagePublisher_Push(topic, (Message *)encrypted);
 }
 
 void Publish_Destroy() {

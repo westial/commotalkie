@@ -11,7 +11,7 @@ extern "C" {
 
 void Sender_Create(const void *send_function);
 
-unsigned long Sender_Send(const char* address, const char* content, unsigned long size);
+unsigned long Sender_Send(const unsigned char* address, const char* content, unsigned long size);
 
 void Sender_Destroy(void);
 

@@ -6,12 +6,12 @@
 #include <cstring>
 
 #include "helper/TimerTestHelper.cpp"
+#include "helper/PublishTestHelper.cpp"
 
 // -----------------------------------------------------------------------------
 
 static int stub_message_fn(const char *, const char *, unsigned long);
-static int mock_address_fn(const char *, const char *, int);
-static unsigned long stub_push_fn(const char *, const char *, unsigned long);
+static int mock_address_fn(const unsigned char *, const char *, int);
 static int stub_pull_fn(const char *, const char *, int);
 static int stub_force_error_pull_fn(const char *, const char *, int);
 static int stub_pull_nothing_yet_fn(const char *, const char *, int);
@@ -22,7 +22,6 @@ static int spy_receiver_state;
 static void spy_turn_on_receiver_fn();
 static void spy_turn_off_receiver_fn();
 
-static char stub_message_content[MESSAGE_LENGTH];
 static unsigned long nothing_until_zero;
 
 // -----------------------------------------------------------------------------
@@ -32,15 +31,9 @@ int stub_message_fn(const char *address, const char *content,
   memcpy((void *)content, "0123456789AB", MESSAGE_LENGTH);
   return 1;
 }
-int mock_address_fn(const char *address, const char *content, const int size) {
+int mock_address_fn(const unsigned char *address, const char *content, const int size) {
   MEMCMP_EQUAL(address, "address", 7);
   return 7;
-}
-
-unsigned long stub_push_fn(const char *address, const char *content,
-                           unsigned long size) {
-  memcpy(stub_message_content, content, size);
-  return size;
 }
 
 int stub_pull_fn(const char *address, const char *content, const int size) {
@@ -156,7 +149,7 @@ TEST(Subscription, PushAndPull) {
   Message sent_message;
   MessageFormatter_Pack("0123456789AB", &sent_message);
   MessagePublisher_Create((const void *)stub_push_fn);
-  MessagePublisher_Push("address", &sent_message);
+  MessagePublisher_Push((const unsigned char *)"address", &sent_message);
   MessagePublisher_Destroy();
   Message received_message;
   MessageSubscriber_Create((void *)stub_pull_fn, (void *)fake_epoch_ms_fn,

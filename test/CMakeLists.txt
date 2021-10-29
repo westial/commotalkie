@@ -35,6 +35,7 @@ add_library(TimerTest TimerTest.cpp)
 # helper
 add_library(DriverTestHelper helper/DriverTestHelper.cpp)
 add_library(TimerTestHelper helper/TimerTestHelper.cpp)
+add_library(PublishTestHelper helper/PublishTestHelper.cpp)
 
 # add mocking library
 add_library(Spy STATIC Spy.h)
@@ -45,6 +46,7 @@ target_link_libraries(RunAllTests
         Spy
         DriverTestHelper
         TimerTestHelper
+        PublishTestHelper
         imp_cpputest
         PackingTest
         ValidatingTest

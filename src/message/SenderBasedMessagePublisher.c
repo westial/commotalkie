@@ -8,8 +8,9 @@ void MessagePublisher_Create(const void *push_function) {
   Sender_Create(push_function);
 }
 
-int MessagePublisher_Push(const char* topic, Message *message) {
-  if (MESSAGE_LENGTH == Sender_Send(topic, (const char*) message, MESSAGE_LENGTH))
+int MessagePublisher_Push(const unsigned char* topic, Message *message) {
+  if (MESSAGE_LENGTH ==
+      Sender_Send(topic, (const char *)message, MESSAGE_LENGTH))
     return 1;
   return 0;
 }

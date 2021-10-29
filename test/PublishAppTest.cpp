@@ -1,5 +1,4 @@
 #include <CppUTest/TestHarness.h>
-#include "Spy.h"
 
 #include <cstring>
 #include "Message.h"
@@ -8,42 +7,13 @@
 #include "Pull.h"
 
 #include "helper/TimerTestHelper.cpp"
+#include "helper/PublishTestHelper.cpp"
 
-
-// -----------------------------------------------------------------------------
-
-#define MAX_MESSAGES 3
-#define TOPIC_LENGTH 16
-
-static unsigned long mock_push_fn(const char*, const char*, unsigned long);
-static unsigned long mock_push_fn_keep_topic(const char*, const char*, unsigned long);
-static int mock_pull_fn(const char*, const char*, int);
-static unsigned long mock_address_fn(const char*, const char*, unsigned long);
-
-static struct Spy push_fn_spy;
-static char spy_expected[MESSAGE_LENGTH];
-static char spy_pushed_contents[MAX_MESSAGES][MESSAGE_LENGTH];
-static int spy_pushed_topics_index;
-static char spy_pushed_topics[MAX_MESSAGES][TOPIC_LENGTH];
-static int spy_pushed_contents_index;
 
 static int spy_receiver_state;
 static void spy_turn_on_receiver_fn();
 static void spy_turn_off_receiver_fn();
-
-// -----------------------------------------------------------------------------
-
-unsigned long mock_push_fn(const char* address, const char* content, unsigned long size) {
-  push_fn_spy.calledCount ++;
-  memcpy(spy_pushed_contents[spy_pushed_contents_index++], content, MESSAGE_LENGTH);
-  return size;
-}
-
-unsigned long mock_push_fn_keep_topic(const char* address, const char* content, unsigned long size) {
-  mock_push_fn(address, content, size);
-  memcpy(spy_pushed_topics[spy_pushed_topics_index++], address, TOPIC_LENGTH);
-  return size;
-}
+static int mock_pull_fn(const char*, const char*, int);
 
 int mock_pull_fn(const char* address, const char* content, const int size) {
   memcpy((void *)content, spy_pushed_contents[0], MESSAGE_LENGTH);
@@ -81,7 +51,7 @@ TEST(PublishApp, Publish) {
   spy_expected[2] = 0x06;
   Publish_Create("salt", (const void *) mock_push_fn);
   memcpy(body, "23456789A", MESSAGE_BODY_LENGTH);
-  Publish_Invoke("topic", 0x05, 0x06, body);
+  Publish_Invoke((const unsigned char *)"topic", 0x05, 0x06, body);
   Publish_Destroy();
   CHECK_EQUAL(1, push_fn_spy.calledCount);
   CHECK_EQUAL(spy_expected[1], spy_pushed_contents[0][1]);
@@ -93,10 +63,10 @@ TEST(PublishApp, PublishMultipleMessages) {
   char body[MESSAGE_BODY_LENGTH];
   Publish_Create("", (const void *) mock_push_fn);
   memcpy(body, "23456789A", MESSAGE_BODY_LENGTH);
-  Publish_Invoke("topic", 0x05, 0x06, body);
-  Publish_Invoke("topic", 0x08, 0x09, body);
+  Publish_Invoke((const unsigned char *)"topic", 0x05, 0x06, body);
+  Publish_Invoke((const unsigned char *)"topic", 0x08, 0x09, body);
   memcpy(body, "xxxdifxxx", MESSAGE_BODY_LENGTH);
-  Publish_Invoke("topic", 0x05, 0x06, body);
+  Publish_Invoke((const unsigned char *)"topic", 0x05, 0x06, body);
   Publish_Destroy();
   CHECK_EQUAL(3, push_fn_spy.calledCount);
   CHECK_EQUAL(0x05, spy_pushed_contents[0][1]);
@@ -113,8 +83,8 @@ TEST(PublishApp, PublishToTwoTopics) {
   char body[MESSAGE_BODY_LENGTH];
   Publish_Create("salt", (const void *) mock_push_fn_keep_topic);
   memcpy(body, "same body", MESSAGE_BODY_LENGTH);
-  Publish_Invoke("topic1", 0x05, 0x06, body);
-  Publish_Invoke("topic2", 0x05, 0x06, body);
+  Publish_Invoke((const unsigned char *)"topic1", 0x05, 0x06, body);
+  Publish_Invoke((const unsigned char *)"topic2", 0x05, 0x06, body);
   Publish_Destroy();
   MEMCMP_EQUAL(
       spy_pushed_contents[0] + MESSAGE_META_LENGTH,
@@ -135,7 +105,8 @@ TEST(PublishApp, PublishAndRead) {
   unsigned char expected_id = 0x08;
   Publish_Create("salt", (const void *) mock_push_fn);
   memcpy(expected_body, "23456789A", MESSAGE_BODY_LENGTH);
-  Publish_Invoke("topic", expected_port, expected_id, expected_body);
+  Publish_Invoke((const unsigned char *)"topic", expected_port, expected_id,
+                 expected_body);
   Publish_Destroy();
   Pull_Create("salt", (const void *)mock_pull_fn, (const void *)fake_epoch_ms_fn,
               (const void *)spy_turn_on_receiver_fn, (const void *)spy_turn_off_receiver_fn,

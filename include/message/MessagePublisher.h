@@ -14,7 +14,7 @@ extern "C" {
 
 void MessagePublisher_Create(const void *push_function);
 
-int MessagePublisher_Push(const char* topic, Message *message);
+int MessagePublisher_Push(const unsigned char* topic, Message *message);
 
 void MessagePublisher_Destroy();
 

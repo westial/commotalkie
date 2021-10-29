@@ -14,9 +14,9 @@ void Publish_Create(
     const void *push_fn);
 
 void Publish_Invoke(
-    const char *topic,
-    const unsigned char port,
-    const unsigned char id,
+    const unsigned char *topic,
+    unsigned char port,
+    unsigned char id,
     const char *body);
 
 void Publish_Destroy();

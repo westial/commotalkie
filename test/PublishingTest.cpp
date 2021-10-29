@@ -28,8 +28,8 @@ TEST_GROUP(Publishing) {
 };
 
 TEST(Publishing, SendText) {
-  Sender_Create((const void *) push_fn);
-  CHECK_EQUAL(12, Sender_Send("address", "0123456789AB", 12));
+  Sender_Create((const void *)push_fn);
+  CHECK_EQUAL(12, Sender_Send((const unsigned char *)"address", "0123456789AB", 12));
   Sender_Destroy();
 }
 
@@ -37,7 +37,7 @@ TEST(Publishing, PublishMessage) {
   Message message;
   MessageFormatter_Pack("0123456789AB", &message);
   MessagePublisher_Create((const void *) push_fn);
-  CHECK_EQUAL(1, MessagePublisher_Push("address", &message));
+  CHECK_EQUAL(1, MessagePublisher_Push((const unsigned char *)"address", &message));
   MessagePublisher_Destroy();
 }
 
@@ -45,7 +45,7 @@ TEST(Publishing, PublishToCorrectTopic) {
   Message message;
   MessageFormatter_Pack("message=topi", &message);
   MessagePublisher_Create((const void *) mock_address_fn);
-  MessagePublisher_Push("message=topi", &message);
+  MessagePublisher_Push((const unsigned char *)"message=topi", &message);
   MessagePublisher_Destroy();
 }
 
@@ -53,6 +53,6 @@ TEST(Publishing, FailPublishing) {
   Message message;
   MessageFormatter_Pack("0123456789AB", &message);
   MessagePublisher_Create((const void *) push_fail_fn);
-  CHECK_EQUAL(0, MessagePublisher_Push("address", &message));
+  CHECK_EQUAL(0, MessagePublisher_Push((const unsigned char *)"address", &message));
   MessagePublisher_Destroy();
 }

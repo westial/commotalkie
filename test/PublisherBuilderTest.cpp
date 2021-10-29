@@ -1,24 +1,11 @@
 #include <CppUTest/TestHarness.h>
 #include "Spy.h"
 
-#include <cstring>
 #include "Message.h"
 #include "Publish.h"
 #include "PublisherBuilder.h"
 
-
-// -----------------------------------------------------------------------------
-
-static struct Spy push_fn_spy;
-static unsigned long fake_push_fn(const char *, const char *, unsigned long);
-
-// -----------------------------------------------------------------------------
-
-unsigned long fake_push_fn(
-    const char *address, const char *content, unsigned long size) {
-  push_fn_spy.calledCount++;
-  return 0;
-}
+#include "helper/PublishTestHelper.cpp"
 
 // -----------------------------------------------------------------------------
 
@@ -36,7 +23,7 @@ TEST(PublisherBuilder, BuildAPublisher) {
   PublisherBuilder_SetSendCallback(fake_push_fn);
   CHECK_TRUE(PublisherBuilder_Build());
   PublisherBuilder_Destroy();
-  Publish_Invoke("topic", 0x05, 0x06, body);
+  Publish_Invoke((const unsigned char *)"topic", 0xA5, 0xB6, body);
   Publish_Destroy();
   CHECK_EQUAL(1, push_fn_spy.calledCount);
 }
