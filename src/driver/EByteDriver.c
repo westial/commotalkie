@@ -19,6 +19,7 @@ static void (*write_pin_callback)(unsigned char, unsigned char);
 static unsigned long (*write_to_serial_callback)(void *, unsigned long);
 static unsigned long (*read_from_serial_callback)(char *, unsigned long,
                                                   unsigned long);
+static void (*clear_serial_callback)();
 
 static Driver create_driver(PinMap *pins, RadioParams *params, Timer *timer,
                             const unsigned long *timeout_ms);
@@ -38,9 +39,11 @@ Driver Driver_Create(PinMap pins, RadioParams *params, IOCallback *io,
   write_pin_callback = io->write_pin;
   write_to_serial_callback = io->write_to_serial;
   read_from_serial_callback = io->read_from_serial;
+  clear_serial_callback = io->clear_serial;
   Driver self = create_driver(&pins, params, timer, timeouts);
   Driver_TurnOff(&self);
   set_configuration(&self);
+  clear_serial_callback();
   return self;
 }
 

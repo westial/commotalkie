@@ -14,6 +14,9 @@
 
 // -----------------------------------------------------------------------------
 
+// @see E32-915T20D_Usermanual_EN_v1.6.pdf
+#define MAX_SERIAL_BUFFER_SIZE 512
+
 /**
  * ### Documentation says
  * @see E32-915T20D_Usermanual_EN_v1.6.pdf.

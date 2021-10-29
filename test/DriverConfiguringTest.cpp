@@ -24,6 +24,7 @@ TEST(DriverConfiguring, CreateADriver) {
   io.write_pin = spy_write_pin;
   io.write_to_serial = spy_write_to_serial;
   io.read_from_serial = spy_read_from_serial;
+  io.clear_serial = spy_clear_serial;
   Driver instance = Driver_Create(pins, &params, &io, &timer, default_timeouts);
   CHECK_EQUAL(1, instance.pins.m0);
   CHECK_EQUAL(2, instance.pins.m1);
@@ -45,8 +46,7 @@ TEST(DriverConfiguring, SetStateAsSleepAfterInitialization) {
 }
 
 TEST(DriverConfiguring, SetAddressAndChannel) {
-  Driver sample_driver =
-      create_sample((const unsigned char *)"\xA1\xA2\xA3", 0, 0, 0);
+  create_sample((const unsigned char *)"\xA1\xA2\xA3", 0, 0, 0);
   CHECK_EQUAL(1, spy_write_to_serial_call_count);
   CHECK_EQUAL('\xA2', spy_write_to_serial_arg_1[0][ADDRESS_LOW]);
   CHECK_EQUAL('\xA1', spy_write_to_serial_arg_1[0][ADDRESS_HIGH]);
@@ -145,4 +145,9 @@ TEST(DriverConfiguring, DelayAfterAuxGetsHigh) {
   create_sample((const unsigned char *)"\xA1\xA2\xA3", 0, 0, 0);
   CHECK_EQUAL(1, spy_write_to_serial_call_count);
   CHECK_EQUAL(TIMER_CALLS_ON_CREATING_DRIVER, progressive_ms);
+}
+
+TEST(DriverConfiguring, ClearBufferAfterSettingConfiguration) {
+  create_sample((const unsigned char *)"\xA1\xA2\xA3", 0, 0, 0);
+  CHECK_EQUAL(1, spy_clear_serial_call_count);
 }

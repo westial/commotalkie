@@ -46,6 +46,9 @@ static void reset_read_from_serial();
 static unsigned long spy_read_from_serial(char *buffer, unsigned long size,
                                           unsigned long position);
 
+static int spy_clear_serial_call_count;
+static void spy_clear_serial();
+
 static char stub_read_from_serial_buffer_4_char_chunks[10][4];
 static int buffer_chunks_index;
 static unsigned long spy_read_from_serial_by_chunks(char *buffer,
@@ -84,6 +87,7 @@ void driverHelperSetup() {
   stub_availability_value = 1;
   dynamic_serial_is_available = serial_is_available_by_value_stub;
   spy_availability_check_count = 0;
+  spy_clear_serial_call_count = 0;
 }
 
 int stub_read_pin(unsigned char pin) {
@@ -165,7 +169,7 @@ Driver create_sample(const unsigned char *topic, unsigned char air_data_rate,
       full_power};
   Timer timer = Timer_Create((const void *)stub_progressive_epoch_ms_fn);
   IOCallback io = {dynamic_read_pin, spy_write_pin, spy_write_to_serial,
-                   dynamic_from_serial};
+                   dynamic_from_serial, spy_clear_serial};
   return Driver_Create(pins, &params, &io, &timer, default_timeouts);
 }
 
@@ -194,4 +198,8 @@ void reset_write_pin() {
     arg[0] = -1;
     arg[1] = -1;
   }
+}
+
+void spy_clear_serial() {
+  spy_clear_serial_call_count++;
 }
