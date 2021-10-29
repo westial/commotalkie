@@ -25,6 +25,7 @@
  * ### My experience
  * If this value is too large, like 20-50, it seems that part of the message
  * head is randomly missing.
+ *
  */
 #define MS_DELAY_AFTER_READY_CHECK 2
 
