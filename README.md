@@ -160,7 +160,7 @@ appends bytes to the message for technical requirements, the `listen_fn` fills
 up the `buffer` argument with the content without the transporter additions.
 
 ```c
-int listen_fn(const char* address, const char* buffer, const unsigned long size);
+int listen_fn(const unsigned char* address, const char* buffer, const unsigned long size);
 ```
 
 The time service function signature is pretty simple, it's just a call to a 

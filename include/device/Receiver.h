@@ -18,7 +18,7 @@ void Receiver_TurnOn();
 
 void Receiver_TurnOff();
 
-int Receiver_Listen(const char *address);
+int Receiver_Listen(const unsigned char *address);
 
 void Receiver_Destroy(void);
 

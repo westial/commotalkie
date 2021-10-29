@@ -12,7 +12,7 @@ static const unsigned char *exclusive_id = 0;
 
 void start_countdown();
 void stop_countdown();
-void pull(const char *topic, Message *message, Result *result,
+void pull(const unsigned char *topic, Message *message, Result *result,
           Message *decrypted);
 void decrypt(Message *, Message *);
 void parse(Message *output, unsigned char *port, unsigned char *id, char *body);
@@ -28,7 +28,7 @@ void Pull_Create(const char *salt, const void *pull, const void *epoch,
   exclusive_id = to_id;
 }
 
-Result Pull_Invoke(const char *topic, unsigned char *port, unsigned char *id,
+Result Pull_Invoke(const unsigned char *topic, unsigned char *port, unsigned char *id,
                    char *body) {
   Result result;
   Message message;
@@ -82,7 +82,7 @@ void stop_countdown() {
     MessageSubscriber_StopCountDown();
 }
 
-void pull(const char *topic, Message *message, Result *result,
+void pull(const unsigned char *topic, Message *message, Result *result,
           Message *decrypted) {
   unsigned char id;
   do {

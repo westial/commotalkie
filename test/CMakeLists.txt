@@ -36,17 +36,22 @@ add_library(TimerTest TimerTest.cpp)
 add_library(DriverTestHelper helper/DriverTestHelper.cpp)
 add_library(TimerTestHelper helper/TimerTestHelper.cpp)
 add_library(PublishTestHelper helper/PublishTestHelper.cpp)
+add_library(PullTestHelper helper/PullTestHelper.cpp)
 
 # add mocking library
 add_library(Spy STATIC Spy.h)
+add_library(PublishPullShared STATIC helper/PublishPullShared.h)
 set_target_properties(Spy PROPERTIES LINKER_LANGUAGE CXX)
+set_target_properties(PublishPullShared PROPERTIES LINKER_LANGUAGE CXX)
 
 add_executable(RunAllTests RunAllTests.cpp)
 target_link_libraries(RunAllTests
         Spy
+        PublishPullShared
         DriverTestHelper
         TimerTestHelper
         PublishTestHelper
+        PullTestHelper
         imp_cpputest
         PackingTest
         ValidatingTest

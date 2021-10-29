@@ -3,65 +3,10 @@
 #include "MessageFormatter.h"
 #include "MessagePublisher.h"
 #include "MessageSubscriber.h"
-#include <cstring>
 
 #include "helper/TimerTestHelper.cpp"
 #include "helper/PublishTestHelper.cpp"
-
-// -----------------------------------------------------------------------------
-
-static int stub_message_fn(const char *, const char *, unsigned long);
-static int mock_address_fn(const unsigned char *, const char *, int);
-static int stub_pull_fn(const char *, const char *, int);
-static int stub_force_error_pull_fn(const char *, const char *, int);
-static int stub_pull_nothing_yet_fn(const char *, const char *, int);
-
-static unsigned int spy_state_on_counter;
-static unsigned int spy_state_off_counter;
-static int spy_receiver_state;
-static void spy_turn_on_receiver_fn();
-static void spy_turn_off_receiver_fn();
-
-static unsigned long nothing_until_zero;
-
-// -----------------------------------------------------------------------------
-
-int stub_message_fn(const char *address, const char *content,
-                    const unsigned long size) {
-  memcpy((void *)content, "0123456789AB", MESSAGE_LENGTH);
-  return 1;
-}
-int mock_address_fn(const unsigned char *address, const char *content, const int size) {
-  MEMCMP_EQUAL(address, "address", 7);
-  return 7;
-}
-
-int stub_pull_fn(const char *address, const char *content, const int size) {
-  memcpy((void *)content, stub_message_content, size);
-  return size;
-}
-
-int stub_force_error_pull_fn(const char *address, const char *content,
-                             const int size) {
-  return -1;
-}
-
-int stub_pull_nothing_yet_fn(const char *address, const char *content,
-                             const int size) {
-  if (--nothing_until_zero)
-    return 0;
-  else
-    return MESSAGE_LENGTH;
-}
-
-void spy_turn_on_receiver_fn() {
-  spy_state_on_counter++;
-  spy_receiver_state = 1;
-}
-void spy_turn_off_receiver_fn() {
-  spy_state_off_counter++;
-  spy_receiver_state = 0;
-}
+#include "helper/PullTestHelper.cpp"
 
 // -----------------------------------------------------------------------------
 
@@ -81,7 +26,7 @@ TEST(Subscription, Timeout) {
       (void *)stub_message_fn, (void *)stub_progressive_epoch_ms_fn,
       (void *)spy_turn_on_receiver_fn, (void *)spy_turn_off_receiver_fn);
   MessageSubscriber_StartCountDown(999);
-  result = MessageSubscriber_Pull("address", &message);
+  result = MessageSubscriber_Pull((const unsigned char *)"address", &message);
   MessageSubscriber_Destroy();
   CHECK_EQUAL(Timeout, result);
   CHECK_EQUAL(1, spy_state_on_counter);
@@ -94,7 +39,7 @@ TEST(Subscription, NoTimeout) {
   MessageSubscriber_Create(
       (void *)stub_pull_nothing_yet_fn, (void *)stub_progressive_epoch_ms_fn,
       (void *)spy_turn_on_receiver_fn, (void *)spy_turn_off_receiver_fn);
-  result = MessageSubscriber_Pull("address", &message);
+  result = MessageSubscriber_Pull((const unsigned char *)"address", &message);
   MessageSubscriber_Destroy();
   CHECK_EQUAL(Success, result);
   CHECK_EQUAL(0, nothing_until_zero);
@@ -116,7 +61,7 @@ TEST(Subscription, IOError) {
       (void *)stub_force_error_pull_fn, (void *)fake_epoch_ms_fn,
       (void *)spy_turn_on_receiver_fn, (void *)spy_turn_off_receiver_fn);
   MessageSubscriber_StartCountDown(999);
-  result = MessageSubscriber_Pull("address", &message);
+  result = MessageSubscriber_Pull((const unsigned char *)"address", &message);
   MessageSubscriber_Destroy();
   CHECK_EQUAL(IOError, result);
 };
@@ -128,11 +73,12 @@ TEST(Subscription, SucceededPull) {
                            (void *)spy_turn_on_receiver_fn,
                            (void *)spy_turn_off_receiver_fn);
   MessageSubscriber_StartCountDown(999);
-  result = MessageSubscriber_Pull("address", &message);
+  result = MessageSubscriber_Pull((const unsigned char *)"address", &message);
   MessageSubscriber_Destroy();
   CHECK_EQUAL(Success, result);
-  MEMCMP_EQUAL(message.meta, "012", MESSAGE_META_LENGTH);
-  MEMCMP_EQUAL(message.body, "3456789AB", MESSAGE_BODY_LENGTH);
+  CHECK_EQUAL(0xED, message.meta[0]);   // checksum byte
+  MEMCMP_EQUAL("12", message.meta + 1, MESSAGE_META_LENGTH - 1);
+  MEMCMP_EQUAL("3456789AB", message.body, MESSAGE_BODY_LENGTH);
 };
 
 TEST(Subscription, PullFromCorrectTopic) {
@@ -141,7 +87,7 @@ TEST(Subscription, PullFromCorrectTopic) {
                            (void *)spy_turn_on_receiver_fn,
                            (void *)spy_turn_off_receiver_fn);
   MessageSubscriber_StartCountDown(999);
-  MessageSubscriber_Pull("address", &message);
+  MessageSubscriber_Pull((const unsigned char *)"address", &message);
   MessageSubscriber_Destroy();
 };
 
@@ -156,7 +102,7 @@ TEST(Subscription, PushAndPull) {
                            (void *)spy_turn_on_receiver_fn,
                            (void *)spy_turn_off_receiver_fn);
   MessageSubscriber_StartCountDown(999);
-  MessageSubscriber_Pull("address", &received_message);
+  MessageSubscriber_Pull((const unsigned char *)"address", &received_message);
   MessageSubscriber_Destroy();
   MEMCMP_EQUAL(sent_message.meta, received_message.meta, MESSAGE_META_LENGTH);
   MEMCMP_EQUAL(sent_message.body, received_message.body, MESSAGE_BODY_LENGTH);

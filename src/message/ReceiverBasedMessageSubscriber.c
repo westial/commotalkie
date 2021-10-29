@@ -10,7 +10,7 @@
 
 #define NO_BUFFER 0
 
-static Result receive(const char* topic, void *message);
+static Result receive(const unsigned char* topic, void *message);
 static unsigned long timeout_at;
 static Timer timer;
 
@@ -34,7 +34,7 @@ void MessageSubscriber_StopCountDown() {
   Timer_Stop(&timer);
 }
 
-Result receive(const char* topic, void *message) {
+Result receive(const unsigned char* topic, void *message) {
   int available = NO_BUFFER;
   while (NO_BUFFER == available) {
     available = Receiver_Listen(topic);
@@ -47,7 +47,7 @@ Result receive(const char* topic, void *message) {
   return Success;
 }
 
-Result MessageSubscriber_Pull(const char* topic, const Message *message) {
+Result MessageSubscriber_Pull(const unsigned char* topic, const Message *message) {
   Result result;
   Receiver_TurnOn();
   result = receive(topic, (void *)message);

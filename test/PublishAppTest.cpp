@@ -111,7 +111,8 @@ TEST(PublishApp, PublishAndRead) {
   Pull_Create("salt", (const void *)mock_pull_fn, (const void *)fake_epoch_ms_fn,
               (const void *)spy_turn_on_receiver_fn, (const void *)spy_turn_off_receiver_fn,
               999, 0);
-  result = Pull_Invoke("topic", &result_port, &result_id, result_body);
+  result = Pull_Invoke((const unsigned char *)"topic", &result_port, &result_id,
+                       result_body);
   Pull_Destroy();
   CHECK_EQUAL(Success, result);
   CHECK_EQUAL(expected_port, result_port);

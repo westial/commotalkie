@@ -67,7 +67,7 @@ TEST(SubscriberBuilder, BuiltSubscriberPullsForIdOnly) {
   SubscriberBuilder_SetId(&id);
   CHECK_TRUE(SubscriberBuilder_Build());
   SubscriberBuilder_Destroy();
-  Pull_Invoke("address", &port, &id, body);
+  Pull_Invoke((const unsigned char *)"address", &port, &id, body);
   Pull_Destroy();
   CHECK_EQUAL(1, pull_fn_spy.calledCount);
 }
@@ -82,7 +82,7 @@ TEST(SubscriberBuilder, BuiltSubscriberPullsForAnyId) {
   SubscriberBuilder_SetTimeout(&timeout);
   CHECK_TRUE(SubscriberBuilder_Build());
   SubscriberBuilder_Destroy();
-  Pull_Invoke("address", &port, &id, body);
+  Pull_Invoke((const unsigned char *)"address", &port, &id, body);
   Pull_Destroy();
   CHECK_EQUAL(1, pull_fn_spy.calledCount);
 }
@@ -97,7 +97,7 @@ TEST(SubscriberBuilder, BuildASubscriberNoTimeout) {
   SubscriberBuilder_SetId(&id);
   CHECK_TRUE(SubscriberBuilder_Build());
   SubscriberBuilder_Destroy();
-  result = Pull_Invoke("address", &port, &id, body);
+  result = Pull_Invoke((const unsigned char *)"address", &port, &id, body);
   Pull_Destroy();
   CHECK_EQUAL(10000, pull_fn_spy.calledCount);
   CHECK_EQUAL(Success, result);

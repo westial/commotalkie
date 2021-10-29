@@ -1,6 +1,5 @@
 #include "../Spy.h"
-#include "messageconfig.h"
-#include <cstring>
+#include "PublishPullShared.h"
 
 #define MAX_MESSAGES 3
 #define TOPIC_LENGTH 16
@@ -16,7 +15,6 @@ static char spy_pushed_contents[MAX_MESSAGES][MESSAGE_LENGTH];
 static int spy_pushed_topics_index;
 static char spy_pushed_topics[MAX_MESSAGES][TOPIC_LENGTH];
 static int spy_pushed_contents_index;
-static char stub_message_content[MESSAGE_LENGTH];
 
 // -----------------------------------------------------------------------------
 

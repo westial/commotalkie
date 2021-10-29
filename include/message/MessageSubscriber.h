@@ -28,7 +28,7 @@ void MessageSubscriber_StopCountDown();
  * @param Message*
  * @return
  */
-Result MessageSubscriber_Pull(const char* topic, const Message *message);
+Result MessageSubscriber_Pull(const unsigned char* topic, const Message *message);
 
 void MessageSubscriber_Destroy();
 
