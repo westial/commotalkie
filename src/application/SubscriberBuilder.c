@@ -23,12 +23,7 @@ void SubscriberBuilder_SetReceiverStateCallback(void (*turn_on_)(),
 void SubscriberBuilder_SetSalt(const char *salt) { subscriber_salt = salt; }
 
 void SubscriberBuilder_SetListenCallback(
-    int (*listen_fn)(const char *, char *, const unsigned long)) {
-  subscriber_listen = (int (*)(const unsigned char *, char *, const unsigned long))listen_fn;
-}
-
-void xx_SubscriberBuilder_SetListenCallback(
-    int (*listen_fn)(const unsigned char *, char *, const unsigned long)) {
+    int (*listen_fn)(const unsigned char *address, char *content, const unsigned long size)) {
   subscriber_listen = listen_fn;
 }
 

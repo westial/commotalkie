@@ -58,13 +58,13 @@ Publish_Create("salt", (const void *) push_fn);
 const unsigned char port_for_temperature = 0x05;
 
 // Send a message
-Publish_Invoke("destination::address", port_for_temperature, my_id, "a message");
+Publish_Invoke((const unsigned char *)"destination::address", port_for_temperature, my_id, "a message");
 
 // Send other message to a different port
-Publish_Invoke("destination::address", 0xAD, my_id, "another message");
+Publish_Invoke((const unsigned char *)"destination::address", 0xAD, my_id, "another message");
 
 // Send other message to another destination
-Publish_Invoke("another::destination", 0xAD, my_id, "and another message");
+Publish_Invoke((const unsigned char *)"another::destination", 0xAD, my_id, "and another message");
 
 // Destroy
 Publish_Destroy();
@@ -104,7 +104,7 @@ Pull_Create(
 // Start listening for messages sent to "destination::address" only
 char body[MESSAGE_BODY_LENGTH];
 unsigned char port, id;
-result = Pull_Invoke("destination::address", &port, &id, body);
+result = Pull_Invoke((const unsigned char *)"destination::address", &port, &id, body);
 
 // Do some stuff with the message contents
 something(body);
@@ -160,7 +160,7 @@ appends bytes to the message for technical requirements, the `listen_fn` fills
 up the `buffer` argument with the content without the transporter additions.
 
 ```c
-int listen_fn(const unsigned char* address, const char* buffer, const unsigned long size);
+int listen_fn(const unsigned char* address, char* buffer, const unsigned long size);
 ```
 
 The time service function signature is pretty simple, it's just a call to a 

@@ -14,7 +14,7 @@ static int size = 0;
  * @return int number of bytes received or -1 in case of error. Returns 0 if
  * nothing.
  */
-static int (*listen)(const unsigned char *address, const char *content,
+static int (*listen)(const unsigned char *address, char *content,
                      const unsigned long size) = 0;
 static void (*turn_on)() = 0;
 static void (*turn_off)() = 0;
@@ -22,7 +22,7 @@ static void (*turn_off)() = 0;
 void Receiver_Create(const void *listen_, const void *turn_on_,
                      const void *turn_off_, int buffer_size) {
   listen =
-      (int(*)(const unsigned char *, const char *, const unsigned long))listen_;
+      (int(*)(const unsigned char *, char *, const unsigned long))listen_;
   turn_on = (void(*)())turn_on_;
   turn_off = (void(*)())turn_off_;
   buffer = malloc(buffer_size);

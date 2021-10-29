@@ -5,43 +5,11 @@
 #include "Pull.h"
 #include "Message.h"
 #include "SubscriberBuilder.h"
-#include <MessageFormatter.h>
-#include <MessageValidator.h>
 
 #include "helper/TimerTestHelper.cpp"
+#include "helper/PullTestHelper.cpp"
 
 // -----------------------------------------------------------------------------
-
-static struct Spy pull_fn_spy;
-static int stub_message_fn(const char *, char *, unsigned long);
-static void fake_turn_on_fn();
-static void fake_turn_off_fn();
-static unsigned char port, id;
-static char body[MESSAGE_BODY_LENGTH];
-static int stub_pull_nothing_yet_fn(const char*, char*, unsigned long);
-static unsigned long nothing_until_zero;
-
-// -----------------------------------------------------------------------------
-
-int stub_message_fn(const char *address, char *content, const unsigned long size) {
-  pull_fn_spy.calledCount++;
-  Message message;
-  MessageFormatter_Pack("0123456789AB", &message);
-  MessageValidator_Sign(&message);
-  memcpy((void *)content, (void *)&message, MESSAGE_LENGTH);
-  return 0 < size;
-}
-
-int stub_pull_nothing_yet_fn(const char* address, char* content, const unsigned long size) {
-  if (--nothing_until_zero) {
-    pull_fn_spy.calledCount++;
-    return 0;
-  }
-  else return stub_message_fn(address, content, size);
-}
-
-void fake_turn_on_fn() {}
-void fake_turn_off_fn() {}
 
 // -----------------------------------------------------------------------------
 

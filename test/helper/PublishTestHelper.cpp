@@ -7,7 +7,7 @@
 static unsigned long mock_push_fn(const unsigned char*, const char*, unsigned long);
 static unsigned long mock_push_fn_keep_topic(const unsigned char*, const char*, unsigned long);
 static unsigned long fake_push_fn(const unsigned char *, const char *, unsigned long);
-static unsigned long stub_push_fn(const char *, const char *, unsigned long);
+static unsigned long stub_push_fn(const unsigned char *, const char *, unsigned long);
 
 static struct Spy push_fn_spy;
 static char spy_expected[MESSAGE_LENGTH];
@@ -36,7 +36,7 @@ unsigned long fake_push_fn(
   return 0;
 }
 
-unsigned long stub_push_fn(const char *address, const char *content,
+unsigned long stub_push_fn(const unsigned char *address, const char *content,
                            unsigned long size) {
   memcpy(stub_message_content, content, size);
   return size;
