@@ -83,9 +83,9 @@ TEST(Subscription, SucceededPull) {
 
 TEST(Subscription, PullFromCorrectTopic) {
   Message message;
-  MessageSubscriber_Create((void *)mock_address_fn, (void *)fake_epoch_ms_fn,
-                           (void *)spy_turn_on_receiver_fn,
-                           (void *)spy_turn_off_receiver_fn);
+  MessageSubscriber_Create(
+      (void *)spy_address_on_pull_fn, (void *)fake_epoch_ms_fn,
+      (void *)spy_turn_on_receiver_fn, (void *)spy_turn_off_receiver_fn);
   MessageSubscriber_StartCountDown(999);
   MessageSubscriber_Pull((const unsigned char *)"address", &message);
   MessageSubscriber_Destroy();

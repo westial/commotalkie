@@ -1,5 +1,6 @@
 #include "../Spy.h"
 #include "PublishPullShared.h"
+#include "CppUTest/TestHarness.h"
 
 #define MAX_MESSAGES 3
 #define TOPIC_LENGTH 16
@@ -8,6 +9,10 @@ static unsigned long mock_push_fn(const unsigned char*, const char*, unsigned lo
 static unsigned long mock_push_fn_keep_topic(const unsigned char*, const char*, unsigned long);
 static unsigned long fake_push_fn(const unsigned char *, const char *, unsigned long);
 static unsigned long stub_push_fn(const unsigned char *, const char *, unsigned long);
+static unsigned long push_fn(const unsigned char *address, const char *content,
+                             unsigned long size);
+static unsigned long push_fail_fn(const unsigned char *address, const char *content, unsigned long size);
+static unsigned long spy_address_on_push_fn(const unsigned char *, const char *, unsigned long);
 
 static struct Spy push_fn_spy;
 static char spy_expected[MESSAGE_LENGTH];
@@ -39,5 +44,20 @@ unsigned long fake_push_fn(
 unsigned long stub_push_fn(const unsigned char *address, const char *content,
                            unsigned long size) {
   memcpy(stub_message_content, content, size);
+  return size;
+}
+
+unsigned long push_fn(const unsigned char *address, const char *content,
+                      unsigned long size) {
+  return size;
+}
+
+unsigned long push_fail_fn(const unsigned char *address, const char *content,
+                           unsigned long size) {
+  return size - 1;
+}
+unsigned long spy_address_on_push_fn(const unsigned char *address, const char *content,
+                              unsigned long size) {
+  MEMCMP_EQUAL(address, content, size);
   return size;
 }

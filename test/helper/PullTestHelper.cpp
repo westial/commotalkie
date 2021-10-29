@@ -1,6 +1,7 @@
 #include "PublishPullShared.h"
 #include <MessageFormatter.h>
 #include <MessageValidator.h>
+#include "CppUTest/TestHarness.h"
 
 static int stub_message_fn(const unsigned char *address, char *content,
                            unsigned long size);
@@ -15,7 +16,7 @@ static int stub_pull_nothing_yet_fn(const unsigned char *address, char *content,
 static int stub_empty_message_fn(const unsigned char *address, char *content,
                           unsigned long size);
 
-static int mock_address_fn(const unsigned char *, char *, unsigned long);
+static int spy_address_on_pull_fn(const unsigned char *, char *, unsigned long);
 static int stub_pull_fn(const unsigned char *address, char *content,
                         unsigned long size);
 static int stub_force_error_pull_fn(const unsigned char *address, char *content,
@@ -74,8 +75,9 @@ int stub_io_error_fn(const unsigned char *address, char *content, unsigned long 
   pull_fn_spy.calledCount++;
   return -1;
 }
-int mock_address_fn(const unsigned char *address, char *content,
+int spy_address_on_pull_fn(const unsigned char *address, char *content,
                     unsigned long size) {
+  MEMCMP_EQUAL((unsigned char*)"address", address, size);
   return 7;
 }
 

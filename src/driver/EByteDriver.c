@@ -4,9 +4,11 @@
 static void change_state_to_sleep(Driver *driver);
 static void change_state_to_normal(Driver *driver);
 static void set_configuration(Driver *driver);
-static int value_speed(char parity, char baud_rate, char air_rate);
-static int value_options(int transmit_mode, int pull_up, char wake_up_time,
-                         int fec_switch, char transmit_power);
+static int value_speed(unsigned char parity, unsigned char baud_rate,
+                       unsigned char air_rate);
+static int value_options(int transmit_mode, int pull_up,
+                         unsigned char wake_up_time, int fec_switch,
+                         unsigned char transmit_power);
 static int wait_until_event(Driver *driver, int (*event)(Driver *));
 static int wait_until_mode_is_ready(Driver *driver);
 static int wait_until_writing_finished(Driver *driver);
@@ -86,8 +88,9 @@ int is_serial_receiving_on_time(Driver *driver) {
                           driver->timeouts[SERIAL_TIMEOUT_INDEX]);
 }
 
-int value_options(int transmit_mode, int pull_up, char wake_up_time,
-                  int fec_switch, char transmit_power) {
+int value_options(const int transmit_mode, const int pull_up,
+                  const unsigned char wake_up_time, const int fec_switch,
+                  const unsigned char transmit_power) {
   return ((transmit_mode & 0xFF) << TRANSMIT_MODE_INDEX) |
          ((pull_up & 0xFF) << PULL_UP_INDEX) |
          ((wake_up_time & 0xFF) << WAKE_UP_TIME_INDEX) |
@@ -95,19 +98,20 @@ int value_options(int transmit_mode, int pull_up, char wake_up_time,
          ((transmit_power & 0xFF) << TRANSMIT_POWER_INDEX);
 }
 
-int value_speed(const char parity, const char baud_rate, const char air_rate) {
+int value_speed(const unsigned char parity, const unsigned char baud_rate,
+                const unsigned char air_rate) {
   return ((parity & 0xFF) << PARITY_INDEX) |
          ((baud_rate & 0xFF) << BAUD_RATE_INDEX) |
          ((air_rate & 0xFF) << AIR_RATE_INDEX);
 }
 
 void set_configuration(Driver *driver) {
-  char config[6];
+  unsigned char config[6];
   config[PERSISTENT] = PERSISTENT_CONF;
   config[ADDRESS_HIGH] = driver->address[DRIVER_ADDRESS_HIGH_INDEX];
   config[ADDRESS_LOW] = driver->address[DRIVER_ADDRESS_LOW_INDEX];
   config[SPEED] =
-      (char)value_speed(PARITY_BIT_8N1, BAUD_RATE_9600, driver->air_data_rate);
+      value_speed(PARITY_BIT_8N1, BAUD_RATE_9600, driver->air_data_rate);
   config[CHANNEL] = driver->channel;
   config[OPTIONS] = (char)value_options(
       driver->fixed_on, OPT_PULL_UP_ON, OPT_WAKEUP_250, OPT_FEC_ON,
