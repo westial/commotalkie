@@ -12,7 +12,7 @@ void SubscriberBuilder_Create();
 void SubscriberBuilder_SetSalt(const char *salt);
 
 void SubscriberBuilder_SetListenCallback(
-    int (*)(const unsigned char *, char *, const unsigned long));
+    int (*)(const unsigned char *, unsigned char *, const unsigned long));
 
 void SubscriberBuilder_SetReceiverStateCallback(void(*)(), void(*)());
 

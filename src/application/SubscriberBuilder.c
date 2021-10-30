@@ -2,7 +2,7 @@
 
 #include "Pull.h"
 static const char *subscriber_salt = 0;
-static int (*subscriber_listen)(const unsigned char *, char *, const unsigned long) = 0;
+static int (*subscriber_listen)(const unsigned char *, unsigned char *, const unsigned long) = 0;
 static unsigned long (*subscriber_timer)(void) = 0;
 static const unsigned long *subscriber_timeout_ms = 0;
 static const unsigned char *subscriber_id = 0;
@@ -21,7 +21,7 @@ void SubscriberBuilder_SetReceiverStateCallback(void (*turn_on_)(),
 void SubscriberBuilder_SetSalt(const char *salt) { subscriber_salt = salt; }
 
 void SubscriberBuilder_SetListenCallback(
-    int (*listen_fn)(const unsigned char *address, char *content, const unsigned long size)) {
+    int (*listen_fn)(const unsigned char *address, unsigned char *content, const unsigned long size)) {
   subscriber_listen = listen_fn;
 }
 
