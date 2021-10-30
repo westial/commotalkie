@@ -33,7 +33,7 @@ static int spy_write_pin_args[MAX_TEST_INDEX][2];
 static int spy_write_pin_args_index;
 
 static void reset_write_to_serial();
-static unsigned long spy_write_to_serial(void *content, unsigned long size);
+static unsigned long spy_write_to_serial(unsigned char *content, unsigned long size);
 static char spy_write_to_serial_arg_1[MAX_TEST_INDEX][MAX_TEST_INDEX];
 static unsigned long spy_write_to_serial_arg_2[MAX_TEST_INDEX];
 static int spy_write_to_serial_call_count;
@@ -113,7 +113,7 @@ void spy_write_pin(unsigned char pin, unsigned char value) {
   ++spy_write_pin_args_index;
 }
 
-unsigned long spy_write_to_serial(void *content, unsigned long size) {
+unsigned long spy_write_to_serial(unsigned char *content, unsigned long size) {
   memcpy(spy_write_to_serial_arg_1[spy_write_to_serial_call_count], content,
          size);
   spy_write_to_serial_arg_2[spy_write_to_serial_call_count] = size;
