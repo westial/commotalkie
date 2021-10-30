@@ -17,7 +17,7 @@ TEST(Encrypting, EncryptNoSalt) {
   MessageCrypter_Encrypt(&expected, encrypted);
   MessageCrypter_Destroy();
   Message result;
-  MessageFormatter_Pack((unsigned char *)encrypted, &result);
+  MessageFormatter_Pack(encrypted, &result);
   MEMCMP_EQUAL(expected.meta, result.meta, MESSAGE_META_LENGTH);
   MEMCMP_EQUAL(expected.body, result.body, MESSAGE_BODY_LENGTH);
 }
@@ -30,7 +30,7 @@ TEST(Encrypting, EncryptFirstBodyByte) {
   MessageCrypter_Encrypt(&expected, encrypted);
   MessageCrypter_Destroy();
   Message result;
-  MessageFormatter_Pack((unsigned char *)encrypted, &result);
+  MessageFormatter_Pack(encrypted, &result);
   CHECK_FALSE(expected.body[0] == result.body[0]);
 }
 
@@ -42,7 +42,7 @@ TEST(Encrypting, EncryptShortSalt) {
   MessageCrypter_Encrypt(&expected, encrypted);
   MessageCrypter_Destroy();
   Message result;
-  MessageFormatter_Pack((unsigned char *)encrypted, &result);
+  MessageFormatter_Pack(encrypted, &result);
   CHECK_EQUAL(expected.body[MESSAGE_BODY_LENGTH -1], result.body[MESSAGE_BODY_LENGTH -1]);
   CHECK_FALSE(expected.body[MESSAGE_BODY_LENGTH -2] == result.body[MESSAGE_BODY_LENGTH -2]);
 }
