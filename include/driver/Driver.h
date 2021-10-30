@@ -27,7 +27,7 @@ typedef struct IOCallback {
   int (*read_pin)(unsigned char);
   void (*write_pin)(unsigned char, unsigned char);
   unsigned long (*write_to_serial)(void *, unsigned long);
-  unsigned long (*read_from_serial)(void *, unsigned long, unsigned long);
+  unsigned long (*read_from_serial)(unsigned char *, unsigned long, unsigned long);
   void (*clear_serial)();
 } IOCallback;
 
@@ -65,7 +65,7 @@ Driver Driver_Create(PinMap pins, RadioParams *params, IOCallback *io,
 unsigned long Driver_Send(Driver *driver, const Destination *destination,
                           const void *content, unsigned long size);
 
-int Driver_Receive(Driver *driver, void *buffer, unsigned long size);
+int Driver_Receive(Driver *driver, unsigned char *buffer, unsigned long size);
 
 int Driver_TurnOn(Driver *driver);
 int Driver_TurnOff(Driver *driver);

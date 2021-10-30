@@ -63,7 +63,7 @@ unsigned long Driver_Send(Driver *driver, const Destination *destination,
   return (SLEEP == driver->state && sizeof(data) == written) ? size : 0;
 }
 
-int Driver_Receive(Driver *driver, void *buffer, unsigned long size) {
+int Driver_Receive(Driver *driver, unsigned char *buffer, unsigned long size) {
   unsigned long position = 0;
   memset(buffer, 0, size);
   start_timer(&driver->timer);
