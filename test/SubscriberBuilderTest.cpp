@@ -24,7 +24,7 @@ TEST(SubscriberBuilder, BuiltSubscriberPullsForIdOnly) {
   id = '2';
   SubscriberBuilder_Create();
   SubscriberBuilder_SetSalt("salt");
-  SubscriberBuilder_SetListenCallback(xx_stub_message_fn);
+  SubscriberBuilder_SetListenCallback(stub_message_fn);
   SubscriberBuilder_SetTimeService(fake_epoch_ms_fn);
   SubscriberBuilder_SetReceiverStateCallback(fake_turn_on_fn, fake_turn_off_fn);
   SubscriberBuilder_SetTimeout(&timeout);
@@ -40,7 +40,7 @@ TEST(SubscriberBuilder, BuiltSubscriberPullsForAnyId) {
   const unsigned long timeout = 999;
   SubscriberBuilder_Create();
   SubscriberBuilder_SetSalt("salt");
-  SubscriberBuilder_SetListenCallback(xx_stub_message_fn);
+  SubscriberBuilder_SetListenCallback(stub_message_fn);
   SubscriberBuilder_SetTimeService(fake_epoch_ms_fn);
   SubscriberBuilder_SetReceiverStateCallback(fake_turn_on_fn, fake_turn_off_fn);
   SubscriberBuilder_SetTimeout(&timeout);
@@ -56,7 +56,7 @@ TEST(SubscriberBuilder, BuildASubscriberNoTimeout) {
   id = '2';
   SubscriberBuilder_Create();
   SubscriberBuilder_SetSalt("salt");
-  SubscriberBuilder_SetListenCallback(xx_stub_pull_nothing_yet_fn);
+  SubscriberBuilder_SetListenCallback(stub_pull_nothing_yet_fn);
   SubscriberBuilder_SetReceiverStateCallback(fake_turn_on_fn, fake_turn_off_fn);
   SubscriberBuilder_SetId(&id);
   CHECK_TRUE(SubscriberBuilder_Build());
@@ -70,7 +70,7 @@ TEST(SubscriberBuilder, BuildASubscriberNoTimeout) {
 TEST(SubscriberBuilder, BuildWithMinimumRequired) {
   SubscriberBuilder_Create();
   SubscriberBuilder_SetSalt("salt");
-  SubscriberBuilder_SetListenCallback(xx_stub_message_fn);
+  SubscriberBuilder_SetListenCallback(stub_message_fn);
   SubscriberBuilder_SetReceiverStateCallback(fake_turn_on_fn, fake_turn_off_fn);
   CHECK_TRUE(SubscriberBuilder_Build());
   SubscriberBuilder_Destroy();
@@ -79,7 +79,7 @@ TEST(SubscriberBuilder, BuildWithMinimumRequired) {
 TEST(SubscriberBuilder, SaltIsRequired) {
   SubscriberBuilder_Create();
   SubscriberBuilder_SetSalt("");
-  SubscriberBuilder_SetListenCallback(xx_stub_message_fn);
+  SubscriberBuilder_SetListenCallback(stub_message_fn);
   SubscriberBuilder_SetReceiverStateCallback(fake_turn_on_fn, fake_turn_off_fn);
   CHECK_FALSE(SubscriberBuilder_Build());
   SubscriberBuilder_Destroy();
@@ -96,7 +96,7 @@ TEST(SubscriberBuilder, ListenCallbackIsRequired) {
 TEST(SubscriberBuilder, ReceiverTurnOnCallbackIsRequired) {
   SubscriberBuilder_Create();
   SubscriberBuilder_SetSalt("salt");
-  SubscriberBuilder_SetListenCallback(xx_stub_message_fn);
+  SubscriberBuilder_SetListenCallback(stub_message_fn);
   CHECK_FALSE(SubscriberBuilder_Build());
   SubscriberBuilder_Destroy();
 }
