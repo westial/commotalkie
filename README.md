@@ -49,7 +49,7 @@ name, just a message destination.
 ```c
 // My Device Id
 const unsigned char my_id = 0x06;
-char body[MESSAGE_BODY_LENGTH];
+unsigned char body[MESSAGE_BODY_LENGTH];
 
 // Initialize publisher
 Publish_Create("salt", (const void *) push_fn);
@@ -79,7 +79,7 @@ size of the content is always the value of the constant `MESSAGE_LENGTH`.
 Address is just the place for the mentioned message destination (topic).
 
 ```c
-unsigned long push_fn(const unsigned char* address, const char* content, unsigned long size);
+unsigned long push_fn(const unsigned char* address, const unsigned char* content, unsigned long size);
 ```
 
 ### Pull ###
@@ -102,7 +102,7 @@ Pull_Create(
 );
 
 // Start listening for messages sent to "destination::address" only
-char body[MESSAGE_BODY_LENGTH];
+unsigned char body[MESSAGE_BODY_LENGTH];
 unsigned char port, id;
 result = Pull_Invoke((const unsigned char *)"destination::address", &port, &id, body);
 
@@ -160,7 +160,7 @@ appends bytes to the message for technical requirements, the `listen_fn` fills
 up the `buffer` argument with the content without the transporter additions.
 
 ```c
-int listen_fn(const unsigned char* address, char* buffer, const unsigned long size);
+int listen_fn(const unsigned char* address, unsigned char* buffer, const unsigned long size);
 ```
 
 The time service function signature is pretty simple, it's just a call to a 
@@ -208,9 +208,9 @@ PublisherBuilder_SetSendCallback(push_fn);
 if (!PublisherBuilder_Build()) exit(-1);
 PublisherBuilder_Destroy();
 
-Publish_Invoke("destination::address:1", 0x05, 0x06, body);
-Publish_Invoke("destination::address:2", 0x06, 0x06, body);
-Publish_Invoke("destination::address:3", 0x07, 0x06, body);
+Publish_Invoke((const unsigned char*)"destination::address:1", 0x05, 0x06, body);
+Publish_Invoke((const unsigned char*)"destination::address:2", 0x06, 0x06, body);
+Publish_Invoke((const unsigned char*)"destination::address:3", 0x07, 0x06, body);
 
 // Destroy if you need it no more.
 Publish_Destroy();
@@ -231,9 +231,9 @@ SubscriberBuilder_SetId(&id);
 if (!SubscriberBuilder_Build()) exit(-1);
 SubscriberBuilder_Destroy();
 
-Pull_Invoke("destination::address", &port, &id, body);
-Pull_Invoke("destination::address", &port, &id, body);
-Pull_Invoke("destination::address", &port, &id, body);
+Pull_Invoke((const unsigned char*)"destination::address", &port, &id, body);
+Pull_Invoke((const unsigned char*)"destination::address", &port, &id, body);
+Pull_Invoke((const unsigned char*)"destination::address", &port, &id, body);
 
 // Destroy if you need it no more.
 Pull_Destroy();
