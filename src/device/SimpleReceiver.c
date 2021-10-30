@@ -31,13 +31,13 @@ void Receiver_TurnOn() { turn_on(); }
 
 void Receiver_TurnOff() { turn_off(); }
 
-void Receiver_Read(char *content) { memcpy(content, buffer, size); }
+void Receiver_Read(unsigned char *content) { memcpy(content, buffer, size); }
 
 int Receiver_Listen(const unsigned char *address) {
   return listen(address, buffer, size);
 }
 
-void Receiver_Destroy(void) {
+void Receiver_Destroy() {
   if (0 != buffer)
     free(buffer);
   listen = 0;
