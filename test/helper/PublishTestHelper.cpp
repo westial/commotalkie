@@ -7,7 +7,7 @@
 
 static unsigned long mock_push_fn(const unsigned char*, const char*, unsigned long);
 static unsigned long mock_push_fn_keep_topic(const unsigned char*, const char*, unsigned long);
-static unsigned long fake_push_fn(const unsigned char *, const char *, unsigned long);
+static unsigned long fake_push_fn(const unsigned char *, const unsigned char *, unsigned long);
 static unsigned long stub_push_fn(const unsigned char *, const char *, unsigned long);
 static unsigned long push_fn(const unsigned char *address, const char *content,
                              unsigned long size);
@@ -36,7 +36,7 @@ unsigned long mock_push_fn_keep_topic(const unsigned char* address, const char* 
 }
 
 unsigned long fake_push_fn(
-    const unsigned char *address, const char *content, unsigned long size) {
+    const unsigned char *address, const unsigned char *content, unsigned long size) {
   push_fn_spy.calledCount++;
   return 0;
 }
