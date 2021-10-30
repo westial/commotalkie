@@ -1,6 +1,4 @@
-//
-// Created by jaume on 1/26/21.
-//
+
 #include "MessageCrypter.h"
 #include "MessageFormatter.h"
 #include "MessagePublisher.h"

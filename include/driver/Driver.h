@@ -1,6 +1,4 @@
-//
-// Created by jaume on 10/8/21.
-//
+
 
 #ifndef COMMOTALKINO_LIB_EBYTE_EBYTEDRIVER_H_
 #define COMMOTALKINO_LIB_EBYTE_EBYTEDRIVER_H_

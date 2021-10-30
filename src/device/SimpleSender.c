@@ -1,6 +1,4 @@
-//
-// Created by jaume on 1/15/21.
-//
+
 
 #include "Sender.h"
 

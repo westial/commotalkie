@@ -1,6 +1,4 @@
-//
-// Created by jaume on 9/30/21.
-//
+
 
 #include "Pull.h"
 static const char *subscriber_salt = 0;

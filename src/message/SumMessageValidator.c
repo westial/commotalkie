@@ -1,6 +1,4 @@
-//
-// Created by jaume on 1/13/21.
-//
+
 #include "MessageValidator.h"
 
 static unsigned char sum(const char *raw, unsigned int length) {

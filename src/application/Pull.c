@@ -1,7 +1,3 @@
-//
-// Created by jaume on 1/28/21.
-//
-
 #include "MessageCrypter.h"
 #include "MessageSubscriber.h"
 #include "MessageValidator.h"
@@ -59,7 +55,7 @@ int validate(const Message *message, const unsigned char *id) {
 }
 
 void decrypt(Message *input, Message *output) {
-  MessageCrypter_Decrypt((const char *)input, output);
+  MessageCrypter_Decrypt((const unsigned char *)input, output);
 }
 
 void parse_id(const Message *message, unsigned char *id) {

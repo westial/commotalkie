@@ -1,6 +1,4 @@
-//
-// Created by jaume on 1/28/21.
-//
+
 
 #ifndef COMMOTALKIE_INCLUDE_APPLICATION_PULL_H_
 #define COMMOTALKIE_INCLUDE_APPLICATION_PULL_H_

@@ -1,6 +1,4 @@
-//
-// Created by jaume on 1/19/21.
-//
+
 
 #ifndef COMMOTALKIE_INCLUDE_DEVICE_RECEIVER_H_
 #define COMMOTALKIE_INCLUDE_DEVICE_RECEIVER_H_

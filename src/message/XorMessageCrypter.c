@@ -1,7 +1,3 @@
-//
-// Created by jaume on 1/13/21.
-//
-
 #include "MessageCrypter.h"
 #include <string.h>
 
@@ -39,8 +35,8 @@ void MessageCrypter_Encrypt(const Message *message,
   memcpy(encrypted, message->meta, MESSAGE_META_LENGTH);
 }
 
-void MessageCrypter_Decrypt(const char *raw, Message *decrypted) {
-  xor((const unsigned char *)raw + MESSAGE_META_LENGTH, salt,
+void MessageCrypter_Decrypt(const unsigned char *raw, Message *decrypted) {
+  xor(raw + MESSAGE_META_LENGTH, salt,
       (unsigned char *)decrypted + MESSAGE_META_LENGTH, MESSAGE_BODY_LENGTH);
-  memcpy(decrypted, (const unsigned char *)raw, MESSAGE_META_LENGTH);
+  memcpy(decrypted, raw, MESSAGE_META_LENGTH);
 }

@@ -1,6 +1,4 @@
-//
-// Created by jaume on 10/12/21.
-//
+
 
 #ifndef COMMOTALKIE_INCLUDE_DRIVER_EBYTE_H_
 #define COMMOTALKIE_INCLUDE_DRIVER_EBYTE_H_

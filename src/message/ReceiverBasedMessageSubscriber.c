@@ -1,6 +1,4 @@
-//
-// Created by jaume on 1/20/21.
-//
+
 #include "Message.h"
 #include "MessageSubscriber.h"
 #include "Receiver.h"

@@ -1,6 +1,4 @@
-//
-// Created by jaume on 1/8/21.
-//
+
 #include <string.h>
 #include "MessageFormatter.h"
 

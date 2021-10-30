@@ -1,7 +1,3 @@
-//
-// Created by jaume on 1/13/21.
-//
-
 #ifndef COMMOTALKIE_INCLUDE_MESSAGE_MESSAGECRYPTER_H_
 #define COMMOTALKIE_INCLUDE_MESSAGE_MESSAGECRYPTER_H_
 
@@ -17,7 +13,7 @@ void MessageCrypter_Destroy(void);
 
 void MessageCrypter_Encrypt(const Message* message, unsigned char* encrypted);
 
-void MessageCrypter_Decrypt(const char* raw, Message* decrypted);
+void MessageCrypter_Decrypt(const unsigned char* raw, Message* decrypted);
 
 #ifdef __cplusplus
 }
