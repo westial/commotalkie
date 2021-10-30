@@ -63,7 +63,7 @@ Driver Driver_Create(PinMap pins, RadioParams *params, IOCallback *io,
                      Timer *timer, unsigned long *timeouts);
 
 unsigned long Driver_Send(Driver *driver, const Destination *destination,
-                          const char *content, unsigned long size);
+                          const void *content, unsigned long size);
 
 int Driver_Receive(Driver *driver, void *buffer, unsigned long size);
 

@@ -48,7 +48,7 @@ Driver Driver_Create(PinMap pins, RadioParams *params, IOCallback *io,
 }
 
 unsigned long Driver_Send(Driver *driver, const Destination *destination,
-                          const char *content, unsigned long size) {
+                          const void *content, unsigned long size) {
   unsigned char head_size = 3;
   unsigned char data[head_size + size];
   unsigned long written;
@@ -65,7 +65,7 @@ unsigned long Driver_Send(Driver *driver, const Destination *destination,
 
 int Driver_Receive(Driver *driver, void *buffer, unsigned long size) {
   unsigned long position = 0;
-  memset(buffer, '\x00', size);
+  memset(buffer, 0, size);
   start_timer(&driver->timer);
   while (is_ebyte_busy(driver) && position < size) {
     if (!is_serial_receiving_on_time(driver))

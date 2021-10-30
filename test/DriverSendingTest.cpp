@@ -14,7 +14,7 @@ TEST(DriverSending, SendAString) {
   Driver sample_driver =
       create_sample((const unsigned char *)"\xA1\xA2\xA3", AIR_RATE_2400, 1, 1);
   reset_write_to_serial();
-  const char raw_message[] = "abcdefghi";
+  const unsigned char raw_message[] = "abcdefghi";
   const Destination target = {0xA1, 0xA2, 0xA3};
   unsigned long result =
       Driver_Send(&sample_driver, &target, raw_message, sizeof(raw_message));
@@ -27,7 +27,7 @@ TEST(DriverSending, SendAString) {
 TEST(DriverSending, SetStateToNormalBeforeSending) {
   Driver sample_driver =
       create_sample((const unsigned char *)"\xA1\xA2\xA3", 0, 0, 0);
-  const char raw_message[] = "abcdefghi";
+  const unsigned char raw_message[] = "abcdefghi";
   const Destination target = {0xA1, 0xA2, 0xA3};
   unsigned long result =
       Driver_Send(&sample_driver, &target, raw_message, sizeof(raw_message));
@@ -41,7 +41,7 @@ TEST(DriverSending, SetStateToNormalBeforeSending) {
 TEST(DriverSending, SetStateToSleepAfterSending) {
   Driver sample_driver =
       create_sample((const unsigned char *)"\xA1\xA2\xA3", 0, 0, 0);
-  const char raw_message[] = "abcdefghi";
+  const unsigned char raw_message[] = "abcdefghi";
   const Destination target = {0xA1, 0xA2, 0xA3};
   unsigned long result =
       Driver_Send(&sample_driver, &target, raw_message, sizeof(raw_message));
@@ -58,7 +58,7 @@ TEST(DriverSending, WaitUntilAuxIsHighAfterSending) {
   read_pin_sequence[2] = 0; // Let read with AUX at 0 for two times
   read_pin_sequence[3] = 0;
   dynamic_read_pin = stub_read_pin_sequence;
-  const char raw_message[] = "abcdefghi";
+  const unsigned char raw_message[] = "abcdefghi";
   const Destination target = {0xA1, 0xA2, 0xA3};
   unsigned long result =
       Driver_Send(&sample_driver, &target, raw_message, sizeof(raw_message));
