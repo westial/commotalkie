@@ -25,7 +25,7 @@ TEST_GROUP(Packing) {
 
 TEST(Packing, PackString) {
   Message message;
-  const char sample[] = "0123456789AB";
+  const unsigned char sample[] = "0123456789AB";
   MessageFormatter_Pack(sample, &message);
   MEMCMP_EQUAL(sample, message.meta, MESSAGE_META_LENGTH);
   MEMCMP_EQUAL(sample + MESSAGE_META_LENGTH, message.body, MESSAGE_BODY_LENGTH);
@@ -34,16 +34,16 @@ TEST(Packing, PackString) {
 TEST(Packing, PackStruct) {
   const void* input = &sampleValue;
   Message message;
-  MessageFormatter_Pack(input, &message);
+  MessageFormatter_Pack((unsigned char *)input, &message);
   MEMCMP_EQUAL(input, &message, MESSAGE_LENGTH);
 }
 
 TEST(Packing, UnpackStruct) {
   const void* input = &sampleValue;
   Message message;
-  MessageFormatter_Pack(input, &message);
+  MessageFormatter_Pack((unsigned char *)input, &message);
   struct StubMsg output = {};
-  MessageFormatter_Unpack(&message, &output);
+  MessageFormatter_Unpack(&message, (unsigned char *)&output);
   CHECK_EQUAL(sampleValue.a2, output.a2);
   CHECK_EQUAL(sampleValue.b4, output.b4);
   MEMCMP_EQUAL(sampleValue.c3, output.c3, 3);

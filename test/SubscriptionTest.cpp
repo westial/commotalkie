@@ -93,7 +93,7 @@ TEST(Subscription, PullFromCorrectTopic) {
 
 TEST(Subscription, PushAndPull) {
   Message sent_message;
-  MessageFormatter_Pack("0123456789AB", &sent_message);
+  MessageFormatter_Pack((unsigned char *)"0123456789AB", &sent_message);
   MessagePublisher_Create((const void *)stub_push_fn);
   MessagePublisher_Push((const unsigned char *)"address", &sent_message);
   MessagePublisher_Destroy();

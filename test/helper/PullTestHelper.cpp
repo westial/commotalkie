@@ -43,7 +43,7 @@ int stub_message_fn(const unsigned char *address, char *content,
                     const unsigned long size) {
   pull_fn_spy.calledCount++;
   Message message;
-  MessageFormatter_Pack("0123456789AB", &message);
+  MessageFormatter_Pack((unsigned char *)"0123456789AB", &message);
   MessageValidator_Sign(&message);
   memcpy((void *)content, (void *)&message, MESSAGE_LENGTH);
   return 0 < size;

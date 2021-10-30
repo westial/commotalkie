@@ -11,45 +11,45 @@ TEST_GROUP(Encrypting) {
 
 TEST(Encrypting, EncryptNoSalt) {
   Message expected;
-  MessageFormatter_Pack("0123456789AB", &expected);
+  MessageFormatter_Pack((unsigned char *)"0123456789AB", &expected);
   unsigned char encrypted[MESSAGE_LENGTH];
   MessageCrypter_Create("");
   MessageCrypter_Encrypt(&expected, encrypted);
   MessageCrypter_Destroy();
   Message result;
-  MessageFormatter_Pack(encrypted, &result);
+  MessageFormatter_Pack((unsigned char *)encrypted, &result);
   MEMCMP_EQUAL(expected.meta, result.meta, MESSAGE_META_LENGTH);
   MEMCMP_EQUAL(expected.body, result.body, MESSAGE_BODY_LENGTH);
 }
 
 TEST(Encrypting, EncryptFirstBodyByte) {
   Message expected;
-  MessageFormatter_Pack("01834567890A", &expected);
+  MessageFormatter_Pack((unsigned char *)"01834567890A", &expected);
   unsigned char encrypted[MESSAGE_LENGTH];
   MessageCrypter_Create("X");
   MessageCrypter_Encrypt(&expected, encrypted);
   MessageCrypter_Destroy();
   Message result;
-  MessageFormatter_Pack(encrypted, &result);
+  MessageFormatter_Pack((unsigned char *)encrypted, &result);
   CHECK_FALSE(expected.body[0] == result.body[0]);
 }
 
 TEST(Encrypting, EncryptShortSalt) {
   Message expected;
-  MessageFormatter_Pack("01834567890A", &expected);
+  MessageFormatter_Pack((unsigned char *)"01834567890A", &expected);
   unsigned char encrypted[MESSAGE_LENGTH];
   MessageCrypter_Create("12345678");
   MessageCrypter_Encrypt(&expected, encrypted);
   MessageCrypter_Destroy();
   Message result;
-  MessageFormatter_Pack(encrypted, &result);
+  MessageFormatter_Pack((unsigned char *)encrypted, &result);
   CHECK_EQUAL(expected.body[MESSAGE_BODY_LENGTH -1], result.body[MESSAGE_BODY_LENGTH -1]);
   CHECK_FALSE(expected.body[MESSAGE_BODY_LENGTH -2] == result.body[MESSAGE_BODY_LENGTH -2]);
 }
 
 TEST(Encrypting, EncryptSameLenghtSalt) {
   Message expected;
-  MessageFormatter_Pack("0123456789AB", &expected);
+  MessageFormatter_Pack((unsigned char *)"0123456789AB", &expected);
   unsigned char encrypted[MESSAGE_LENGTH];
   MessageCrypter_Create("0123456789");
   MessageCrypter_Encrypt(&expected, encrypted);
@@ -66,7 +66,7 @@ TEST(Encrypting, EncryptSameLenghtSalt) {
 TEST(Encrypting, EncryptLongerSalt) {
   unsigned int leastEncrypted = 4;
   Message expected;
-  MessageFormatter_Pack("0123456789AB", &expected);
+  MessageFormatter_Pack((unsigned char *)"0123456789AB", &expected);
   unsigned char encrypted[MESSAGE_LENGTH];
   MessageCrypter_Create("0123456789ABZSWD");
   MessageCrypter_Encrypt(&expected, encrypted);
@@ -82,7 +82,7 @@ TEST(Encrypting, EncryptLongerSalt) {
 
 TEST(Encrypting, MetaIsNotEncrypted) {
   Message expected;
-  MessageFormatter_Pack("0123456789AB", &expected);
+  MessageFormatter_Pack((unsigned char *)"0123456789AB", &expected);
   unsigned char encrypted[MESSAGE_LENGTH];
   MessageCrypter_Create("0123456789ABZSWD");
   MessageCrypter_Encrypt(&expected, encrypted);
@@ -92,7 +92,7 @@ TEST(Encrypting, MetaIsNotEncrypted) {
 
 TEST(Encrypting, DecryptMatch) {
   Message expected;
-  MessageFormatter_Pack("0123456789AB", &expected);
+  MessageFormatter_Pack((unsigned char *)"0123456789AB", &expected);
   unsigned char encrypted[MESSAGE_LENGTH];
   MessageCrypter_Create("abcdefghijkl");
   MessageCrypter_Encrypt(&expected, encrypted);
@@ -113,7 +113,7 @@ TEST(Encrypting, DecryptMatch) {
 TEST(Encrypting, DecryptUnmatch) {
   unsigned int leastEncrypted = 4;
   Message expected;
-  MessageFormatter_Pack("0123456789AB", &expected);
+  MessageFormatter_Pack((unsigned char *)"0123456789AB", &expected);
   unsigned char encrypted[MESSAGE_LENGTH];
   MessageCrypter_Create("abcdefghijkl");
   MessageCrypter_Encrypt(&expected, encrypted);
