@@ -18,7 +18,7 @@ void Publish_Invoke(
     const unsigned char *topic,
     const unsigned char port,
     const unsigned char id,
-    const char *body) {
+    const unsigned char *body) {
   unsigned char content[MESSAGE_LENGTH];
   Message message;
   char encrypted[MESSAGE_LENGTH];
