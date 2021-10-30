@@ -17,7 +17,7 @@ static void delay(Timer *timer, unsigned long timeout);
 static int (*read_pin_callback)(unsigned char);
 static void (*write_pin_callback)(unsigned char, unsigned char);
 static unsigned long (*write_to_serial_callback)(void *, unsigned long);
-static unsigned long (*read_from_serial_callback)(char *, unsigned long,
+static unsigned long (*read_from_serial_callback)(void *, unsigned long,
                                                   unsigned long);
 static void (*clear_serial_callback)();
 
@@ -63,7 +63,7 @@ unsigned long Driver_Send(Driver *driver, const Destination *destination,
   return (SLEEP == driver->state && sizeof(data) == written) ? size : 0;
 }
 
-int Driver_Receive(Driver *driver, char *buffer, unsigned long size) {
+int Driver_Receive(Driver *driver, void *buffer, unsigned long size) {
   unsigned long position = 0;
   memset(buffer, '\x00', size);
   start_timer(&driver->timer);

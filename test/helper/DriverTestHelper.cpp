@@ -38,12 +38,12 @@ static char spy_write_to_serial_arg_1[MAX_TEST_INDEX][MAX_TEST_INDEX];
 static unsigned long spy_write_to_serial_arg_2[MAX_TEST_INDEX];
 static int spy_write_to_serial_call_count;
 
-static unsigned long (*dynamic_from_serial)(char *buffer, unsigned long size,
+static unsigned long (*dynamic_from_serial)(void *buffer, unsigned long size,
                                             unsigned long position);
-static unsigned long fake_read_from_serial(char *buffer, unsigned long size,
+static unsigned long fake_read_from_serial(void *buffer, unsigned long size,
                                            unsigned long position);
 static void reset_read_from_serial();
-static unsigned long spy_read_from_serial(char *buffer, unsigned long size,
+static unsigned long spy_read_from_serial(void *buffer, unsigned long size,
                                           unsigned long position);
 
 static int spy_clear_serial_call_count;
@@ -51,7 +51,7 @@ static void spy_clear_serial();
 
 static char stub_read_from_serial_buffer_4_char_chunks[10][4];
 static int buffer_chunks_index;
-static unsigned long spy_read_from_serial_by_chunks(char *buffer,
+static unsigned long spy_read_from_serial_by_chunks(void *buffer,
                                                     unsigned long size,
                                                     unsigned long position);
 static char stub_read_from_serial_buffer[MAX_TEST_INDEX];
@@ -61,7 +61,7 @@ static unsigned long spy_availability_check_count;
 static int serial_is_available_by_value_stub();
 static unsigned short stub_availability_value;
 
-static unsigned long stub_read_nothing_from_serial(char *buffer,
+static unsigned long stub_read_nothing_from_serial(void *buffer,
                                                    unsigned long size,
                                                    unsigned long position);
 
@@ -121,23 +121,23 @@ unsigned long spy_write_to_serial(void *content, unsigned long size) {
   return size;
 }
 
-unsigned long stub_read_nothing_from_serial(char *buffer, unsigned long size,
+unsigned long stub_read_nothing_from_serial(void *buffer, unsigned long size,
                                             unsigned long position) {
   memset(buffer, '\x00', size);
   return 0;
 }
 
-unsigned long spy_read_from_serial(char *buffer, unsigned long size,
+unsigned long spy_read_from_serial(void *buffer, unsigned long size,
                                    unsigned long position) {
   memcpy(buffer, stub_read_from_serial_buffer, size);
   stub_availability_value = 0;
   return size;
 }
 
-unsigned long spy_read_from_serial_by_chunks(char *buffer, unsigned long size,
+unsigned long spy_read_from_serial_by_chunks(void *buffer, unsigned long size,
                                              unsigned long position) {
   memcpy(
-      buffer + position,
+      (unsigned char*)buffer + position,
       stub_read_from_serial_buffer_4_char_chunks[buffer_chunks_index],
       sizeof(stub_read_from_serial_buffer_4_char_chunks[buffer_chunks_index]));
   buffer_chunks_index++;
@@ -146,7 +146,7 @@ unsigned long spy_read_from_serial_by_chunks(char *buffer, unsigned long size,
   return position;
 }
 
-unsigned long fake_read_from_serial(char *buffer, unsigned long size,
+unsigned long fake_read_from_serial(void *buffer, unsigned long size,
                                     unsigned long position) {
   return size;
 }

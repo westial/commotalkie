@@ -2,7 +2,6 @@
 #include "Driver.h"
 #include "EByte.h"
 #include "helper/DriverTestHelper.cpp"
-#include <cstring>
 
 // -----------------------------------------------------------------------------
 
