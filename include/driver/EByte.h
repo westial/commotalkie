@@ -26,13 +26,11 @@
  * module is free."
  *
  * ### My experience
- * If this value is too large, like 20-50, it seems that part of the message
- * head is randomly missing.
- * At 2ms as recommended in documentation, the publisher does not transmit the
- * message.
+ * This value is a key point. A shorter of larger value is cause of receiving
+ * nothing.
  *
  */
-#define MS_DELAY_AFTER_READY_CHECK 4
+#define MS_DELAY_AFTER_READY_CHECK 10
 
 // -----------------------------------------------------------------------------
 
