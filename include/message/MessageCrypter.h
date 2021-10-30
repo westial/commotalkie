@@ -15,7 +15,7 @@ void MessageCrypter_Create(const char* originalSalt);
 
 void MessageCrypter_Destroy(void);
 
-void MessageCrypter_Encrypt(const Message* message, char* encrypted);
+void MessageCrypter_Encrypt(const Message* message, unsigned char* encrypted);
 
 void MessageCrypter_Decrypt(const char* raw, Message* decrypted);
 
