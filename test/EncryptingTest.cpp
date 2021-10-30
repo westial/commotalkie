@@ -87,7 +87,7 @@ TEST(Encrypting, MetaIsNotEncrypted) {
   MessageCrypter_Create("0123456789ABZSWD");
   MessageCrypter_Encrypt(&expected, encrypted);
   MessageCrypter_Destroy();
-  MEMCMP_EQUAL((const char*)expected.meta, (const char*)encrypted, MESSAGE_META_LENGTH);
+  MEMCMP_EQUAL(expected.meta, encrypted, MESSAGE_META_LENGTH);
 }
 
 TEST(Encrypting, DecryptMatch) {
@@ -99,8 +99,8 @@ TEST(Encrypting, DecryptMatch) {
   Message decrypted;
   MessageCrypter_Decrypt(encrypted, &decrypted);
   MessageCrypter_Destroy();
-  MEMCMP_EQUAL((const char*)expected.meta, (const char*)decrypted.meta, MESSAGE_META_LENGTH);
-  MEMCMP_EQUAL((const char*)expected.body, (const char*)decrypted.body, MESSAGE_BODY_LENGTH);
+  MEMCMP_EQUAL(expected.meta, decrypted.meta, MESSAGE_META_LENGTH);
+  MEMCMP_EQUAL(expected.body, decrypted.body, MESSAGE_BODY_LENGTH);
   int equalsCount = 0;
   for (unsigned int i = 0; i < MESSAGE_LENGTH; i++) {
     if (((unsigned char*)&expected)[i] == ((unsigned char*)&decrypted)[i]) {
