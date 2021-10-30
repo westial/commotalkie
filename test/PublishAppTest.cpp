@@ -12,9 +12,10 @@
 static int spy_receiver_state;
 static void spy_turn_on_receiver_fn();
 static void spy_turn_off_receiver_fn();
-static int mock_pull_fn(const char *, const char *, int);
+static int mock_pull_fn(const unsigned char *address,
+                        const unsigned char *content, unsigned long size);
 
-int mock_pull_fn(const char *address, const char *content, const int size) {
+int mock_pull_fn(const unsigned char *address, const unsigned char *content, const unsigned long  size) {
   memcpy((void *)content, spy_pushed_contents[0], MESSAGE_LENGTH);
   return size;
 }
