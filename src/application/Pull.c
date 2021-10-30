@@ -15,7 +15,8 @@ void stop_countdown();
 void pull(const unsigned char *topic, Message *message, Result *result,
           Message *decrypted);
 void decrypt(Message *, Message *);
-void parse(Message *output, unsigned char *port, unsigned char *id, char *body);
+void parse(Message *output, unsigned char *port, unsigned char *id,
+           unsigned char *body);
 void parse_id(const Message *, unsigned char *);
 int validate(const Message *, const unsigned char *);
 
@@ -37,7 +38,7 @@ Result Pull_Invoke(const unsigned char *topic, unsigned char *port,
   pull(topic, &message, &result, &decrypted);
   stop_countdown();
   if (Success == result) {
-    parse(&decrypted, port, id, (char *)body);
+    parse(&decrypted, port, id, body);
     return result;
   }
   return result;
@@ -66,7 +67,7 @@ void parse_id(const Message *message, unsigned char *id) {
 }
 
 void parse(Message *output, unsigned char *port, unsigned char *id,
-           char *body) {
+           unsigned char *body) {
   *port = output->meta[PORT_INDEX];
   parse_id(output, id);
   memcpy(body, output->body, MESSAGE_BODY_LENGTH);
