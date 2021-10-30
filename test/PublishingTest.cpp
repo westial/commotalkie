@@ -11,8 +11,8 @@ TEST_GROUP(Publishing){};
 
 TEST(Publishing, SendText) {
   Sender_Create((const void *)push_fn);
-  CHECK_EQUAL(
-      12, Sender_Send((const unsigned char *)"address", "0123456789AB", 12));
+  CHECK_EQUAL(12, Sender_Send((const unsigned char *)"address",
+                              (const unsigned char *)"0123456789AB", 12));
   Sender_Destroy();
 }
 
