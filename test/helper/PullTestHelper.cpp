@@ -22,7 +22,7 @@ static int stub_pull_fn(const unsigned char *address, char *content,
 static int stub_force_error_pull_fn(const unsigned char *address, char *content,
                                     unsigned long size);
 
-static char body[MESSAGE_BODY_LENGTH];
+static unsigned char body[MESSAGE_BODY_LENGTH];
 static unsigned char port, id;
 static struct Spy pull_fn_spy;
 static unsigned long nothing_until_zero;

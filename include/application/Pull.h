@@ -16,7 +16,7 @@ void Pull_Create(const char *salt, const void *pull, const void *epoch,
                  unsigned long timeout_at, const unsigned char *to_id);
 
 Result Pull_Invoke(const unsigned char *topic, unsigned char *port,
-                   unsigned char *id, char *body);
+                   unsigned char *id, unsigned char *body);
 
 void Pull_Destroy();
 

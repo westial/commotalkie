@@ -28,8 +28,8 @@ void Pull_Create(const char *salt, const void *pull, const void *epoch,
   exclusive_id = to_id;
 }
 
-Result Pull_Invoke(const unsigned char *topic, unsigned char *port, unsigned char *id,
-                   char *body) {
+Result Pull_Invoke(const unsigned char *topic, unsigned char *port,
+                   unsigned char *id, unsigned char *body) {
   Result result;
   Message message;
   Message decrypted;
@@ -37,7 +37,7 @@ Result Pull_Invoke(const unsigned char *topic, unsigned char *port, unsigned cha
   pull(topic, &message, &result, &decrypted);
   stop_countdown();
   if (Success == result) {
-    parse(&decrypted, port, id, body);
+    parse(&decrypted, port, id, (char *)body);
     return result;
   }
   return result;
