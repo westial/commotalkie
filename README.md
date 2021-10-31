@@ -265,6 +265,14 @@ to your OS Arduino Library
 [./arduino/prebuild/CommoTalkie/messageconfig.h](./arduino/prebuild/CommoTalkie/messageconfig.h) 
 to the project you want to use this library in.
 
+### "CommoTalkino" Full integration example ###
+
+[https://github.com/westial/commotalkino](https://github.com/westial/commotalkino)
+is an example of integration of this library. The project consists on a communication
+between 2 Arduino MCU permanently sending and receiving a number that is getting
+incremented every transmission. Something like a stress test to check the 
+reliability of CommoTalkie library.
+
 ## License ##
 
 GNU General Public License (GPLv3). Read the attached [license file](LICENSE.txt).
