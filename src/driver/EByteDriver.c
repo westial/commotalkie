@@ -16,8 +16,8 @@ static void delay(Timer *timer, unsigned long timeout);
 
 static int (*read_pin_callback)(unsigned char);
 static void (*write_pin_callback)(unsigned char, unsigned char);
-static unsigned long (*write_to_serial_callback)(void *, unsigned long);
-static unsigned long (*read_from_serial_callback)(void *, unsigned long,
+static unsigned long (*write_to_serial_callback)(unsigned char *, unsigned long);
+static unsigned long (*read_from_serial_callback)(unsigned char *, unsigned long,
                                                   unsigned long);
 static void (*clear_serial_callback)();
 
