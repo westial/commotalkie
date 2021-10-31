@@ -73,11 +73,16 @@ TEST(DriverConfiguring, SetParameterizedAirDataRate) {
                                   AIR_RATE_INDEX);
 }
 
-TEST(DriverConfiguring, SetParameterizedTransmissionMode) {
+TEST(DriverConfiguring, SetParameterizedFixedTransmissionMode) {
   create_sample((const unsigned char *)"\xA1\xA2\xA3", 0, 1, 0);
   CHECK_EQUAL(1, (spy_write_to_serial_arg_1[0][OPTIONS] &
-                  ALL_BITS_LOW_BUT_TRANSMISSION_MODE) >>
-                     TRANSMIT_MODE_INDEX);
+                  ALL_BITS_LOW_BUT_TRANSMISSION_MODE) >> TRANSMIT_MODE_INDEX);
+}
+
+TEST(DriverConfiguring, SetParameterizedTransparentTransmissionMode) {
+  create_sample((const unsigned char *)"\xA1\xA2\xA3", 0, 0, 0);
+  CHECK_EQUAL(0, (spy_write_to_serial_arg_1[0][OPTIONS] &
+                  ALL_BITS_LOW_BUT_TRANSMISSION_MODE) >> TRANSMIT_MODE_INDEX);
 }
 
 TEST(DriverConfiguring, SetDefaultPullUpState) {

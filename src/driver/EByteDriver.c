@@ -6,9 +6,11 @@ static void change_state_to_normal(Driver *driver);
 static void set_configuration(Driver *driver);
 static int value_speed(unsigned char parity, unsigned char baud_rate,
                        unsigned char air_rate);
-static int value_options(int transmit_mode, int pull_up,
-                         unsigned char wake_up_time, int fec_switch,
-                         unsigned char transmit_power);
+static unsigned char value_options(unsigned char transmit_mode,
+                                   unsigned char pull_up,
+                                   unsigned char wake_up_time,
+                                   unsigned char fec_switch,
+                                   unsigned char transmit_power);
 static int wait_until_event(Driver *driver, int (*event)(Driver *));
 static int wait_until_mode_is_ready(Driver *driver);
 static int wait_until_writing_finished(Driver *driver);
@@ -16,9 +18,10 @@ static void delay(Timer *timer, unsigned long timeout);
 
 static int (*read_pin_callback)(unsigned char);
 static void (*write_pin_callback)(unsigned char, unsigned char);
-static unsigned long (*write_to_serial_callback)(unsigned char *, unsigned long);
-static unsigned long (*read_from_serial_callback)(unsigned char *, unsigned long,
-                                                  unsigned long);
+static unsigned long (*write_to_serial_callback)(unsigned char *,
+                                                 unsigned long);
+static unsigned long (*read_from_serial_callback)(unsigned char *,
+                                                  unsigned long, unsigned long);
 static void (*clear_serial_callback)();
 
 static Driver create_driver(PinMap *pins, RadioParams *params, Timer *timer,
@@ -92,9 +95,11 @@ int is_serial_receiving_on_time(Driver *driver) {
                           driver->timeouts[SERIAL_TIMEOUT_INDEX]);
 }
 
-int value_options(const int transmit_mode, const int pull_up,
-                  const unsigned char wake_up_time, const int fec_switch,
-                  const unsigned char transmit_power) {
+unsigned char value_options(const unsigned char transmit_mode,
+                            const unsigned char pull_up,
+                            const unsigned char wake_up_time,
+                            const unsigned char fec_switch,
+                            const unsigned char transmit_power) {
   return ((transmit_mode & 0xFF) << TRANSMIT_MODE_INDEX) |
          ((pull_up & 0xFF) << PULL_UP_INDEX) |
          ((wake_up_time & 0xFF) << WAKE_UP_TIME_INDEX) |
@@ -117,7 +122,7 @@ void set_configuration(Driver *driver) {
   config[SPEED] =
       value_speed(PARITY_BIT_8N1, BAUD_RATE_9600, driver->air_data_rate);
   config[CHANNEL] = driver->channel;
-  config[OPTIONS] = (char)value_options(
+  config[OPTIONS] = value_options(
       driver->fixed_on, OPT_PULL_UP_ON, OPT_WAKEUP_250, OPT_FEC_ON,
       driver->low_power_on ? OPT_MIN_POWER : OPT_MAX_POWER);
   write_to_serial_callback(config, sizeof(config));
