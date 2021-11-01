@@ -1,7 +1,5 @@
-CommoTalkie
+CommoTalkie ![commotalkie icon](doc/commomini.png)
 ===========
-
-![commotalkie icon](doc/commo.png)
 
 Communication interface for low power consumption devices.
 "Keep it tiny" is one of the most important requirements of this project.
