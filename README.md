@@ -25,7 +25,7 @@ cases.
         - [Create a Driver instance](#create-a-driver-instance)
         - [Send with a Driver instance](#send-with-a-driver-instance)
         - [Receive with a Driver instance](#receive-with-a-driver-instance)
-    + ["CommoTalkino" Full integration example](#-commotalkino--full-integration-example)
+    + [CommoTalkino Full integration example](#-commotalkino--full-integration-example)
 * [Arduino](#arduino)
 * [License](#license)
 * [Author](#author)
@@ -391,7 +391,7 @@ is met:
 * The received content fills up the given buffer.
 * The Serial timeout mentioned above expires, and it sets Driver instance state as _WARNING_.
 
-### "CommoTalkino" Full integration example ###
+### CommoTalkino Full integration example ###
 
 [https://github.com/westial/commotalkino](https://github.com/westial/commotalkino)
 is an example of integration of this SDK and EByte driver integration. The project 
