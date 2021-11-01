@@ -1,6 +1,4 @@
-//
-// Created by jaume on 2/3/21.
-//
+
 
 #ifndef COMMOTALKIE_INCLUDE_DEVICE_TIMER_H_
 #define COMMOTALKIE_INCLUDE_DEVICE_TIMER_H_
@@ -9,15 +7,22 @@
 extern "C" {
 #endif
 
-void Timer_Create(const void *epoch_ms_fn);
+typedef struct Timer {
+  unsigned long started_at;
+  unsigned long (*epoch_millis)();
+} Timer;
 
-void Timer_Start(void);
+Timer Timer_Create(const void *epoch_ms_fn);
 
-int Timer_IsRunning(void);
+void Timer_Start(Timer *timer);
 
-unsigned long Timer_GetMillis(void);
+void Timer_Stop(Timer *timer);
 
-void Timer_Destroy(void);
+int Timer_IsRunning(Timer *timer);
+
+unsigned long Timer_GetMillis(Timer *timer);
+
+void Timer_Destroy(Timer *timer);
 
 #ifdef __cplusplus
 }

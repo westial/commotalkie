@@ -1,6 +1,4 @@
-//
-// Created by jaume on 1/19/21.
-//
+
 
 #ifndef COMMOTALKIE_INCLUDE_DEVICE_RECEIVER_H_
 #define COMMOTALKIE_INCLUDE_DEVICE_RECEIVER_H_
@@ -9,16 +7,21 @@
 extern "C" {
 #endif
 
-void Receiver_Create(const void *listen_function, int buffer_size);
+void Receiver_Create(const void *listen, const void *turn_on,
+                        const void *turn_off, int buffer_size);
 
-void Receiver_read(const char* content);
+void Receiver_Read(unsigned char *content);
 
-int Receiver_listen(const char* address);
+void Receiver_TurnOn();
 
-void Receiver_Destroy(void);
+void Receiver_TurnOff();
+
+int Receiver_Listen(const unsigned char *address);
+
+void Receiver_Destroy();
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif //COMMOTALKIE_INCLUDE_DEVICE_RECEIVER_H_
+#endif // COMMOTALKIE_INCLUDE_DEVICE_RECEIVER_H_

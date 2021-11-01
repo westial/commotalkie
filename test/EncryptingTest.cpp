@@ -1,9 +1,8 @@
 #include "CppUTest/TestHarness.h"
 
-extern "C" {
 #include "MessageFormatter.h"
 #include "MessageCrypter.h"
-}
+
 
 // -----------------------------------------------------------------------------
 
@@ -12,8 +11,8 @@ TEST_GROUP(Encrypting) {
 
 TEST(Encrypting, EncryptNoSalt) {
   Message expected;
-  MessageFormatter_Pack("0123456789AB", &expected);
-  char encrypted[MESSAGE_LENGTH];
+  MessageFormatter_Pack((unsigned char *)"0123456789AB", &expected);
+  unsigned char encrypted[MESSAGE_LENGTH];
   MessageCrypter_Create("");
   MessageCrypter_Encrypt(&expected, encrypted);
   MessageCrypter_Destroy();
@@ -25,8 +24,8 @@ TEST(Encrypting, EncryptNoSalt) {
 
 TEST(Encrypting, EncryptFirstBodyByte) {
   Message expected;
-  MessageFormatter_Pack("01834567890A", &expected);
-  char encrypted[MESSAGE_LENGTH];
+  MessageFormatter_Pack((unsigned char *)"01834567890A", &expected);
+  unsigned char encrypted[MESSAGE_LENGTH];
   MessageCrypter_Create("X");
   MessageCrypter_Encrypt(&expected, encrypted);
   MessageCrypter_Destroy();
@@ -37,8 +36,8 @@ TEST(Encrypting, EncryptFirstBodyByte) {
 
 TEST(Encrypting, EncryptShortSalt) {
   Message expected;
-  MessageFormatter_Pack("01834567890A", &expected);
-  char encrypted[MESSAGE_LENGTH];
+  MessageFormatter_Pack((unsigned char *)"01834567890A", &expected);
+  unsigned char encrypted[MESSAGE_LENGTH];
   MessageCrypter_Create("12345678");
   MessageCrypter_Encrypt(&expected, encrypted);
   MessageCrypter_Destroy();
@@ -50,14 +49,14 @@ TEST(Encrypting, EncryptShortSalt) {
 
 TEST(Encrypting, EncryptSameLenghtSalt) {
   Message expected;
-  MessageFormatter_Pack("0123456789AB", &expected);
-  char encrypted[MESSAGE_LENGTH];
+  MessageFormatter_Pack((unsigned char *)"0123456789AB", &expected);
+  unsigned char encrypted[MESSAGE_LENGTH];
   MessageCrypter_Create("0123456789");
   MessageCrypter_Encrypt(&expected, encrypted);
   MessageCrypter_Destroy();
   int equalsCount = 0;
   for (unsigned int i = 0; i < MESSAGE_LENGTH; i++) {
-    if (((unsigned char*)&expected)[i] == ((unsigned char*)encrypted)[i]) {
+    if (((unsigned char*)&expected)[i] == encrypted[i]) {
       equalsCount++;
     }
   }
@@ -67,14 +66,14 @@ TEST(Encrypting, EncryptSameLenghtSalt) {
 TEST(Encrypting, EncryptLongerSalt) {
   unsigned int leastEncrypted = 4;
   Message expected;
-  MessageFormatter_Pack("0123456789AB", &expected);
-  char encrypted[MESSAGE_LENGTH];
+  MessageFormatter_Pack((unsigned char *)"0123456789AB", &expected);
+  unsigned char encrypted[MESSAGE_LENGTH];
   MessageCrypter_Create("0123456789ABZSWD");
   MessageCrypter_Encrypt(&expected, encrypted);
   MessageCrypter_Destroy();
   int equalsCount = 0;
   for (unsigned int i = 0; i < MESSAGE_LENGTH; i++) {
-    if (((unsigned char*)&expected)[i] == ((unsigned char*)encrypted)[i]) {
+    if (((unsigned char*)&expected)[i] == encrypted[i]) {
       equalsCount++;
     }
   }
@@ -83,25 +82,25 @@ TEST(Encrypting, EncryptLongerSalt) {
 
 TEST(Encrypting, MetaIsNotEncrypted) {
   Message expected;
-  MessageFormatter_Pack("0123456789AB", &expected);
-  char encrypted[MESSAGE_LENGTH];
+  MessageFormatter_Pack((unsigned char *)"0123456789AB", &expected);
+  unsigned char encrypted[MESSAGE_LENGTH];
   MessageCrypter_Create("0123456789ABZSWD");
   MessageCrypter_Encrypt(&expected, encrypted);
   MessageCrypter_Destroy();
-  MEMCMP_EQUAL((const char*)expected.meta, (const char*)encrypted, MESSAGE_META_LENGTH);
+  MEMCMP_EQUAL(expected.meta, encrypted, MESSAGE_META_LENGTH);
 }
 
 TEST(Encrypting, DecryptMatch) {
   Message expected;
-  MessageFormatter_Pack("0123456789AB", &expected);
-  char encrypted[MESSAGE_LENGTH];
+  MessageFormatter_Pack((unsigned char *)"0123456789AB", &expected);
+  unsigned char encrypted[MESSAGE_LENGTH];
   MessageCrypter_Create("abcdefghijkl");
   MessageCrypter_Encrypt(&expected, encrypted);
   Message decrypted;
   MessageCrypter_Decrypt(encrypted, &decrypted);
   MessageCrypter_Destroy();
-  MEMCMP_EQUAL((const char*)expected.meta, (const char*)decrypted.meta, MESSAGE_META_LENGTH);
-  MEMCMP_EQUAL((const char*)expected.body, (const char*)decrypted.body, MESSAGE_BODY_LENGTH);
+  MEMCMP_EQUAL(expected.meta, decrypted.meta, MESSAGE_META_LENGTH);
+  MEMCMP_EQUAL(expected.body, decrypted.body, MESSAGE_BODY_LENGTH);
   int equalsCount = 0;
   for (unsigned int i = 0; i < MESSAGE_LENGTH; i++) {
     if (((unsigned char*)&expected)[i] == ((unsigned char*)&decrypted)[i]) {
@@ -114,8 +113,8 @@ TEST(Encrypting, DecryptMatch) {
 TEST(Encrypting, DecryptUnmatch) {
   unsigned int leastEncrypted = 4;
   Message expected;
-  MessageFormatter_Pack("0123456789AB", &expected);
-  char encrypted[MESSAGE_LENGTH];
+  MessageFormatter_Pack((unsigned char *)"0123456789AB", &expected);
+  unsigned char encrypted[MESSAGE_LENGTH];
   MessageCrypter_Create("abcdefghijkl");
   MessageCrypter_Encrypt(&expected, encrypted);
   MessageCrypter_Destroy();

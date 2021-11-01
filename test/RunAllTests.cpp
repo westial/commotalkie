@@ -9,6 +9,10 @@ IMPORT_TEST_GROUP(PullApp);
 IMPORT_TEST_GROUP(PublishApp);
 IMPORT_TEST_GROUP(PublisherBuilder);
 IMPORT_TEST_GROUP(SubscriberBuilder);
+IMPORT_TEST_GROUP(DriverConfiguring);
+IMPORT_TEST_GROUP(DriverSending);
+IMPORT_TEST_GROUP(DriverReceiving);
+IMPORT_TEST_GROUP(Timer);
 
 int main(int argc, char** argv)
 {

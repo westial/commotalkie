@@ -1,6 +1,4 @@
-//
-// Created by jaume on 9/30/21.
-//
+
 
 #ifndef COMMOTALKIE_INCLUDE_APPLICATION_SUBSCRIBERBUILDER_H_
 #define COMMOTALKIE_INCLUDE_APPLICATION_SUBSCRIBERBUILDER_H_
@@ -14,9 +12,11 @@ void SubscriberBuilder_Create();
 void SubscriberBuilder_SetSalt(const char *salt);
 
 void SubscriberBuilder_SetListenCallback(
-    int (*)(const char *, const char *, const int));
+    int (*)(const unsigned char *, unsigned char *, const unsigned long));
 
-void SubscriberBuilder_SetTimeService(unsigned long (*)(void));
+void SubscriberBuilder_SetReceiverStateCallback(void(*)(), void(*)());
+
+void SubscriberBuilder_SetTimeService(unsigned long (*)());
 
 void SubscriberBuilder_SetTimeout(const unsigned long *);
 

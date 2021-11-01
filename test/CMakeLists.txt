@@ -4,6 +4,7 @@ project (CommoTalkie)
 include_directories(${PROJECT_SOURCE_DIR}/../include)
 include_directories(${PROJECT_SOURCE_DIR}/../include/message)
 include_directories(${PROJECT_SOURCE_DIR}/../include/device)
+include_directories(${PROJECT_SOURCE_DIR}/../include/driver)
 include_directories(${PROJECT_SOURCE_DIR}/../include/application)
 
 # include mocks only for test code
@@ -26,14 +27,31 @@ add_library(PublishEncryptedMessageTest PublishAppTest.cpp)
 add_library(ReadEncryptedMessageTest PullAppTest.cpp)
 add_library(PublisherBuilderTest PublisherBuilderTest.cpp)
 add_library(SubscriberBuilderTest SubscriberBuilderTest.cpp)
+add_library(DriverConfiguringTest DriverConfiguringTest.cpp)
+add_library(DriverSendingTest DriverSendingTest.cpp)
+add_library(DriverReceivingTest DriverReceivingTest.cpp)
+add_library(TimerTest TimerTest.cpp)
+
+# helper
+add_library(DriverTestHelper helper/DriverTestHelper.cpp)
+add_library(TimerTestHelper helper/TimerTestHelper.cpp)
+add_library(PublishTestHelper helper/PublishTestHelper.cpp)
+add_library(PullTestHelper helper/PullTestHelper.cpp)
 
 # add mocking library
 add_library(Spy STATIC Spy.h)
+add_library(PublishPullShared STATIC helper/PublishPullShared.h)
 set_target_properties(Spy PROPERTIES LINKER_LANGUAGE CXX)
+set_target_properties(PublishPullShared PROPERTIES LINKER_LANGUAGE CXX)
 
 add_executable(RunAllTests RunAllTests.cpp)
 target_link_libraries(RunAllTests
         Spy
+        PublishPullShared
+        DriverTestHelper
+        TimerTestHelper
+        PublishTestHelper
+        PullTestHelper
         imp_cpputest
         PackingTest
         ValidatingTest
@@ -44,6 +62,10 @@ target_link_libraries(RunAllTests
         ReadEncryptedMessageTest
         PublisherBuilderTest
         SubscriberBuilderTest
+        DriverConfiguringTest
+        DriverSendingTest
+        DriverReceivingTest
+        TimerTest
         PlainMessageFormatter
         SumMessageValidator
         XorMessageCrypter
@@ -56,4 +78,5 @@ target_link_libraries(RunAllTests
         ReadEncryptedMessage
         PublisherBuilder
         SubscriberBuilder
+        EByteDriver
 )

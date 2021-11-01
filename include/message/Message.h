@@ -20,13 +20,13 @@ extern "C" {
 #endif
 
 #pragma pack(push)
-#pragma pack(2)
+#pragma pack(4)
 
 #define MESSAGE_BODY_LENGTH     (MESSAGE_LENGTH - MESSAGE_META_LENGTH)
 
 typedef struct Message {
   unsigned char meta[MESSAGE_META_LENGTH];
-  char body[MESSAGE_BODY_LENGTH];
+  unsigned char body[MESSAGE_BODY_LENGTH];
 } Message;
 
 #pragma pack(pop)

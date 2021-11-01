@@ -2,6 +2,7 @@ project (CommoTalkie)
 
 include_directories(${PROJECT_SOURCE_DIR}/../include)
 include_directories(${PROJECT_SOURCE_DIR}/../include/device)
+include_directories(${PROJECT_SOURCE_DIR}/../include/driver)
 include_directories(${PROJECT_SOURCE_DIR}/../include/message)
 include_directories(${PROJECT_SOURCE_DIR}/../include/application)
 
@@ -19,4 +20,5 @@ add_library(PublishEncryptedMessage application/Publish.c)
 add_library(ReadEncryptedMessage application/Pull.c)
 add_library(PublisherBuilder application/PublisherBuilder.c)
 add_library(SubscriberBuilder application/SubscriberBuilder.c)
+add_library(EByteDriver driver/EByteDriver.c)
 
