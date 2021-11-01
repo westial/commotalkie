@@ -15,7 +15,10 @@ TEST(DriverSending, SendAString) {
       create_sample((const unsigned char *)"\xA1\xA2\xA3", AIR_RATE_2400, 1, 1);
   reset_write_to_serial();
   const unsigned char raw_message[] = "abcdefghi";
-  const Destination target = {0xA1, 0xA2, 0xA3};
+  Destination target;
+  target.address_high = 0xA1;
+  target.address_low = 0xA2;
+  target.channel = 0xA3;
   unsigned long result =
       Driver_Send(&sample_driver, &target, raw_message, sizeof(raw_message));
   CHECK_EQUAL(sizeof(raw_message), result);

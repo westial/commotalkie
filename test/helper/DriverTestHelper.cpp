@@ -160,16 +160,26 @@ unsigned long stub_progressive_epoch_ms_fn() { return progressive_ms += 1; }
 
 Driver create_sample(const unsigned char *topic, unsigned char air_data_rate,
                      int is_fixed, int full_power) {
-  PinMap pins = {1, 2, 3};
-  RadioParams params = {
-      {topic[DRIVER_ADDRESS_HIGH_INDEX], topic[DRIVER_ADDRESS_LOW_INDEX]},
-      topic[2],
-      air_data_rate,
-      is_fixed,
-      full_power};
+  PinMap pins;
+  RadioParams params;
+  IOCallback io;
   Timer timer = Timer_Create((const void *)stub_progressive_epoch_ms_fn);
-  IOCallback io = {dynamic_read_pin, spy_write_pin, spy_write_to_serial,
-                   dynamic_from_serial, spy_clear_serial};
+
+  pins.m0 = 1;
+  pins.m1 = 2;
+  pins.aux = 3;
+  params.address[0] = topic[DRIVER_ADDRESS_HIGH_INDEX];
+  params.address[1] = topic[DRIVER_ADDRESS_LOW_INDEX];
+  params.channel = topic[2];
+  params.air_data_rate = air_data_rate;
+  params.is_fixed_transmission = is_fixed;
+  params.full_transmission_power = full_power;
+  io.read_pin = dynamic_read_pin;
+  io.write_pin = spy_write_pin;
+  io.write_to_serial = spy_write_to_serial;
+  io.read_from_serial = dynamic_from_serial;
+  io.clear_serial = spy_clear_serial;
+
   return Driver_Create(pins, &params, &io, &timer, default_timeouts);
 }
 

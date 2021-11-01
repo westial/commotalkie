@@ -5,14 +5,39 @@ Communication interface for low power consumption devices.
 
 "Keep it tiny" is one of the most important requirements of this project.
 
+In addition, an EByte integration library only for this project's required use 
+cases.
+
+* [Message](#message)
+    + [Signature](#signature)
+    + [Port](#port)
+    + [Id](#id)
+    + [Content](#content)
+* [SDK](#sdk)
+    + [Publish](#publish)
+    + [Pull](#pull)
+    + [Builders make it easier](#builders-make-it-easier)
+        - [Publish Builder](#publish-builder)
+        - [Pull Builder](#pull-builder)
+* [Testing](#testing)
+* [Driver integration](#driver-integration)
+    + [EByte Driver example](#ebyte-driver-example)
+        - [Create a Driver instance](#create-a-driver-instance)
+        - [Send a string through a Driver instance](#send-a-string-through-a-driver-instance)
+        - [Send a string through a Driver instance](#send-a-string-through-a-driver-instance-1)
+* [Arduino](#arduino)
+    + ["CommoTalkino" Full integration example](#-commotalkino--full-integration-example)
+* [License](#license)
+* [Author](#author)
+
 ## Message ##
 
-This SDK pipelines validate, encrypt and transport the following Message
-structure.
+This communication pipeline validates, encrypts and transports the following 
+Message structure.
 
 ![message structure](doc/messageschema.png)
 
-MESSAGE_LENGTH value is a configuration parameter of "messageconfig.h" and is
+MESSAGE_LENGTH value is a configuration parameter of "messageconfig.h" and it is
 the total length of the message, META and BODY together. A length change must 
 consider the pragma alignment configuration of 4 set in 
 [./include/message/Message.h](./include/message/Message.h)
@@ -252,6 +277,131 @@ The tests are handled by the library [CppUTest](https://cpputest.github.io/),
 also following the guidelines from the book mentioned above and the documentation
 in the official page of the library.
 
+## Driver integration ##
+
+The publishing and pulling use cases have some dependencies. Many of them 
+depend on a real communication device: bluetooth, Wi-fi, LoRa,...
+
+Following the low power is better directive, I'm focused on LoRa technologies
+for this context. And I integrated an EByte transmitter module via Driver 
+interface. See [include/driver/Driver.h](include/driver/Driver.h) and its unit 
+test groups.
+
+The [src/driver/EByteDriver.c](src/driver/EByteDriver.c) integration keeps the
+power consumption as low as possible. It supports a few parameterized features
+like air data rate, transmission mode and transmission power. It keeps the
+device is sleep mode by default and only moves to active state for sending or
+receiving messages.
+
+### EByte Driver example ###
+
+See the following examples on how to use the EByte integration Driver.
+
+#### Create a Driver instance ####
+
+```c
+
+Timer timer = Timer_Create((const void *)stub_progressive_epoch_ms_fn);
+unsigned long default_timeouts[2];
+default_timeouts[MODE_TIMEOUT_INDEX] = 5 * 1000;
+default_timeouts[SERIAL_TIMEOUT_INDEX] = 2 * 1000;
+
+PinMap pins;
+RadioParams params;
+IOCallback io;
+
+pins.m0 = 1;
+pins.m1 = 2;
+pins.aux = 3;
+params.address[0] = topic[DRIVER_ADDRESS_HIGH_INDEX];
+params.address[1] = topic[DRIVER_ADDRESS_LOW_INDEX];
+params.channel = topic[2];
+params.air_data_rate = air_data_rate;
+params.is_fixed_transmission = is_fixed;
+params.full_transmission_power = full_power;
+io.read_pin = read_pin;
+io.write_pin = write_pin;
+io.write_to_serial = write_to_serial;
+io.read_from_serial = read_from_serial;
+io.clear_serial = clear_serial;
+
+Driver_Create(pins, &params, &io, &timer, default_timeouts);
+```
+
+The time service function signature for `now_fn()` is just the same of the mentioned in the
+Pull use case above.
+
+First value in `default_timeouts` defines the number of time units, milliseconds 
+in this example, to wait until expiration for AUX getting high again after 
+changing the EByte switch mode. And the second `default_timeouts` value is the 
+same for the serial transmission. Both, the switching mode and the serial
+transmission usually spend a few milliseconds to get AUX high again, so this
+timeout is rarely reached. Although, if any of these timeouts expire, the Driver
+instance gets _WARNING_ as state. The _WARNING_ state does not block a feature, 
+it's informative only and it can be changed next time the switching mode is
+requested.
+
+PinMap defines the UART EByte module to MCU device pinout relationship. In the 
+example above, the pin M0 of the EByte module is connected to the MCU pin #1,
+and so on.
+
+The `IOCallback` method signatures are clearly defined in its definition:
+
+```c
+typedef struct IOCallback {
+  int (*read_pin)(unsigned char);
+  void (*write_pin)(unsigned char, unsigned char);
+  unsigned long (*write_to_serial)(unsigned char *, unsigned long);
+  unsigned long (*read_from_serial)(unsigned char *, unsigned long, unsigned long);
+  void (*clear_serial)();
+} IOCallback;
+```
+
+#### Send a string through a Driver instance ####
+
+Once the Driver instance is created by the example above, it follows up with a 
+string submission.
+
+```c
+const unsigned char raw_message[] = "abcdefghi";
+Destination target;
+target.address_high = 0xA1;
+target.address_low = 0xA2;
+target.channel = 0xA3;
+unsigned long written =
+  Driver_Send(&sample_driver, &target, raw_message, sizeof(raw_message));
+```
+
+In the example above, `written` gets the number of bytes sent.
+
+#### Send a string through a Driver instance ####
+
+Once the Driver instance is created, let it listen to messages from other LoRa 
+devices.
+
+```c
+unsigned char buffer[8];
+int result = Driver_Receive(&sample_driver, buffer, sizeof(buffer));
+```
+
+EByte Driver instance listens the transmission until one of the next conditions
+is met:
+
+* The EByte module AUX pin gets high, according to [its documentation](doc/E32-915T20D_Usermanual_EN_v1.6.pdf). 
+* The received content fills up the given buffer.
+* The Serial timeout mentioned above expires, and it sets Driver instance state as _WARNING_.
+
+### "CommoTalkino" Full integration example ###
+
+[https://github.com/westial/commotalkino](https://github.com/westial/commotalkino)
+is an example of integration of this SDK and EByte driver integration. The project 
+consists on a communication between 2 Arduino MCU permanently sending and 
+receiving a number that is getting incremented every transmission. 
+
+It pretends to be a funny virtual ping pong match but indeed it's a hard
+stress test to check the stability and reliability of this whole communication 
+project (uahaha!).
+
 ## Arduino ##
 
 There is an Arduino library based implementation in [./arduino](./arduino).
@@ -264,14 +414,6 @@ To install the library move the [./arduino/prebuild/CommoTalkie](./arduino/prebu
 to your OS Arduino Library 
 [./arduino/prebuild/CommoTalkie/messageconfig.h](./arduino/prebuild/CommoTalkie/messageconfig.h) 
 to the project you want to use this library in.
-
-### "CommoTalkino" Full integration example ###
-
-[https://github.com/westial/commotalkino](https://github.com/westial/commotalkino)
-is an example of integration of this library. The project consists on a communication
-between 2 Arduino MCU permanently sending and receiving a number that is getting
-incremented every transmission. Something like a stress test to check the 
-reliability of CommoTalkie library.
 
 ## License ##
 
