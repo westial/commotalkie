@@ -1,7 +1,7 @@
 
 #include "MessageValidator.h"
 
-static unsigned char sum(const char *raw, unsigned int length) {
+static unsigned char sum(const unsigned char *raw, unsigned int length) {
   unsigned char total = '\0';
   while (length--) {
     total += *(raw + length - 1);
