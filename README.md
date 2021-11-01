@@ -56,7 +56,7 @@ The third most significant byte purpose is an Id.
 
 ### Content ###
 
-The information of the message.
+The data to be transported.
 
 ## SDK ##
 
