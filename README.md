@@ -25,7 +25,7 @@ cases.
         - [Create a Driver instance](#create-a-driver-instance)
         - [Send with a Driver instance](#send-with-a-driver-instance)
         - [Receive with a Driver instance](#receive-with-a-driver-instance)
-    + [CommoTalkino Full integration example](#-commotalkino--full-integration-example)
+    + [CommoTalkino Full integration example](#commotalkino-full-integration-example)
 * [Arduino](#arduino)
 * [License](#license)
 * [Author](#author)
