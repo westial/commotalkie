@@ -357,7 +357,7 @@ typedef struct IOCallback {
 } IOCallback;
 ```
 
-#### Send a string through a Driver instance ####
+#### Send with a Driver instance ####
 
 Once the Driver instance is created by the example above, it follows up with a 
 string submission.
@@ -374,7 +374,7 @@ unsigned long written =
 
 In the example above, `written` gets the number of bytes sent.
 
-#### Send a string through a Driver instance ####
+#### Receive with a Driver instance ####
 
 Once the Driver instance is created, let it listen to messages from other LoRa 
 devices.
