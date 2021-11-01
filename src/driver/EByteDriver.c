@@ -192,8 +192,8 @@ void change_state_to_normal(Driver *driver) {
 Driver create_driver(PinMap *pins, RadioParams *params, Timer *timer,
                      const unsigned long *timeout_ms) {
   Driver result;
-  result.address[0] = params->address[DRIVER_ADDRESS_LOW_INDEX];
-  result.address[1] = params->address[DRIVER_ADDRESS_HIGH_INDEX];
+  result.address[0] = params->address[DRIVER_ADDRESS_HIGH_INDEX];
+  result.address[1] = params->address[DRIVER_ADDRESS_LOW_INDEX];
   result.channel = params->channel;
   result.air_data_rate = params->air_data_rate;
   result.fixed_on = params->is_fixed_transmission;

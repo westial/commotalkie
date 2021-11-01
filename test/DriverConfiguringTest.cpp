@@ -13,8 +13,8 @@ TEST_GROUP(DriverConfiguring){void setup() override{driverHelperSetup();
 TEST(DriverConfiguring, CreateADriver) {
   PinMap pins = {1, 2, 3};
   RadioParams params;
-  params.address[0] = 0x08;
-  params.address[1] = 0x09;
+  params.address[DRIVER_ADDRESS_HIGH_INDEX] = 0x08;
+  params.address[DRIVER_ADDRESS_LOW_INDEX] = 0x09;
   params.channel = 0x06;
   params.air_data_rate = 0;
   Timer timer = Timer_Create((const void *)stub_progressive_epoch_ms_fn);
@@ -28,8 +28,8 @@ TEST(DriverConfiguring, CreateADriver) {
   CHECK_EQUAL(1, instance.pins.m0);
   CHECK_EQUAL(2, instance.pins.m1);
   CHECK_EQUAL(3, instance.pins.aux);
-  CHECK_EQUAL(0x08, instance.address[0]);
-  CHECK_EQUAL(0x09, instance.address[1]);
+  CHECK_EQUAL(0x08, instance.address[DRIVER_ADDRESS_HIGH_INDEX]);
+  CHECK_EQUAL(0x09, instance.address[DRIVER_ADDRESS_LOW_INDEX]);
   CHECK_EQUAL(0x06, instance.channel);
   CHECK_EQUAL(1, spy_write_to_serial_call_count);
 }
