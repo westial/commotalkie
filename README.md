@@ -1,8 +1,9 @@
 CommoTalkie
 ===========
 
-Communication interface for low power consumption devices.
+![commotalkie icon](doc/commo.png)
 
+Communication interface for low power consumption devices.
 "Keep it tiny" is one of the most important requirements of this project.
 
 In addition, an EByte integration library only for this project's required use 
