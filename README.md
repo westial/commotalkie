@@ -393,9 +393,9 @@ is met:
 ### CommoTalkino Full integration example ###
 
 [https://github.com/westial/commotalkino](https://github.com/westial/commotalkino)
-is an example of integration of this SDK and EByte driver integration. The project 
-consists on a communication between 2 Arduino MCU permanently sending and 
-receiving a number that is getting incremented every transmission. 
+is an example of this SDK and EByte driver integration. That project 
+consists on permanently sending and receiving a number that is getting incremented
+every transmission between a pair of Arduino MCU.
 
 It pretends to be a funny virtual ping pong match but indeed it's a hard
 stress test to check the stability and reliability of this whole communication 
