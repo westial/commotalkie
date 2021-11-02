@@ -294,7 +294,7 @@ receiving messages.
 
 ### EByte Driver example ###
 
-See the following examples on how to use the EByte integration Driver.
+See the following examples about how to use the EByte integration Driver.
 
 #### Create a Driver instance ####
 
