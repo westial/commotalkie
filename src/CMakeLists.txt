@@ -5,6 +5,7 @@ include_directories(${PROJECT_SOURCE_DIR}/../include/device)
 include_directories(${PROJECT_SOURCE_DIR}/../include/driver)
 include_directories(${PROJECT_SOURCE_DIR}/../include/message)
 include_directories(${PROJECT_SOURCE_DIR}/../include/application)
+include_directories(${PROJECT_SOURCE_DIR}/../include/sleepable)
 
 # Add here all libraries in src
 # And link them in the runnable CMakeLists file
@@ -21,4 +22,5 @@ add_library(ReadEncryptedMessage application/Pull.c)
 add_library(PublisherBuilder application/PublisherBuilder.c)
 add_library(SubscriberBuilder application/SubscriberBuilder.c)
 add_library(EByteDriver driver/EByteDriver.c)
+add_library(DriverSleepable sleepable/DriverSleepable.c)
 
