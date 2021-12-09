@@ -276,6 +276,8 @@ The tests are handled by the library [CppUTest](https://cpputest.github.io/),
 also following the guidelines from the book mentioned above and the documentation
 in the official page of the library.
 
+The following environment variables has to 
+
 ## Driver integration ##
 
 The publishing and pulling use cases have some dependencies. Many of them 
@@ -389,6 +391,11 @@ is met:
 * The EByte module AUX pin gets high, according to [its documentation](doc/E32-915T20D_Usermanual_EN_v1.6.pdf). 
 * The received content fills up the given buffer.
 * The Serial timeout mentioned above expires, and it sets Driver instance state as _WARNING_.
+
+### Support for Power Management Unit ###
+
+There is also an interface implementation here [include/sleepable](include/sleepable)
+for an external project of a [Power Management Unit for an unstable supply](https://github.com/westial/powermanagementunit).
 
 ### CommoTalkino Full integration example ###
 

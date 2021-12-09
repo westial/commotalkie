@@ -13,6 +13,7 @@ IMPORT_TEST_GROUP(DriverConfiguring);
 IMPORT_TEST_GROUP(DriverSending);
 IMPORT_TEST_GROUP(DriverReceiving);
 IMPORT_TEST_GROUP(Timer);
+IMPORT_TEST_GROUP(Sleepable);
 
 int main(int argc, char** argv)
 {
