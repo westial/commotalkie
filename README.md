@@ -1,12 +1,6 @@
 CommoTalkie ![commotalkie icon](doc/commomini.png)
 ===========
 
-Communication interface for low power consumption devices.
-"Keep it tiny" is one of the most important requirements of this project.
-
-In addition, an EByte integration library only for this project's required use 
-cases.
-
 * [Message](#message)
     + [Signature](#signature)
     + [Port](#port)
@@ -24,10 +18,17 @@ cases.
         - [Create a Driver instance](#create-a-driver-instance)
         - [Send with a Driver instance](#send-with-a-driver-instance)
         - [Receive with a Driver instance](#receive-with-a-driver-instance)
+    + [Support for Power Management Unit](#support-for-power-management-unit)
     + [CommoTalkino Full integration example](#commotalkino-full-integration-example)
 * [Arduino](#arduino)
 * [License](#license)
 * [Author](#author)
+
+Communication interface for low power consumption devices.
+"Keep it tiny" is one of the most important requirements of this project.
+
+In addition, an EByte integration library only for this project's required use 
+cases.
 
 ## Message ##
 
