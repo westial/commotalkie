@@ -1,17 +1,17 @@
 # This script creates the CommoTalkie Arduino based library files.
 
-COMMOTALKIEDIRNAME=CommoTalkie
+LIBRARYDIRNAME=CommoTalkie
 RELEASEDIRNAME=prebuild
 CONFIGDIRNAME=config
 
-.DEFAULT_GOAL := build
+.DEFAULT_GOAL := prebuild
 
-build: library.properties.template ../include/application/Publish.h ../include/application/Pull.h ../src/application/Publish.c ../src/application/Pull.c
+prebuild: library.properties.template ../include/application/Publish.h ../include/application/Pull.h ../src/application/Publish.c ../src/application/Pull.c
 	@echo "> Preparing header and source files"
-	mkdir -p "$(RELEASEDIRNAME)/$(COMMOTALKIEDIRNAME)"
-	find ../include/ -type f -name *.h -exec cp {} "$(RELEASEDIRNAME)/$(COMMOTALKIEDIRNAME)/" \;
-	find ../src/ -type f -name *.c -exec cp {} "$(RELEASEDIRNAME)/$(COMMOTALKIEDIRNAME)/" \;
-	cp ./library.properties.template "$(RELEASEDIRNAME)/$(COMMOTALKIEDIRNAME)/library.properties"
+	mkdir -p "$(RELEASEDIRNAME)/$(LIBRARYDIRNAME)"
+	find ../include/ -type f -name *.h -exec cp {} "$(RELEASEDIRNAME)/$(LIBRARYDIRNAME)/" \;
+	find ../src/ -type f -name *.c -exec cp {} "$(RELEASEDIRNAME)/$(LIBRARYDIRNAME)/" \;
+	cp ./library.properties.template "$(RELEASEDIRNAME)/$(LIBRARYDIRNAME)/library.properties"
 
 clean:
 	@echo "> Cleaning header and source files"

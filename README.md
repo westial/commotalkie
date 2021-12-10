@@ -409,16 +409,16 @@ It pretends to be a funny virtual ping pong match but indeed it's a hard
 stress test to check the stability and reliability of this whole communication 
 project (uahaha!).
 
-## Arduino ##
+## Arduino Library ##
 
 There is an Arduino library based implementation in [./arduino](./arduino).
 
-To build the files for this Arduino library, go to this directory and execute
+To prepare the files for this Arduino library, go to this directory and execute
 `make`. It creates a subdirectory in [./arduino/prebuild](./arduino/prebuild)
 with the directory of the library itself [./arduino/prebuild/CommoTalkie](./arduino/prebuild/CommoTalkie)
 
 To install the library move the [./arduino/prebuild/CommoTalkie](./arduino/prebuild/CommoTalkie)
-to your OS Arduino Library 
+to your OS Arduino Libraries directory and
 [./arduino/prebuild/CommoTalkie/messageconfig.h](./arduino/prebuild/CommoTalkie/messageconfig.h) 
 to the project you want to use this library in.
 
