@@ -277,8 +277,6 @@ The tests are handled by the library [CppUTest](https://cpputest.github.io/),
 also following the guidelines from the book mentioned above and the documentation
 in the official page of the library.
 
-The following environment variables has to 
-
 ## Driver integration ##
 
 The publishing and pulling use cases have some dependencies. Many of them 
